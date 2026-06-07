@@ -1659,3 +1659,17 @@ html, body { overflow-x: clip; }
     linear-gradient(90deg, rgba(7, 25, 60, 0.85) 0%, rgba(7, 25, 60, 0.3) 55%, rgba(7, 25, 60, 0.08) 100%),
     linear-gradient(0deg, rgba(7, 25, 60, 0.72) 0%, rgba(7, 25, 60, 0) 45%);
 }
+
+/* ---- About QA fixes (June 2026) ---- */
+
+/* 1. descender room in the masked title — the j was clipping */
+.about-title .line { padding-bottom: 0.09em; margin-bottom: -0.09em; }
+
+/* 2. hero band: taller frame, anchored to show the building, not the sky */
+.hero-band { height: clamp(320px, 54vh, 600px); }
+.hero-band-img { background-position: center 72%; }
+
+/* 3. belief rows: quieter type, bigger imagery */
+.belief-line { font-size: clamp(2rem, 4.6vw, 4.4rem); }
+.belief-row { grid-template-columns: 4rem minmax(0, 1fr) clamp(260px, 28vw, 460px); }
+.belief-tile { aspect-ratio: 16 / 9.5; }
