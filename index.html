@@ -13,272 +13,185 @@
 
 <!-- ====== FIXED CHROME ====== -->
 <header class="site-header">
-  <a class="logo" href="#top"><img src="assets/jv-logo.png" alt="JV Ventures"></a>
+  <a class="logo" href="index.html"><img src="assets/jv-logo.png" alt="JV Ventures"></a>
   <nav class="site-nav">
-    <a href="#impact">Impact</a>
-    <a href="#grids">GRIDS</a>
-    <a href="#platforms">Platforms</a>
-    <a href="#contact" class="nav-cta">Contact</a>
+    <a href="about.html">About</a>
+    <a href="#deck" data-deck-slide="3">Platforms</a>
+    <a href="#" class="nav-cta">Contact</a>
   </nav>
 </header>
 
-<!-- the red thread: page-long progress line -->
-<div class="thread" aria-hidden="true">
-  <div class="thread-line"></div>
-  <div class="thread-act"><span id="act-index">00</span><span id="act-name">Thesis</span></div>
-</div>
-
 <main id="top">
 
-  <!-- ====== ACT 0 · HERO / THESIS ====== -->
-  <section class="act act-hero" data-act="00" data-act-name="Thesis">
-    <div class="hero-inner">
-      <h1 class="hero-title">
-        <span class="line"><span class="line-inner">Reimagining</span></span>
-        <span class="line"><span class="line-inner em">Investing</span></span>
-      </h1>
-      <p class="hero-thesis">
-        <span class="line"><span class="line-inner">Traditional investing measures profit;</span></span>
-        <span class="line"><span class="line-inner">we measure impact through <em class="soi">Sphere&nbsp;of&nbsp;Influence</em>,</span></span>
-        <span class="line"><span class="line-inner">where capital shapes societal outcomes.</span></span>
-      </p>
-      <div class="hero-cta reveal">
-        <a class="btn-primary" href="about.html">About Us<span class="arrow">→</span></a>
-      </div>
-    </div>
+  <!-- ====== THE PRESENTATION DECK (pinned, scroll-driven horizontal) ====== -->
+  <section class="act deck-stage" id="deck" data-act="00" data-act-name="Who We Are">
+    <div class="deck-viewport">
+      <div class="deck-track">
 
-    <!-- SOI visual: capital at the core, radiating into four worlds -->
-    <div class="soi-visual" aria-hidden="true">
-      <div class="soi-rings">
-        <div class="ring r1"></div>
-        <div class="ring r2 dashed"></div>
-        <div class="ring r3"></div>
-        <span class="ring-label l1">Platforms</span>
-        <span class="ring-label l2">Ecosystems</span>
-        <span class="ring-label l3">Society</span>
-        <div class="soi-core">
-          <span class="core-dot"></span>
-          <img class="core-mark" src="assets/jv-mark.png" alt="">
-        </div>
-        <div class="soi-tile t-edu">
-          <div class="tile-img" style="background-image:url(assets/Untitled-4-01-2.jpg)"></div>
-          <span class="tile-label">Education</span>
-        </div>
-        <div class="soi-tile t-rx">
-          <div class="tile-img" style="background-image:url(assets/Untitled-11-01.jpg)"></div>
-          <span class="tile-label">Lifesciences</span>
-        </div>
-        <div class="soi-tile t-care">
-          <div class="tile-img" style="background-image:url(assets/Untitled-3-01-2.jpg)"></div>
-          <span class="tile-label">Healthcare</span>
-        </div>
-        <div class="soi-tile t-pod">
-          <div class="tile-img" style="background-image:url(assets/Untitled-9-01.jpg)"></div>
-          <span class="tile-label">Managed Living</span>
-        </div>
-      </div>
-    </div>
+        <!-- SLIDE 01 · INVESTING -->
+        <article class="slide" id="s-investing">
+          <div class="slide-content">
+            <span class="slide-kicker">Reimagining</span>
+            <h1 class="slide-title">
+              <span class="line"><span class="line-inner em">Investing</span></span>
+            </h1>
+            <p class="slide-copy">Traditional investing measures profit; we measure impact through
+            <em class="soi">Sphere&nbsp;of&nbsp;Influence</em>, where capital shapes societal outcomes.</p>
+            <a class="btn-primary slide-cta" href="about.html">About Us<span class="arrow">→</span></a>
+          </div>
+          <div class="slide-visual">
+            <!-- SOI sphere -->
+            <div class="soi-visual" aria-hidden="true">
+              <div class="soi-rings">
+                <div class="ring r1"></div>
+                <div class="ring r2 dashed"></div>
+                <div class="ring r3"></div>
+                <span class="ring-label l1">Platforms</span>
+                <span class="ring-label l2">Ecosystems</span>
+                <span class="ring-label l3">Society</span>
+                <div class="soi-core">
+                  <span class="core-dot"></span>
+                  <img class="core-mark" src="assets/jv-mark.png" alt="">
+                </div>
+                <div class="soi-tile t-edu">
+                  <div class="tile-img" style="background-image:url(assets/Untitled-4-01-2.jpg)"></div>
+                  <span class="tile-label">Education</span>
+                </div>
+                <div class="soi-tile t-rx">
+                  <div class="tile-img" style="background-image:url(assets/Untitled-11-01.jpg)"></div>
+                  <span class="tile-label">Lifesciences</span>
+                </div>
+                <div class="soi-tile t-care">
+                  <div class="tile-img" style="background-image:url(assets/Untitled-3-01-2.jpg)"></div>
+                  <span class="tile-label">Healthcare</span>
+                </div>
+                <div class="soi-tile t-pod">
+                  <div class="tile-img" style="background-image:url(assets/Untitled-9-01.jpg)"></div>
+                  <span class="tile-label">Managed Living</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
 
-    <div class="scroll-cue" aria-hidden="true">
-      <span>Scroll</span>
-      <div class="cue-line"></div>
+        <!-- SLIDE 02 · IMPACT — full-bleed numbers wall -->
+        <article class="slide slide--impact" id="s-impact" data-vpx="6">
+          <div class="slide-visual fullbleed">
+            <div class="fb-quad">
+              <div class="fb-slice" style="background-image:url(assets/Untitled-2-01-1.jpg)"></div>
+              <div class="fb-slice" style="background-image:url(assets/entreprenuer.jpg); background-position:center 20%"></div>
+              <div class="fb-slice" style="background-image:url(assets/Untitled-1-01-1.jpg)"></div>
+              <div class="fb-slice" style="background-image:url(assets/Untitled-6-01-1.jpg)"></div>
+            </div>
+            <div class="fb-veil"></div>
+          </div>
+          <div class="slide-content impact-wall">
+            <span class="slide-kicker">Measured by</span>
+            <h2 class="slide-title">
+              <span class="line"><span class="line-inner em">Impact</span></span>
+            </h2>
+            <div class="num-row">
+              <div class="stat-card nstat" data-count="19000" data-suffix="+">
+                <span class="stat-num">0+</span>
+                <span class="stat-label">Students Empowered</span>
+              </div>
+              <div class="stat-card nstat" data-count="13" data-suffix="">
+                <span class="stat-num">0</span>
+                <span class="stat-label">Intrapreneurs Nurtured</span>
+              </div>
+              <div class="stat-card nstat" data-count="500" data-suffix="+">
+                <span class="stat-num">0+</span>
+                <span class="stat-label">Drugs Accelerated</span>
+              </div>
+              <div class="stat-card nstat" data-count="19" data-suffix="+">
+                <span class="stat-num">0+</span>
+                <span class="stat-label">Institutions Seeded</span>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <!-- SLIDE 03 · ECOSYSTEMS — full-photo spread -->
+        <article class="slide slide--eco" id="s-ecosystems" data-vpx="6">
+          <div class="slide-visual fullbleed">
+            <div class="fb-img" style="background-image:url(assets/grid-image-e1780310038339.jpg)"></div>
+            <div class="fb-veil eco-veil"></div>
+          </div>
+          <div class="slide-content eco-overlay">
+            <span class="slide-kicker">Reimagining</span>
+            <h2 class="slide-title">
+              <span class="line"><span class="line-inner em">Ecosystems</span></span>
+            </h2>
+            <p class="slide-copy">White spaces in economic corridors are transformed into
+            <strong>GRIDS</strong> — Growth-Ready Innovation Destinations — cohesive, high-performance
+            ecosystems of real assets and enabling services.</p>
+            <a class="btn-primary slide-cta" href="about.html#grids-deep">Explore GRIDS<span class="arrow">→</span></a>
+          </div>
+        </article>
+
+        <!-- SLIDE 04 · PLATFORMS — four vertical strips -->
+        <article class="slide slide--plat" id="s-platforms">
+          <div class="slide-content plat-head">
+            <div>
+              <span class="slide-kicker">Reimagining</span>
+              <h2 class="slide-title">
+                <span class="line"><span class="line-inner em">Platforms</span></span>
+              </h2>
+            </div>
+            <div class="plat-head-right">
+              <p class="slide-copy">A 10-year legacy, <strong>$550&nbsp;Mn AUM</strong> — four platforms
+              designed to interconnect and amplify impact beyond sectors.</p>
+              <a class="btn-primary slide-cta" href="#">Explore Platforms<span class="arrow">→</span></a>
+            </div>
+          </div>
+          <div class="slide-visual plat-strips">
+            <a class="strip open" href="#">
+              <div class="strip-img" style="background-image:url(assets/Untitled-4-01-2.jpg)"></div>
+              <span class="strip-tab">Education</span>
+              <img class="strip-logo" src="assets/powered-home-logo.jpg" alt="PowerEd">
+              <div class="strip-stat"><strong>19,000+</strong><span>Students Empowered</span><p class="strip-desc">An all-encompassing K-12 education platform cultivating vibrant learning environments.</p></div>
+            </a>
+            <a class="strip" href="#">
+              <div class="strip-img" style="background-image:url(assets/Untitled-11-01.jpg)"></div>
+              <span class="strip-tab">Lifesciences</span>
+              <img class="strip-logo" src="assets/powerx-home-logo.jpg" alt="PoweRx">
+              <div class="strip-stat"><strong>6.5 Mn+ SFT</strong><span>of Labspace</span><p class="strip-desc">Purpose-built lab infrastructure and cutting-edge contract research.</p></div>
+            </a>
+            <a class="strip" href="#">
+              <div class="strip-img" style="background-image:url(assets/Untitled-3-01-2.jpg)"></div>
+              <span class="strip-tab">Healthcare</span>
+              <img class="strip-logo" src="assets/powercare-home-logo.jpg" alt="PowerCare">
+              <div class="strip-stat"><strong>2.4 Lakh+ SFT</strong><span>Healthcare Infrastructure</span><p class="strip-desc">Integrated healthcare infrastructure and strategic investments.</p></div>
+            </a>
+            <a class="strip" href="#">
+              <div class="strip-img" style="background-image:url(assets/Untitled-9-01.jpg)"></div>
+              <span class="strip-tab">Managed Living</span>
+              <img class="strip-logo" src="assets/powerpod-home-logo.jpg" alt="PowerPod">
+              <div class="strip-stat"><strong>10.9 Lakh+ SFT</strong><span>Planned Development</span><p class="strip-desc">Simplified, flexible, quality living for today’s professionals.</p></div>
+            </a>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- presentation rail: chapters + progress + counter -->
+      <div class="deck-rail">
+        <div class="rail-chapters">
+          <button class="rail-ch active" data-i="0"><i>01</i>Investing</button>
+          <button class="rail-ch" data-i="1"><i>02</i>Impact</button>
+          <button class="rail-ch" data-i="2"><i>03</i>Ecosystems</button>
+          <button class="rail-ch" data-i="3"><i>04</i>Platforms</button>
+        </div>
+        <div class="rail-line"><div class="rail-fill"></div></div>
+        <span class="deck-counter"><span id="deck-cur">01</span> / 04</span>
+      </div>
+
+      <div class="deck-cue" aria-hidden="true"><span>Scroll</span><div class="cue-line"></div></div>
     </div>
   </section>
 
-  <!-- ====== ACT 1 · PROOF (pinned chapter sequence) ====== -->
-  <section class="act act-impact" id="impact" data-act="01" data-act-name="Proof">
-    <div class="impact-stage">
-      <figure class="impact-slide" data-count="19000" data-suffix="+">
-        <div class="impact-photo" style="background-image:url(assets/Untitled-2-01-1.jpg)"></div>
-        <figcaption>
-          <div class="impact-number"><span class="num">0</span><span class="suffix">+</span></div>
-          <div class="impact-label">Students Empowered</div>
-          <p class="impact-sentence">Learning environments built and run across the full K-12 lifecycle.</p>
-        </figcaption>
-      </figure>
-      <figure class="impact-slide" data-count="13" data-suffix="">
-        <div class="impact-photo" style="background-image:url(assets/entreprenuer.jpg); background-position:center 18%"></div>
-        <figcaption>
-          <div class="impact-number"><span class="num">0</span><span class="suffix"></span></div>
-          <div class="impact-label">Intrapreneurs Nurtured</div>
-          <p class="impact-sentence">Operators backed to build companies inside the ecosystem.</p>
-        </figcaption>
-      </figure>
-      <figure class="impact-slide" data-count="500" data-suffix="+">
-        <div class="impact-photo" style="background-image:url(assets/Untitled-1-01-1.jpg)"></div>
-        <figcaption>
-          <div class="impact-number"><span class="num">0</span><span class="suffix">+</span></div>
-          <div class="impact-label">Drugs Accelerated</div>
-          <p class="impact-sentence">Lab infrastructure compressing the path from molecule to market.</p>
-        </figcaption>
-      </figure>
-      <figure class="impact-slide" data-count="19" data-suffix="+">
-        <div class="impact-photo" style="background-image:url(assets/Untitled-6-01-1.jpg)"></div>
-        <figcaption>
-          <div class="impact-number"><span class="num">0</span><span class="suffix">+</span></div>
-          <div class="impact-label">Institutions Seeded</div>
-          <p class="impact-sentence">Institutions planted in white spaces, growing into ecosystems.</p>
-        </figcaption>
-      </figure>
-      <div class="impact-progress" aria-hidden="true">
-        <span class="dot active"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== ACT 2 · METHOD (GRIDS scrub) ====== -->
-  <section class="act act-grids" id="grids" data-act="02" data-act-name="Method">
-    <div class="grids-head">
-      <h2 class="section-title">
-        <span class="line"><span class="line-inner">Reimagining</span></span>
-        <span class="line"><span class="line-inner em">Ecosystems</span></span>
-      </h2>
-      <p class="section-copy reveal">Economic corridors hold untapped potential, often constrained by gaps
-      in social infrastructure. These white spaces are identified and transformed into
-      <strong>GRIDS</strong> — Growth-Ready Innovation Destinations — integrating platforms that combine
-      high-quality real assets with enabling services to create cohesive, high-performance ecosystems.</p>
-    </div>
-    <div class="grids-stage">
-      <div class="grids-visual">
-        <div class="grids-photo" style="background-image:url(assets/GRID-02-1-1.jpg)"></div>
-        <div class="grids-veil"></div>
-      </div>
-      <div class="grids-right">
-        <ul class="grids-layers">
-          <li class="layer"><i>01</i>Connectivity</li>
-          <li class="layer"><i>02</i>Talent</li>
-          <li class="layer"><i>03</i>Innovation</li>
-          <li class="layer"><i>04</i>Liveability</li>
-          <li class="layer"><i>05</i>Community</li>
-          <li class="layer"><i>06</i>Access</li>
-        </ul>
-        <div class="grids-cta"><a class="btn-primary" href="#">Explore GRIDS<span class="arrow">→</span></a></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ====== ACT 3 · THE MACHINE (indexed expanding rows) ====== -->
-  <section class="act act-platforms" id="platforms" data-act="03" data-act-name="Platforms">
-    <div class="platforms-head">
-      <h2 class="section-title">
-        <span class="line"><span class="line-inner">Reimagining</span></span>
-        <span class="line"><span class="line-inner em">Platforms</span></span>
-      </h2>
-      <div class="head-right">
-        <p class="section-copy reveal">A 10-year legacy, <strong>$550&nbsp;Mn AUM</strong> across lifesciences,
-        education, healthcare, and managed living — built on the belief that assets are catalysts for
-        societal transformation, not standalone plays. Unified into four platforms, these systems are
-        designed to interconnect, unlock synergies, and amplify impact beyond sectors.</p>
-      </div>
-    </div>
-
-    <div class="platform-index">
-      <!-- hover preview: image follows cursor on the right (desktop only) -->
-      <div class="hover-preview" aria-hidden="true">
-        <div class="preview-frame">
-          <div class="preview-img" data-for="0" style="background-image:url(assets/Untitled-4-01-2.jpg)">
-            <img class="preview-logo" src="assets/powered-home-logo.jpg" alt="">
-          </div>
-          <div class="preview-img" data-for="1" style="background-image:url(assets/Untitled-11-01.jpg)">
-            <img class="preview-logo" src="assets/powerx-home-logo.jpg" alt="">
-          </div>
-          <div class="preview-img" data-for="2" style="background-image:url(assets/Untitled-3-01-2.jpg)">
-            <img class="preview-logo" src="assets/powercare-home-logo.jpg" alt="">
-          </div>
-          <div class="preview-img" data-for="3" style="background-image:url(assets/Untitled-9-01.jpg)">
-            <img class="preview-logo" src="assets/powerpod-home-logo.jpg" alt="">
-          </div>
-        </div>
-      </div>
-
-      <article class="platform-row" data-open="false">
-        <button class="row-head" aria-expanded="false">
-          <span class="row-num">01</span>
-          <span class="row-name">PowerEd</span>
-          <span class="row-sector">Education</span>
-          <span class="row-toggle" aria-hidden="true"></span>
-        </button>
-        <div class="row-body">
-          <div class="row-body-inner">
-            <div class="row-media" style="background-image:url(assets/Untitled-4-01-2.jpg)"></div>
-            <div class="row-detail">
-              <p>An all-encompassing K-12 education platform cultivating vibrant learning environments
-              across the full lifecycle of the education experience.</p>
-              <div class="row-stat"><strong>19,000+</strong> Students</div>
-              <a class="text-link" href="#">Explore PowerEd<span class="arrow">→</span></a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="platform-row" data-open="false">
-        <button class="row-head" aria-expanded="false">
-          <span class="row-num">02</span>
-          <span class="row-name">PoweRx</span>
-          <span class="row-sector">Lifesciences</span>
-          <span class="row-toggle" aria-hidden="true"></span>
-        </button>
-        <div class="row-body">
-          <div class="row-body-inner">
-            <div class="row-media" style="background-image:url(assets/Untitled-11-01.jpg)"></div>
-            <div class="row-detail">
-              <p>A lifesciences ecosystem driving innovation — modular lab infrastructure and contract
-              research across three interconnected verticals.</p>
-              <div class="row-stat"><strong>6.5&nbsp;Mn+ SFT</strong> of Labspace</div>
-              <a class="text-link" href="#">Explore PoweRx<span class="arrow">→</span></a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="platform-row" data-open="false">
-        <button class="row-head" aria-expanded="false">
-          <span class="row-num">03</span>
-          <span class="row-name">PowerCare</span>
-          <span class="row-sector">Healthcare</span>
-          <span class="row-toggle" aria-hidden="true"></span>
-        </button>
-        <div class="row-body">
-          <div class="row-body-inner">
-            <div class="row-media" style="background-image:url(assets/Untitled-3-01-2.jpg)"></div>
-            <div class="row-detail">
-              <p>A healthcare solutions network with integrated infrastructure and strategic investments —
-              experiential environments for professionals and operators.</p>
-              <div class="row-stat"><strong>2.4&nbsp;Lakh+ SFT</strong> Healthcare Infrastructure</div>
-              <a class="text-link" href="#">Explore PowerCare<span class="arrow">→</span></a>
-            </div>
-          </div>
-        </div>
-      </article>
-
-      <article class="platform-row" data-open="false">
-        <button class="row-head" aria-expanded="false">
-          <span class="row-num">04</span>
-          <span class="row-name">PowerPod</span>
-          <span class="row-sector">Managed Living</span>
-          <span class="row-toggle" aria-hidden="true"></span>
-        </button>
-        <div class="row-body">
-          <div class="row-body-inner">
-            <div class="row-media" style="background-image:url(assets/Untitled-9-01.jpg)"></div>
-            <div class="row-detail">
-              <p>An infrastructure platform reimagining how professionals live — from purpose-built living
-              spaces to integrated hospitality experiences.</p>
-              <div class="row-stat"><strong>10.9&nbsp;Lakh+ SFT</strong> Planned Development</div>
-              <a class="text-link" href="#">Explore PowerPod<span class="arrow">→</span></a>
-            </div>
-          </div>
-        </div>
-      </article>
-    </div>
-
-    <div class="platforms-cta reveal">
-      <a class="btn-primary" href="#">Explore Platforms<span class="arrow">→</span></a>
-    </div>
-  </section>
-
-  <!-- ====== ACT 4 · CLOSE ====== -->
-  <section class="act act-close" id="contact" data-act="04" data-act-name="Invitation">
+  <!-- ====== CLOSE ====== -->
+  <section class="act act-close" id="contact" data-act="02" data-act-name="Invitation">
     <p class="close-statement">
       <span class="line"><span class="line-inner">“Assets are catalysts for</span></span>
       <span class="line"><span class="line-inner"><em>societal transformation.</em>”</span></span>

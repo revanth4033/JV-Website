@@ -1215,3 +1215,447 @@ em { font-family: "Newsreader", serif; font-style: italic; font-weight: 400; }
 /* 3. hard guarantee against horizontal scroll from clipped pan/ghost layers */
 html, body { overflow-x: clip; }
 .morph-window { contain: paint; }
+
+/* ============================================================
+   HOMEPAGE v3 — THE PRESENTATION DECK
+   Pinned stage; vertical scroll drives horizontal slides.
+   ============================================================ */
+.deck-stage { position: relative; }
+.deck-viewport {
+  height: 100svh; overflow: hidden; position: relative;
+}
+.deck-track {
+  display: flex; height: 100%;
+  width: max-content; /* own width = sum of slides, so xPercent math is true */
+  will-change: transform;
+}
+.slide {
+  flex: 0 0 100vw; height: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(2rem, 4vw, 5rem);
+  padding: clamp(5rem, 10vh, 7rem) var(--gutter) clamp(7rem, 13vh, 9rem);
+}
+.slide-content { will-change: transform; }
+.slide-visual { will-change: transform; min-width: 0; }
+
+/* consistent slide template */
+.slide-kicker {
+  display: block;
+  font-size: 0.74rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 600;
+  color: var(--red-soft); margin-bottom: 1rem;
+}
+.slide-title {
+  font-size: clamp(3rem, 7.5vw, 7.5rem);
+  font-weight: 300; line-height: 1.0; letter-spacing: -0.015em; color: var(--text);
+}
+.slide-title .em { font-weight: 600; }
+.slide-copy {
+  margin-top: clamp(1.4rem, 3vh, 2.2rem);
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-weight: 300; line-height: 1.6; max-width: 44ch; color: var(--text-dim);
+}
+.slide-copy strong { color: var(--text); font-weight: 600; }
+.slide-cta { margin-top: clamp(1.8rem, 4vh, 2.6rem); }
+
+/* per-slide entrance: lines + copy + cta activate when slide is current */
+.slide .line-inner { transition: transform var(--d-slow) var(--ease); transition-delay: 120ms; }
+.slide.active .line-inner { transform: translateY(0); }
+.slide .slide-kicker, .slide .slide-copy, .slide .slide-cta {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity var(--d-base) var(--ease), transform var(--d-base) var(--ease);
+}
+.slide.active .slide-kicker { opacity: 1; transform: none; transition-delay: 80ms; }
+.slide.active .slide-copy   { opacity: 1; transform: none; transition-delay: 240ms; }
+.slide.active .slide-cta    { opacity: 1; transform: none; transition-delay: 380ms; }
+.slide .slide-visual > * {
+  opacity: 0; transform: translateY(26px) scale(0.98);
+  transition: opacity var(--d-slow) var(--ease), transform var(--d-slow) var(--ease);
+  transition-delay: 200ms;
+}
+.slide.active .slide-visual > * { opacity: 1; transform: none; }
+
+/* slide 02: stat grid */
+.stat-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(0.8rem, 1.5vw, 1.4rem);
+}
+.stat-card {
+  position: relative; overflow: hidden;
+  aspect-ratio: 16 / 10.5;
+  border: 1px solid var(--hair);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: clamp(0.9rem, 1.8vw, 1.4rem);
+}
+.stat-bg {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  filter: grayscale(0.3) brightness(0.4);
+  transform: scale(1.04);
+}
+.stat-num {
+  position: relative; z-index: 1;
+  font-size: clamp(1.8rem, 3.4vw, 3.2rem);
+  font-weight: 200; line-height: 1; letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums; color: var(--text);
+}
+.stat-label {
+  position: relative; z-index: 1;
+  margin-top: 0.45rem;
+  font-size: 0.6rem; letter-spacing: 0.22em; text-transform: uppercase;
+  font-weight: 500; color: var(--text-dim);
+}
+
+/* slide 03: framed visual */
+.visual-frame {
+  position: relative; overflow: hidden;
+  aspect-ratio: 16 / 10.5; max-height: 64vh;
+  border: 1px solid var(--hair);
+  box-shadow: 0 30px 70px rgba(4, 14, 36, 0.5);
+}
+.visual-img {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+}
+
+/* slide 04: platform tiles */
+.plat-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(0.8rem, 1.5vw, 1.4rem);
+}
+.plat-tile {
+  position: relative; overflow: hidden;
+  aspect-ratio: 16 / 10.5;
+  border: 1px solid var(--hair);
+}
+.plat-img {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  filter: grayscale(0.2) brightness(0.65);
+  transform: scale(1.04);
+  transition: transform var(--d-base) var(--ease), filter var(--d-base) var(--ease);
+}
+.plat-tile:hover .plat-img { transform: scale(1); filter: grayscale(0) brightness(0.85); }
+.plat-logo {
+  position: absolute; left: 0.9rem; bottom: 0.9rem; z-index: 1;
+  height: 32px; width: auto;
+  background: #fff; padding: 0.25rem 0.5rem; border-radius: 4px;
+}
+
+/* deck SOI sphere sizing inside the slide (activation handles opacity) */
+.slide .soi-visual { height: min(72vh, 620px); }
+.slide .soi-rings { width: min(100%, 520px); }
+
+/* the presentation rail */
+.deck-rail {
+  position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(1.4rem, 3.5vh, 2.6rem);
+  z-index: 5;
+  display: flex; flex-direction: column; gap: 0.9rem;
+}
+.rail-chapters { display: flex; gap: clamp(1.4rem, 4vw, 3.5rem); }
+.rail-ch {
+  display: inline-flex; align-items: baseline; gap: 0.55rem;
+  background: none; border: 0; padding: 0; cursor: pointer;
+  font-family: inherit;
+  font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 500;
+  color: var(--text-dim);
+  transition: color var(--d-fast) var(--ease);
+}
+.rail-ch i {
+  font-style: normal; font-size: 0.6rem; letter-spacing: 0.14em;
+  color: var(--text-dim); font-weight: 600;
+  transition: color var(--d-fast) var(--ease);
+}
+.rail-ch:hover { color: var(--text); }
+.rail-ch.active { color: var(--text); }
+.rail-ch.active i { color: var(--red-soft); }
+.rail-line { position: relative; height: 1px; background: var(--hair); }
+.rail-fill {
+  position: absolute; inset: 0; background: var(--red);
+  transform-origin: left; transform: scaleX(0);
+}
+.deck-counter {
+  position: absolute; right: 0; bottom: calc(100% + 0.7rem);
+  font-size: 0.66rem; letter-spacing: 0.24em; font-weight: 600; color: var(--text-dim);
+}
+.deck-counter #deck-cur { color: var(--red-soft); }
+.deck-cue {
+  position: absolute; bottom: clamp(7rem, 14vh, 10rem); right: var(--gutter); z-index: 4;
+  display: flex; flex-direction: column; align-items: center; gap: 0.7rem;
+  font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-dim);
+}
+
+/* reduced motion: vertical static presentation */
+@media (prefers-reduced-motion: reduce) {
+  .deck-viewport { height: auto; overflow: visible; }
+  .deck-track { display: block; }
+  .slide { min-height: 100svh; }
+  .deck-rail, .deck-cue { display: none; }
+}
+
+/* responsive deck */
+@media (max-width: 1023px) {
+  .slide { grid-template-columns: 1fr; align-content: center; gap: clamp(1.5rem, 3vh, 2.5rem); }
+  .slide .soi-visual { display: none; } /* slide 01 reads typographic on small screens */
+  .slide-visual { max-width: 560px; }
+  .rail-ch { font-size: 0.6rem; letter-spacing: 0.14em; }
+}
+@media (max-width: 600px) {
+  .rail-ch span, .rail-ch { gap: 0.3rem; }
+  .rail-chapters { gap: 1rem; flex-wrap: wrap; }
+  .slide { padding-bottom: clamp(8rem, 16vh, 10rem); }
+  .deck-cue { display: none; }
+}
+
+/* ============================================================
+   DECK v2 — distinct geometry per slide
+   01 split+sphere · 02 numbers wall · 03 photo spread · 04 strips
+   ============================================================ */
+
+/* shared full-bleed visual layer (slides 02 & 03) */
+.slide .fullbleed {
+  position: absolute; inset: 0 -8%; /* oversized so parallax never shows edges */
+  z-index: 0;
+}
+.fb-img {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  filter: grayscale(0.3) brightness(0.38);
+}
+.fb-veil {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(12, 39, 88, 0.55), rgba(7, 25, 60, 0.78));
+  mix-blend-mode: multiply;
+}
+
+/* ---- slide 02: numbers wall (centered, monumental) ---- */
+.slide--impact { display: block; position: relative; }
+.slide--impact .slide-content {
+  position: relative; z-index: 1;
+  height: 100%;
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  text-align: center;
+}
+.slide--impact .slide-copy { margin-left: auto; margin-right: auto; }
+.num-row {
+  margin-top: clamp(2.5rem, 6vh, 4.5rem);
+  width: 100%;
+  display: grid; grid-template-columns: repeat(4, 1fr);
+}
+.nstat {
+  display: flex; flex-direction: column; align-items: center; gap: 0.8rem;
+  padding: 0 1rem;
+}
+.nstat + .nstat { border-left: 1px solid rgba(244, 246, 251, 0.18); }
+.nstat .stat-num {
+  font-size: clamp(2.4rem, 5.5vw, 5.5rem);
+  font-weight: 200; line-height: 1; letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums; color: var(--text);
+}
+.nstat .stat-label {
+  font-size: clamp(0.6rem, 0.9vw, 0.78rem);
+  letter-spacing: 0.26em; text-transform: uppercase; font-weight: 500;
+  color: var(--text-dim);
+}
+
+/* ---- slide 03: full-photo spread (text overlaid bottom-left) ---- */
+.slide--eco { display: flex; align-items: flex-end; position: relative; }
+.slide--eco .fb-img { filter: saturate(0.95) brightness(0.75); }
+.eco-veil {
+  background:
+    linear-gradient(90deg, rgba(7, 25, 60, 0.82) 0%, rgba(7, 25, 60, 0.25) 55%, rgba(7, 25, 60, 0.05) 100%),
+    linear-gradient(0deg, rgba(7, 25, 60, 0.7) 0%, rgba(7, 25, 60, 0) 45%);
+  mix-blend-mode: normal;
+}
+.slide--eco .slide-content { position: relative; z-index: 1; max-width: 640px; }
+
+/* ---- slide 04: vertical platform strips ---- */
+.slide--plat {
+  display: flex; flex-direction: column;
+  align-items: stretch; /* base .slide centers items — stretch restores full width */
+  gap: clamp(1.2rem, 2.5vh, 2rem);
+}
+.plat-head {
+  display: grid; grid-template-columns: auto minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 5rem); align-items: center;
+}
+.plat-head .slide-title { font-size: clamp(2.4rem, 5vw, 5rem); }
+.plat-head-right { justify-self: end; max-width: 44ch; }
+.plat-head-right .slide-copy { margin-top: 0; font-size: clamp(0.92rem, 1.2vw, 1.1rem); }
+.plat-head-right .slide-cta { margin-top: 1.2rem; }
+.plat-strips {
+  flex: 1; min-height: 0;
+  display: flex; gap: clamp(0.7rem, 1.2vw, 1.2rem);
+}
+.strip {
+  position: relative; flex: 1; overflow: hidden;
+  border: 1px solid var(--hair);
+  transition: flex var(--d-base) var(--ease);
+  display: block;
+}
+.strip:hover { flex: 1.45; }
+.strip-img {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  filter: grayscale(0.25) brightness(0.62);
+  transform: scale(1.04);
+  transition: filter var(--d-base) var(--ease), transform var(--d-base) var(--ease);
+}
+.strip:hover .strip-img { filter: grayscale(0) brightness(0.85); transform: scale(1); }
+.strip::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(7,25,60,0) 50%, rgba(7,25,60,0.7));
+}
+.strip-sector {
+  position: absolute; left: 1.1rem; bottom: 3.6rem; z-index: 1;
+  font-size: 0.64rem; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 600;
+  color: var(--text);
+  writing-mode: initial;
+}
+.strip-logo {
+  position: absolute; left: 1rem; bottom: 1rem; z-index: 1;
+  height: 30px; width: auto;
+  background: #fff; padding: 0.25rem 0.5rem; border-radius: 4px;
+}
+
+/* deck responsive for new slide layouts */
+@media (max-width: 1023px) {
+  .num-row { grid-template-columns: repeat(2, 1fr); gap: 2rem 0; }
+  .nstat:nth-child(3) { border-left: 0; }
+  .plat-head { grid-template-columns: 1fr; gap: 1rem; }
+  .plat-head-right { justify-self: start; }
+  .plat-strips { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .strip:hover { flex: 1; }
+}
+
+/* ---- strips: bigger logo (top), old-site stat at the foot ---- */
+.strip-logo {
+  top: 1rem; left: 1rem; bottom: auto;
+  height: 46px; padding: 0.35rem 0.7rem;
+  box-shadow: 0 8px 22px rgba(4, 14, 36, 0.35);
+}
+.strip-stat {
+  position: absolute; left: 1.1rem; right: 1rem; bottom: 1.1rem; z-index: 1;
+  display: flex; flex-direction: column; gap: 0.3rem;
+}
+.strip-stat strong {
+  font-size: clamp(1.4rem, 2.2vw, 2.2rem);
+  font-weight: 300; line-height: 1; letter-spacing: -0.01em; color: var(--text);
+}
+.strip-stat span {
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  font-weight: 500; color: var(--text-dim);
+}
+
+/* ---- impact slide: four photo slices, one per stat ---- */
+.fb-quad { position: absolute; inset: 0; display: flex; }
+.fb-slice {
+  flex: 1;
+  background-size: cover; background-position: center;
+  filter: grayscale(0.3) brightness(0.38);
+}
+.fb-slice + .fb-slice { border-left: 1px solid rgba(244, 246, 251, 0.08); }
+
+/* nstat: shed inherited stat-card chrome — no box, content centered */
+.nstat {
+  border: 0; aspect-ratio: auto; overflow: visible;
+  justify-content: center;
+  padding: clamp(1.5rem, 3.5vh, 2.5rem) 1rem;
+}
+
+/* ---- slide 04 v2: featured accordion — one open, three ribbons ---- */
+.strip { flex: 0.55; }
+.strip.open { flex: 3.4; }
+.strip-img { filter: grayscale(0.55) brightness(0.45); }
+.strip.open .strip-img { filter: grayscale(0) brightness(0.85); transform: scale(1); }
+/* collapsed ribbon: vertical sector name */
+.strip-tab {
+  position: absolute; left: 50%; top: 50%; z-index: 1;
+  transform: translate(-50%, -50%);
+  writing-mode: vertical-rl;
+  font-size: 0.7rem; letter-spacing: 0.34em; text-transform: uppercase; font-weight: 600;
+  color: var(--text-dim); white-space: nowrap;
+  opacity: 1; transition: opacity var(--d-fast) var(--ease);
+}
+.strip.open .strip-tab { opacity: 0; }
+/* expanded content fades in once there's room */
+.strip-logo, .strip-stat {
+  opacity: 0; transition: opacity var(--d-base) var(--ease) 200ms;
+}
+.strip.open .strip-logo, .strip.open .strip-stat { opacity: 1; }
+.strip-desc {
+  margin-top: 0.7rem; max-width: 38ch;
+  font-size: clamp(0.82rem, 1vw, 0.95rem); font-weight: 300;
+  line-height: 1.55; color: var(--text-dim);
+}
+.strip:hover { flex: inherit; } /* neutralize v1 hover rule; JS owns state */
+.strip.open:hover { flex: 3.4; }
+.strip:not(.open):hover { flex: 0.75; }
+@media (max-width: 1023px) {
+  .strip, .strip.open { flex: 1; }
+  .strip-tab { display: none; }
+  .strip-logo, .strip-stat { opacity: 1; }
+  .strip-desc { display: none; }
+}
+
+/* ---- accordion v2: smooth + legible ----
+   Smoothness: one animated grid-template on the container (not 4 flex
+   transitions), and image layers at fixed width so backgrounds never
+   recompute during the move. */
+.plat-strips {
+  display: grid;
+  grid-template-columns: 3.4fr 0.55fr 0.55fr 0.55fr;
+  transition: grid-template-columns 850ms var(--ease);
+}
+.strip, .strip.open, .strip:hover, .strip.open:hover, .strip:not(.open):hover { flex: unset; }
+.strip-img {
+  inset: auto; left: 0; top: 0; bottom: 0;
+  width: 74vw; /* sized for the open state once; clipping reveals it */
+}
+/* legibility: deeper standing gradient + lifted text */
+.strip::after {
+  background: linear-gradient(180deg,
+    rgba(7, 25, 60, 0.15) 0%,
+    rgba(7, 25, 60, 0.3) 40%,
+    rgba(7, 25, 60, 0.92) 100%);
+}
+.strip-stat strong, .strip-stat span, .strip-desc {
+  text-shadow: 0 2px 18px rgba(4, 14, 36, 0.65);
+}
+@media (max-width: 1023px) {
+  .plat-strips { display: grid; grid-template-columns: repeat(2, 1fr); }
+  .strip-img { width: 100%; inset: 0; }
+}
+
+/* ---- strip text: glass plate — legible on any image ---- */
+.strip-stat {
+  left: 1.1rem; right: auto; bottom: 1.1rem;
+  max-width: min(46ch, calc(100% - 2.2rem));
+  padding: 1rem 1.3rem 1.1rem;
+  background: rgba(7, 20, 48, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(244, 246, 251, 0.14);
+  border-radius: 6px;
+}
+
+/* ---- strips: let the photos breathe (text legibility now lives on the glass plate) ---- */
+.strip.open .strip-img { filter: none; }                     /* featured: full color, full brightness */
+.strip-img { filter: grayscale(0.4) brightness(0.55); }      /* ribbons: dimmed but readable */
+.strip::after {
+  background: linear-gradient(180deg,
+    rgba(7, 25, 60, 0) 0%,
+    rgba(7, 25, 60, 0.08) 55%,
+    rgba(7, 25, 60, 0.45) 100%);                             /* whisper of grounding, no wash */
+}
+
+/* ---- deck perf: no blend modes inside the moving track ----
+   multiply on a full-bleed layer re-blends every scrub frame; a plain
+   alpha gradient reads the same on these dark images and costs nothing. */
+.fb-veil {
+  mix-blend-mode: normal;
+  background: linear-gradient(180deg, rgba(6, 16, 40, 0.62), rgba(4, 12, 32, 0.78));
+}
+.eco-veil {
+  background:
+    linear-gradient(90deg, rgba(7, 25, 60, 0.85) 0%, rgba(7, 25, 60, 0.3) 55%, rgba(7, 25, 60, 0.08) 100%),
+    linear-gradient(0deg, rgba(7, 25, 60, 0.72) 0%, rgba(7, 25, 60, 0) 45%);
+}
