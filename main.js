@@ -50,8 +50,23 @@ document.querySelectorAll(".reveal").forEach((el) => {
   const chapters = gsap.utils.toArray(".rail-ch");
   const counterEl = document.getElementById("deck-cur");
   const N = slides.length;
+  const TOTAL = (N - 1) + 3; // 3 slide transitions + 3 units of strip steps on slide 04
   const counted = new Set();
   let current = -1;
+
+  /* slide 04 strips: scroll opens them one by one */
+  const strips = gsap.utils.toArray(".strip");
+  const stripWrap = document.querySelector(".plat-strips");
+  const wideScreen = window.matchMedia("(min-width: 1024px)");
+  let stripIdx = -1;
+  const openStrip = (i) => {
+    if (i === stripIdx || !strips.length) return;
+    stripIdx = i;
+    strips.forEach((st, j) => st.classList.toggle("open", j === i));
+    if (wideScreen.matches)
+      stripWrap.style.gridTemplateColumns = strips.map((_, j) => (j === i ? "3.4fr" : "0.55fr")).join(" ");
+  };
+  openStrip(0);
 
   /* stat counters fire once, when the impact slide arrives */
   const countStats = () => {
@@ -94,12 +109,15 @@ document.querySelectorAll(".reveal").forEach((el) => {
     scrollTrigger: {
       trigger: stage,
       start: "top top",
-      end: "+=" + N * 100 + "%",
+      end: "+=" + (N * 100 + 300) + "%", // extra travel: strips advance during slide 04
       pin: ".deck-viewport",
       scrub: true,
       onUpdate: (self) => {
-        const i = Math.min(N - 1, Math.round(self.progress * (N - 1)));
+        const t = self.progress * TOTAL;
+        const i = t < N - 1 ? Math.round(t) : N - 1;
         activate(i);
+        // strips phase: the last 3 units feature each platform in turn
+        if (t >= N - 1) openStrip(Math.min(strips.length - 1, Math.floor((t - (N - 1)) / 0.75)));
         gsap.set(".rail-fill", { scaleX: self.progress });
       },
     },
@@ -107,6 +125,7 @@ document.querySelectorAll(".reveal").forEach((el) => {
 
   // the track travels; total duration = N-1 transitions
   tl.to(track, { xPercent: -100 * ((N - 1) / N), ease: "none", duration: N - 1 }, 0);
+  tl.to({}, { duration: TOTAL - (N - 1) }, N - 1); // hold: strips phase
 
   // layered parallax: each slide's content & visual drift at different speeds
   slides.forEach((slide, i) => {
@@ -124,7 +143,7 @@ document.querySelectorAll(".reveal").forEach((el) => {
   /* chapter rail: click to jump */
   const st = tl.scrollTrigger;
   const jumpTo = (i) => {
-    const y = st.start + ((st.end - st.start) * i) / (N - 1);
+    const y = st.start + ((st.end - st.start) * i) / TOTAL;
     lenis ? lenis.scrollTo(y, { duration: 1.1 }) : window.scrollTo({ top: y, behavior: "smooth" });
   };
   chapters.forEach((c) => c.addEventListener("click", () => jumpTo(+c.dataset.i)));
@@ -140,29 +159,6 @@ document.querySelectorAll(".reveal").forEach((el) => {
   });
 
   activate(0);
-
-  /* slide 04: featured accordion — auto-cycles, hover steals focus */
-  (() => {
-    const strips = gsap.utils.toArray(".strip");
-    if (!strips.length) return;
-    let idx = 0, hovered = false;
-    const wrap = document.querySelector(".plat-strips");
-    const wide = window.matchMedia("(min-width: 1024px)");
-    const openStrip = (i) => {
-      idx = i;
-      strips.forEach((st, j) => st.classList.toggle("open", j === i));
-      if (wide.matches)
-        wrap.style.gridTemplateColumns = strips.map((_, j) => (j === i ? "3.4fr" : "0.55fr")).join(" ");
-    };
-    strips.forEach((st, i) => {
-      st.addEventListener("mouseenter", () => { hovered = true; openStrip(i); });
-      st.addEventListener("mouseleave", () => { hovered = false; });
-    });
-    // gentle auto-advance while the platforms slide is on stage
-    setInterval(() => {
-      if (current === 3 && !hovered && !REDUCED) openStrip((idx + 1) % strips.length);
-    }, 4000);
-  })();
 
   /* SOI sphere: tiles orbit the core — one slow revolution */
   (() => {
