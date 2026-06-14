@@ -1950,3 +1950,209 @@ html, body { overflow-x: clip; }
 @media (max-width: 600px) {
   .plat-totals { grid-template-columns: 1fr 1fr; }
 }
+
+/* ============================================================
+   VENTURE THEATER — pinned cinematic sequence (desktop)
+   ============================================================ */
+.plat-ventures.theater-mode { padding: 0; }
+.theater { position: relative; height: 100svh; overflow: hidden; }
+.th-photos { position: absolute; inset: 0; }
+.th-photo {
+  position: absolute; inset: 0;
+  background-size: cover; background-position: center;
+  /* no filter here — darkness lives on the static veil; keeps the
+     crossfade pure opacity+transform (compositor-only) */
+  opacity: 0; transform: scale(1.06);
+  transition: opacity 700ms var(--ease), transform 1200ms var(--ease);
+  will-change: opacity, transform;
+}
+.th-photo.active { opacity: 1; transform: scale(1); }
+.th-veil {
+  position: absolute; inset: 0;
+  /* carries the darkening the photos used to (filter removed for perf) */
+  background:
+    linear-gradient(90deg, rgba(7,25,60,0.9) 0%, rgba(7,25,60,0.52) 38%, rgba(7,25,60,0.28) 70%, rgba(7,25,60,0.34) 100%),
+    linear-gradient(0deg, rgba(7,25,60,0.5) 0%, rgba(7,25,60,0.08) 40%);
+}
+.th-rail {
+  position: absolute; left: var(--gutter); top: 50%; transform: translateY(-50%);
+  z-index: 2; width: clamp(220px, 22vw, 320px);
+}
+.th-rail .ven-rail-item { border-bottom-color: rgba(244, 246, 251, 0.22); }
+.th-count {
+  display: block; margin-top: 1.6rem;
+  font-size: 0.66rem; letter-spacing: 0.24em; font-weight: 600; color: var(--text-dim);
+}
+.th-count #th-cur { color: var(--red-soft); }
+.th-panels {
+  position: absolute; right: var(--gutter); top: 0; bottom: 0; z-index: 2;
+  width: min(44vw, 560px);
+  display: grid; align-items: center;
+}
+.th-panel {
+  grid-area: 1 / 1;
+  /* no backdrop-filter: blur + transform transition is the jank/black-card
+     combo. A deeper plate with a soft top-light reads as glass without it. */
+  background: linear-gradient(160deg, rgba(13, 32, 70, 0.92), rgba(6, 17, 42, 0.94));
+  border: 1px solid rgba(244, 246, 251, 0.18);
+  border-radius: 8px;
+  box-shadow: 0 30px 70px rgba(4, 14, 36, 0.55), inset 0 1px 0 rgba(244, 246, 251, 0.1);
+  padding: clamp(1.6rem, 3vw, 2.6rem);
+  opacity: 0; transform: translateY(28px);
+  pointer-events: none;
+  transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+  will-change: opacity, transform;
+}
+.th-panel.active {
+  opacity: 1; transform: none; pointer-events: auto;
+  transition-delay: 180ms; /* photo leads, content follows */
+}
+.th-cat {
+  display: block;
+  font-size: 0.62rem; letter-spacing: 0.26em; text-transform: uppercase; font-weight: 600;
+  color: var(--red-soft); margin-bottom: 1rem;
+}
+.th-panel .ven-desc { max-width: none; }
+
+/* ---- theater v2: SPLIT STAGE — navy ground, framed exhibit ----
+   Differentiates from the full-bleed video hero: content lives on the
+   brand gradient, the photo is a large framed gallery panel. */
+.theater--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: clamp(2.5rem, 5vw, 6rem);
+  align-items: center;
+  padding: 0 var(--gutter);
+}
+.th-left { position: relative; z-index: 1; max-width: 560px; }
+.th-left .ven-rail-name img {
+  height: 30px; width: auto; filter: brightness(0) invert(1);
+  margin-bottom: 1.4rem; opacity: 0.92;
+}
+.th-left .ven-rail-list { margin-bottom: clamp(1.6rem, 3.5vh, 2.4rem); }
+.th-swap { display: grid; align-items: start; }
+/* panels sit directly on the navy — no plate, no blur, nothing to lag */
+.theater--split .th-panel {
+  grid-area: 1 / 1;
+  background: none; border: 0; box-shadow: none; border-radius: 0;
+  padding: 0;
+}
+.theater--split .th-count { margin-top: clamp(1.4rem, 3vh, 2rem); }
+.th-frame {
+  position: relative; overflow: hidden;
+  height: min(76vh, 720px);
+  border: 1px solid var(--hair);
+  box-shadow: 0 36px 80px rgba(4, 14, 36, 0.55);
+}
+/* metrics get more presence on the clean ground */
+.theater--split .ven-metrics { margin-top: 1.6rem; gap: 1.4rem 2.6rem; }
+.theater--split .ven-metric-num { font-size: clamp(1.6rem, 2.6vw, 2.4rem); font-weight: 200; }
+
+/* ============================================================
+   THEATER v3 — "VENTURE INDEX" (awwwards register)
+   Oversized type over the image, clip-path wipes, ghost numeral,
+   integrated progress. All transform/opacity/clip — compositor only.
+   ============================================================ */
+.theater--index { padding: 0; }
+
+/* top band */
+.thx-top {
+  position: absolute; top: clamp(5.5rem, 12vh, 7.5rem); left: var(--gutter); right: var(--gutter);
+  display: flex; justify-content: space-between; align-items: flex-start; z-index: 4;
+}
+.thx-top-left .ven-rail-kicker { margin-bottom: 0.8rem; }
+.thx-wordmark { height: 26px; width: auto; filter: brightness(0) invert(1); opacity: 0.92; display: block; }
+
+/* the ghost numeral — section-scale, outlined, behind everything */
+.thx-ghost {
+  position: absolute; right: calc(var(--gutter) * 0.4); top: 2%;
+  font-size: clamp(12rem, 24vw, 24rem); font-weight: 200; line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(244, 246, 251, 0.12);
+  z-index: 0; pointer-events: none; user-select: none;
+}
+
+/* the exhibit — asymmetric, right of center */
+.thx-frame {
+  position: absolute; right: var(--gutter); top: 50%;
+  transform: translateY(-46%);
+  width: min(46vw, 780px); height: min(64vh, 640px);
+  overflow: hidden; z-index: 1;
+  border: 1px solid var(--hair);
+  box-shadow: 0 40px 90px rgba(4, 14, 36, 0.6);
+}
+/* photos wipe in (clip-path) instead of fading — the crafted transition */
+.theater--index .th-photo {
+  opacity: 1; z-index: 0;
+  transform: scale(1.12);
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 950ms cubic-bezier(0.77, 0, 0.18, 1), transform 1400ms var(--ease);
+}
+.theater--index .th-photo.active {
+  z-index: 1;
+  clip-path: inset(0 0 0% 0);
+  transform: scale(1);
+}
+
+/* the left column — one composed page per venture, contained
+   beside the frame (name never crosses onto the photo) */
+.thx-stack {
+  position: absolute; left: var(--gutter); top: 50%;
+  transform: translateY(-46%);
+  width: calc(100vw - (var(--gutter) * 2) - min(46vw, 780px) - clamp(2.5rem, 4vw, 4.5rem));
+  z-index: 2; display: grid;
+}
+.thx-page { grid-area: 1 / 1; pointer-events: none; }
+.thx-page.active { pointer-events: auto; }
+
+/* giant name — wraps inside the column */
+.thx-name {
+  overflow: hidden;
+  padding-bottom: 0.1em; margin-bottom: -0.1em; /* descender room */
+  font-size: clamp(2.6rem, 4.6vw, 5.2rem);
+  font-weight: 200; line-height: 1.05; letter-spacing: -0.015em;
+  color: var(--text);
+}
+.thx-name-in {
+  display: inline-block;
+  transform: translateY(115%);
+  transition: transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+.thx-page.active .thx-name-in { transform: translateY(0); transition-delay: 120ms; }
+
+/* logo plate + category — the venture's identity row */
+.thx-brand { display: flex; align-items: center; gap: 1.3rem; margin: 1.6rem 0 1.4rem; }
+.thx-brand .ven-logo { max-height: 46px; max-width: 200px; }
+.thx-brand .th-cat { margin: 0; }
+
+/* secondary content staggers up behind the name */
+.thx-page .thx-brand,
+.thx-page .ven-desc,
+.thx-page .ven-metrics {
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+}
+.thx-page.active .thx-brand   { opacity: 1; transform: translateY(0); transition-delay: 280ms; }
+.thx-page.active .ven-desc    { opacity: 1; transform: translateY(0); transition-delay: 360ms; }
+.thx-page.active .ven-metrics { opacity: 1; transform: translateY(0); transition-delay: 440ms; }
+
+.theater--index .ven-desc { max-width: 46ch; }
+.theater--index .ven-metrics { margin-top: 1.6rem; gap: 1.3rem 2.4rem; }
+.theater--index .ven-metric-num { font-size: clamp(1.5rem, 2.4vw, 2.2rem); font-weight: 200; }
+
+/* bottom: horizontal venture tabs + scroll progress */
+.thx-tabs {
+  position: absolute; left: var(--gutter); right: var(--gutter); bottom: clamp(1.6rem, 4vh, 2.6rem);
+  z-index: 4;
+}
+.theater--index .ven-rail-list { display: flex; flex-direction: row; align-items: center; gap: clamp(1.6rem, 4vw, 3.5rem); }
+.theater--index .ven-rail-item {
+  border-bottom: 0; padding: 0.3rem 0;
+  font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 500;
+}
+.theater--index .ven-rail-item.active { padding-left: 0; }
+.thx-track { position: relative; height: 1px; background: var(--hair); margin-top: 0.9rem; }
+.thx-fill {
+  position: absolute; inset: 0; background: var(--red);
+  transform-origin: left; transform: scaleX(0);
+}

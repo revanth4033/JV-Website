@@ -146,31 +146,80 @@ document.querySelector(".plat-totals").innerHTML = P.totals.map((t) =>
 const ventures = [];
 P.categories.forEach((cat) => cat.ventures.forEach((v) => ventures.push({ ...v, category: cat.label })));
 
-// rail
-document.querySelector(".ven-rail-name").innerHTML = `<img src="${P.wordmark}" alt="${P.name}">`;
-document.querySelector(".ven-rail-list").innerHTML = ventures.map((v, i) =>
-  `<li class="ven-rail-item" data-i="${i}"><i>${String(i + 1).padStart(2, "0")}</i><span>${v.name}</span></li>`
+// venture markup helpers
+const venLogo = (v) => v.logo ? `<img class="ven-logo" src="${v.logo}" alt="${v.name}">` : `<h3 class="ven-name-text">${v.name}</h3>`;
+const venMetrics = (v) => v.metrics.map((m) =>
+  `<div class="ven-metric"><span class="ven-metric-num">${m.value}</span><span class="ven-metric-label">${m.label}</span></div>`
+).join("");
+const railItems = ventures.map((v, i) =>
+  `<li class="ven-rail-item${i === 0 ? " active" : ""}" data-i="${i}"><i>${String(i + 1).padStart(2, "0")}</i><span>${v.name}</span></li>`
 ).join("");
 
-// stream: each venture is a full editorial block; category label shown when it changes
-let lastCat = null;
-document.querySelector(".ven-stream").innerHTML = ventures.map((v, i) => {
-  const catHead = v.category !== lastCat ? `<div class="ven-cat">${v.category}</div>` : "";
-  lastCat = v.category;
-  const logo = v.logo ? `<img class="ven-logo" src="${v.logo}" alt="${v.name}">` : `<h3 class="ven-name-text">${v.name}</h3>`;
-  const metrics = v.metrics.map((m) =>
-    `<div class="ven-metric"><span class="ven-metric-num">${m.value}</span><span class="ven-metric-label">${m.label}</span></div>`
-  ).join("");
-  return `${catHead}
-  <article class="ven" id="ven-${i}" data-i="${i}">
-    <div class="ven-media"><div class="ven-img" style="background-image:url(${v.photo})"></div></div>
-    <div class="ven-body">
-      <div class="ven-logo-wrap">${logo}</div>
-      <p class="ven-desc">${v.desc}</p>
-      <div class="ven-metrics">${metrics}</div>
+// THEATER mode: cinematic pinned sequence (desktop, 2+ ventures); editorial stream otherwise
+const bpDesktop = window.matchMedia("(min-width: 1024px)");
+const THEATER = ventures.length > 1 &&
+  bpDesktop.matches &&
+  !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+// theater and stream are different DOM worlds — crossing the breakpoint
+// after load (resize / rotate) rebuilds the page in the right mode
+const bpAtLoad = bpDesktop.matches;
+bpDesktop.addEventListener("change", () => {
+  if (bpDesktop.matches !== bpAtLoad) location.reload();
+});
+
+if (THEATER) {
+  const sec = document.getElementById("ventures");
+  sec.classList.add("theater-mode");
+  sec.innerHTML = `
+  <div class="theater theater--index">
+    <header class="thx-top">
+      <div class="thx-top-left">
+        <span class="ven-rail-kicker">Inside the platform</span>
+        <img class="thx-wordmark" src="${P.wordmark}" alt="${P.name}">
+      </div>
+      <span class="th-count"><span id="th-cur">01</span> / ${String(ventures.length).padStart(2, "0")}</span>
+    </header>
+    <span class="thx-ghost" aria-hidden="true">01</span>
+    <div class="thx-frame">${ventures.map((v, i) =>
+      `<div class="th-photo${i === 0 ? " active" : ""}" style="background-image:url(${v.photo})"></div>`).join("")}
     </div>
-  </article>`;
-}).join("");
+    <div class="thx-stack">${ventures.map((v, i) => `
+      <article class="thx-page${i === 0 ? " active" : ""}" data-i="${i}">
+        <h3 class="thx-name"><span class="thx-name-in">${v.name}</span></h3>
+        <div class="thx-brand">
+          ${v.logo ? `<img class="ven-logo" src="${v.logo}" alt="${v.name}">` : ""}
+          <span class="th-cat">${v.category}</span>
+        </div>
+        <p class="ven-desc">${v.desc}</p>
+        <div class="ven-metrics">${venMetrics(v)}</div>
+      </article>`).join("")}
+    </div>
+    <nav class="thx-tabs">
+      <ul class="ven-rail-list">${railItems}</ul>
+      <div class="thx-track"><div class="thx-fill"></div></div>
+    </nav>
+  </div>`;
+} else {
+  // rail
+  document.querySelector(".ven-rail-name").innerHTML = `<img src="${P.wordmark}" alt="${P.name}">`;
+  document.querySelector(".ven-rail-list").innerHTML = railItems;
+  // stream: each venture is a full editorial block; category label shown when it changes
+  let lastCat = null;
+  document.querySelector(".ven-stream").innerHTML = ventures.map((v, i) => {
+    const catHead = v.category !== lastCat ? `<div class="ven-cat">${v.category}</div>` : "";
+    lastCat = v.category;
+    return `${catHead}
+    <article class="ven" id="ven-${i}" data-i="${i}">
+      <div class="ven-media"><div class="ven-img" style="background-image:url(${v.photo})"></div></div>
+      <div class="ven-body">
+        <div class="ven-logo-wrap">${venLogo(v)}</div>
+        <p class="ven-desc">${v.desc}</p>
+        <div class="ven-metrics">${venMetrics(v)}</div>
+      </div>
+    </article>`;
+  }).join("");
+}
 
 // platform switcher (the other three)
 document.querySelector(".switch-grid").innerHTML = ORDER.filter((s) => s !== slug).map((s) => {
@@ -234,8 +283,71 @@ document.querySelectorAll(".total-num").forEach((el) => {
   }});
 });
 
-/* ventures: sticky rail highlights the active venture */
+/* ventures: theater (pinned beats) or editorial stream */
 (() => {
+  if (THEATER) {
+    const sec = document.getElementById("ventures");
+    const photos = gsap.utils.toArray(".th-photo");
+    const pages = gsap.utils.toArray(".thx-page");
+    const items = gsap.utils.toArray(".ven-rail-item");
+    const ghost = document.querySelector(".thx-ghost");
+    const counter = document.getElementById("th-cur");
+    const N = photos.length;
+    const counted = new Set();
+    let cur = -1;
+
+    const countMetrics = (panel) => {
+      if (counted.has(panel)) return;
+      counted.add(panel);
+      panel.querySelectorAll(".ven-metric-num").forEach((el) => {
+        const raw = el.textContent;
+        const m = raw.match(/([\d,.]+)/);
+        if (!m) return;
+        const numStr = m[1], target = parseFloat(numStr.replace(/,/g, ""));
+        if (!isFinite(target) || target === 0) return;
+        const decimals = (numStr.split(".")[1] || "").length;
+        const obj = { v: 0 };
+        gsap.to(obj, { v: target, duration: 1, ease: "power2.out", onUpdate: () => {
+          const val = decimals ? obj.v.toFixed(decimals) : Math.round(obj.v).toLocaleString("en-IN");
+          el.textContent = raw.replace(numStr, val);
+        }});
+      });
+    };
+
+    const setBeat = (i) => {
+      if (i === cur) return;
+      cur = i;
+      photos.forEach((p, j) => p.classList.toggle("active", j === i));
+      pages.forEach((p, j) => p.classList.toggle("active", j === i));
+      items.forEach((it, j) => it.classList.toggle("active", j === i));
+      counter.textContent = String(i + 1).padStart(2, "0");
+      if (ghost) {
+        ghost.textContent = String(i + 1).padStart(2, "0");
+        gsap.fromTo(ghost, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: "power3.out" });
+      }
+      countMetrics(pages[i]);
+    };
+
+    const st = ScrollTrigger.create({
+      trigger: sec, start: "top top", end: "+=" + N * 110 + "%",
+      pin: true,
+      onUpdate: (self) => {
+        setBeat(Math.min(N - 1, Math.floor(self.progress * N)));
+        gsap.set(".thx-fill", { scaleX: self.progress });
+      },
+    });
+    setBeat(0);
+
+    // rail click → jump to that venture's beat
+    items.forEach((it) => it.addEventListener("click", () => {
+      const i = +it.dataset.i;
+      const y = st.start + ((st.end - st.start) * (i + 0.5)) / N;
+      lenis ? lenis.scrollTo(y, { duration: 0.9 }) : window.scrollTo({ top: y, behavior: "smooth" });
+    }));
+    return;
+  }
+
+  // editorial stream (mobile / reduced motion / single venture)
   const items = gsap.utils.toArray(".ven-rail-item");
   const blocks = gsap.utils.toArray(".ven");
   if (!blocks.length) return;
@@ -244,14 +356,12 @@ document.querySelectorAll(".total-num").forEach((el) => {
   blocks.forEach((b, i) => {
     ScrollTrigger.create({ trigger: b, start: "top 55%", end: "bottom 55%",
       onToggle: (self) => self.isActive && setActive(i) });
-    // image scale-settle on enter
     if (!REDUCED) {
       const img = b.querySelector(".ven-img");
       gsap.fromTo(img, { scale: 1.08 }, { scale: 1, ease: "none",
         scrollTrigger: { trigger: b, start: "top bottom", end: "top 40%", scrub: 0.5 } });
     }
   });
-  // rail click → scroll to venture
   items.forEach((it) => it.addEventListener("click", () => {
     const target = blocks[+it.dataset.i];
     lenis ? lenis.scrollTo(target, { offset: -120, duration: 1 }) : target.scrollIntoView({ behavior: "smooth" });
