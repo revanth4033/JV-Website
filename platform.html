@@ -6,7 +6,7 @@
 <title>Platform — JV Ventures</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body class="platform-page">
@@ -15,9 +15,20 @@
   <a class="logo" href="index.html"><img src="assets/jv-logo.png" alt="JV Ventures"></a>
   <nav class="site-nav">
     <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="#ventures" class="nav-cta">Contact</a>
+    <a href="about.html">About Us</a>
+    <div class="nav-has-drop">
+      <a href="platform.html?p=powered" class="nav-drop-trigger" aria-haspopup="true" aria-expanded="false">Platform<span class="nav-caret" aria-hidden="true"></span></a>
+      <div class="nav-drop">
+        <a href="platform.html?p=powered"><span class="nd-name">PowerEd</span><span class="nd-sector">Education</span></a>
+        <a href="platform.html?p=powerx"><span class="nd-name">PoweRx</span><span class="nd-sector">Lifesciences</span></a>
+        <a href="platform.html?p=powercare"><span class="nd-name">PowerCare</span><span class="nd-sector">Healthcare</span></a>
+        <a href="platform.html?p=powerpod"><span class="nd-name">PowerPod</span><span class="nd-sector">Managed Living</span></a>
+      </div>
+    </div>
+    <a href="#">Team</a>
+    <a href="#contact" class="nav-cta">Contact Us</a>
   </nav>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </header>
 
 <main id="top">
@@ -71,22 +82,23 @@
   <!-- CLOSE -->
   <section class="act act-close plat-close" id="contact">
     <p class="close-statement">
-      <span class="line"><span class="line-inner">One ecosystem.</span></span>
-      <span class="line"><span class="line-inner"><em>Compounding impact.</em></span></span>
+      <span class="line"><span class="line-inner">“The real test of capital is</span></span>
+      <span class="line"><span class="line-inner">whether it can endure the slow</span></span>
+      <span class="line"><span class="line-inner">compounding of <em>societal value</em>.”</span></span>
     </p>
-    <a class="close-cta reveal" href="#">Partner with us<span class="arrow">→</span></a>
     <div class="close-bridge" aria-hidden="true"><img src="assets/jv-bridge-1-2048x585.png" alt=""></div>
   </section>
 
   <footer class="site-footer">
     <div class="foot-left">
-      <img src="assets/jv-logo.png" alt="JV Ventures" class="foot-logo">
       <span>India · Dubai · Singapore</span>
     </div>
     <div class="foot-right">
-      <a href="index.html">Home</a>
-      <a href="about.html">About</a>
+      <a href="about.html">About Us</a>
+      <a href="platform.html?p=powered">Platforms</a>
+      <a href="#">Team</a>
       <a href="mailto:connect@jv.ventures">connect@jv.ventures</a>
+      <a href="#" target="_blank" rel="noopener">LinkedIn</a>
     </div>
   </footer>
 </main>
@@ -95,5 +107,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script src="platform.js"></script>
+<script src="nav.js"></script>
 </body>
 </html>

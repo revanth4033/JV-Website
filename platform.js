@@ -382,8 +382,6 @@ document.querySelectorAll(".total-num").forEach((el) => {
   let lastY = 0;
   const onScroll = (y) => {
     header.classList.toggle("scrolled", y > 40);
-    header.classList.toggle("tucked", y > lastY + 2 && y > 320);
-    if (y < lastY - 2) header.classList.remove("tucked");
     lastY = y;
   };
   if (window.__lenis) window.__lenis.on("scroll", (e) => onScroll(e.scroll));

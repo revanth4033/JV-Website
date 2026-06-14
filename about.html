@@ -6,7 +6,7 @@
 <title>About — JV Ventures</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&family=Newsreader:ital,opsz,wght@1,6..72,300;1,6..72,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -15,10 +15,20 @@
   <a class="logo" href="index.html"><img src="assets/jv-logo.png" alt="JV Ventures"></a>
   <nav class="site-nav">
     <a href="index.html">Home</a>
-    <a href="#method">Approach</a>
-    <a href="#grids-deep">GRIDS</a>
-    <a href="#" class="nav-cta">Contact</a>
+    <a href="about.html">About Us</a>
+    <div class="nav-has-drop">
+      <a href="platform.html?p=powered" class="nav-drop-trigger" aria-haspopup="true" aria-expanded="false">Platform<span class="nav-caret" aria-hidden="true"></span></a>
+      <div class="nav-drop">
+        <a href="platform.html?p=powered"><span class="nd-name">PowerEd</span><span class="nd-sector">Education</span></a>
+        <a href="platform.html?p=powerx"><span class="nd-name">PoweRx</span><span class="nd-sector">Lifesciences</span></a>
+        <a href="platform.html?p=powercare"><span class="nd-name">PowerCare</span><span class="nd-sector">Healthcare</span></a>
+        <a href="platform.html?p=powerpod"><span class="nd-name">PowerPod</span><span class="nd-sector">Managed Living</span></a>
+      </div>
+    </div>
+    <a href="#">Team</a>
+    <a href="#contact" class="nav-cta">Contact Us</a>
   </nav>
+  <button class="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </header>
 
 <div class="thread" aria-hidden="true">
@@ -37,7 +47,6 @@
     <div class="about-head">
       <p class="about-sub"><em>A builder of opportunities and businesses</em></p>
       <div class="about-intro">
-        <div class="reveal"><img class="intro-mark" src="assets/jv-mark.png" alt="" aria-hidden="true"></div>
         <p class="reveal">Founded in 2015, JV Ventures has evolved into a value-creation partner with a
         $550 million investment portfolio. Built on a 10+ year legacy of pioneering innovative models in
         lifesciences and education infrastructure — rooted in identifying structural gaps and building
@@ -65,17 +74,17 @@
       <div class="belief-row">
         <span class="belief-num">01</span>
         <h2 class="belief-line"><span class="line"><span class="line-inner"><strong>Clarity</strong> <em>in intent</em></span></span></h2>
-        <div class="belief-tile" style="background-image:url(assets/GRID-02-1-1.jpg)"></div>
+        <p class="belief-note">We define the outcome before a single rupee is deployed — conviction precedes capital.</p>
       </div>
       <div class="belief-row">
         <span class="belief-num">02</span>
         <h2 class="belief-line"><span class="line"><span class="line-inner"><strong>Depth</strong> <em>in execution</em></span></span></h2>
-        <div class="belief-tile" style="background-image:url(assets/Untitled-11-01.jpg)"></div>
+        <p class="belief-note">We build operators, not spreadsheets — embedding teams that run the businesses we back.</p>
       </div>
       <div class="belief-row">
         <span class="belief-num">03</span>
         <h2 class="belief-line"><span class="line"><span class="line-inner"><strong>Impact</strong> <em>in scale</em></span></span></h2>
-        <div class="belief-tile" style="background-image:url(assets/Untitled-2-01-1.jpg)"></div>
+        <p class="belief-note">Returns measured in lives changed as much as in value created.</p>
       </div>
     </div>
   </section>
@@ -270,15 +279,12 @@
   </section>
 
   <!-- ====== CLOSE ====== -->
-  <section class="act act-close about-close" data-act="06" data-act-name="Invitation">
+  <section class="act act-close about-close" id="contact" data-act="06" data-act-name="Invitation">
     <p class="close-statement">
-      <span class="line"><span class="line-inner">Built with clarity.</span></span>
-      <span class="line"><span class="line-inner"><em>Scaled with purpose.</em></span></span>
+      <span class="line"><span class="line-inner">“The real test of capital is</span></span>
+      <span class="line"><span class="line-inner">whether it can endure the slow</span></span>
+      <span class="line"><span class="line-inner">compounding of <em>societal value</em>.”</span></span>
     </p>
-    <div class="close-actions reveal">
-      <a class="close-cta" href="#">Meet the Team<span class="arrow">→</span></a>
-      <a class="close-cta" href="#">Partner with us<span class="arrow">→</span></a>
-    </div>
     <div class="close-bridge" aria-hidden="true">
       <img src="assets/jv-bridge-1-2048x585.png" alt="">
     </div>
@@ -286,13 +292,14 @@
 
   <footer class="site-footer">
     <div class="foot-left">
-      <img src="assets/jv-logo.png" alt="JV Ventures" class="foot-logo">
       <span>India · Dubai · Singapore</span>
     </div>
     <div class="foot-right">
-      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="platform.html?p=powered">Platforms</a>
       <a href="#">Team</a>
       <a href="mailto:connect@jv.ventures">connect@jv.ventures</a>
+      <a href="#" target="_blank" rel="noopener">LinkedIn</a>
     </div>
   </footer>
 
@@ -302,5 +309,6 @@
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script src="about.js"></script>
+<script src="nav.js"></script>
 </body>
 </html>
