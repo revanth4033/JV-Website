@@ -1,0 +1,50 @@
+{
+  "name": "jv-ventures",
+  "version": "1.0.0",
+  "description": "JV Ventures — Next.js + custom CMS (Prisma + Postgres)",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
+    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "devsafe": "rm -rf .next && cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "seed": "cross-env NODE_OPTIONS=\"--no-deprecation --import=tsx/esm\" tsx src/seed/index.ts",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "postinstall": "prisma generate",
+    "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
+    "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@prisma/client": "^6.19.3",
+    "bcryptjs": "^3.0.3",
+    "cross-env": "10.1.0",
+    "dotenv": "16.4.7",
+    "gsap": "^3.13.0",
+    "jose": "^6.2.3",
+    "lenis": "^1.1.14",
+    "next": "16.2.9",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-hook-form": "^7.79.0",
+    "sharp": "0.34.2"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.61.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/node": "24.12.3",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "eslint": "^9.16.0",
+    "eslint-config-next": "16.2.9",
+    "playwright": "^1.61.0",
+    "prettier": "^3.4.2",
+    "prisma": "^6.19.3",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": ">=24.15.0"
+  }
+}

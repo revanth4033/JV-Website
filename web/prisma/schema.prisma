@@ -1,0 +1,55 @@
+// JV Ventures — custom CMS schema (Prisma + Postgres)
+// Page content is stored as structured JSON that matches the frontend's
+// content/types.ts shapes, so the public data layer is a near-passthrough and
+// the admin forms map 1:1 to fields.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URI")
+}
+
+/// Singletons: siteSettings, homePage, aboutPage. `data` holds the full shape.
+model Singleton {
+  key       String   @id
+  data      Json
+  updatedAt DateTime @updatedAt
+}
+
+/// One row per platform. Scalars for listing/sorting; `data` holds full content.
+model Platform {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique
+  order     Int      @default(0)
+  name      String
+  sector    String
+  data      Json
+  updatedAt DateTime @updatedAt
+
+  @@index([order])
+}
+
+/// Uploaded / referenced media. URL is what the site renders.
+model Media {
+  id        Int      @id @default(autoincrement())
+  url       String   @unique
+  alt       String   @default("")
+  filename  String
+  width     Int?
+  height    Int?
+  mime      String   @default("")
+  createdAt DateTime @default(now())
+}
+
+/// CMS users.
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique
+  passwordHash String
+  name         String   @default("")
+  role         String   @default("editor") // admin | editor
+  createdAt    DateTime @default(now())
+}

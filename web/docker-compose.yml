@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: jv-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jv
+      POSTGRES_PASSWORD: jv_dev_password
+      POSTGRES_DB: jv_ventures
+    ports:
+      # host 5439 → container 5432 (5432-5435/5433 are used by other local projects)
+      - '5439:5432'
+    volumes:
+      - jv_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U jv -d jv_ventures']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  jv_pgdata:

@@ -1,0 +1,439 @@
+'use client'
+
+import Link from 'next/link'
+import { useEffect, useRef, useState } from 'react'
+
+import { ClosingBridge } from '@/components/ClosingBridge'
+import { useSmoothScroll } from '@/components/SmoothScroll'
+import { asset } from '@/content'
+import type { Platform as PlatformT, SiteSettings, Venture } from '@/content/types'
+import { EASE, gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
+
+const pad = (n: number) => String(n).padStart(2, '0')
+
+type FlatVenture = Venture & { category: string }
+
+const flatten = (p: PlatformT): FlatVenture[] =>
+  p.categories.flatMap((cat) => cat.ventures.map((v) => ({ ...v, category: cat.label })))
+
+/* count-up that preserves the surrounding text of a metric/total string */
+function animateNumber(el: HTMLElement, duration = 1.3) {
+  const raw = el.textContent || ''
+  const m = raw.match(/([\d,.]+)/)
+  if (!m) return
+  const numStr = m[1]
+  const target = parseFloat(numStr.replace(/,/g, ''))
+  if (!isFinite(target) || target === 0) return
+  const decimals = (numStr.split('.')[1] || '').length
+  const obj = { v: 0 }
+  gsap.to(obj, {
+    v: target,
+    duration,
+    ease: 'power2.out',
+    onUpdate: () => {
+      const val = decimals ? obj.v.toFixed(decimals) : Math.round(obj.v).toLocaleString('en-IN')
+      el.textContent = raw.replace(numStr, val)
+    },
+  })
+}
+
+/* ---------- THEATER: cinematic pinned beats ---------- */
+function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures: FlatVenture[] }) {
+  const ref = useRef<HTMLElement>(null)
+  const { lenis } = useSmoothScroll()
+  const N = ventures.length
+
+  useGSAP(
+    () => {
+      const sec = ref.current!
+      const photos = gsap.utils.toArray<HTMLElement>('.th-photo')
+      const pages = gsap.utils.toArray<HTMLElement>('.thx-page')
+      const items = gsap.utils.toArray<HTMLElement>('.ven-rail-item')
+      const ghost = sec.querySelector<HTMLElement>('.thx-ghost')
+      const counter = sec.querySelector<HTMLElement>('#th-cur')!
+      const counted = new Set<Element>()
+      let cur = -1
+
+      const countMetrics = (panel: HTMLElement) => {
+        if (counted.has(panel)) return
+        counted.add(panel)
+        panel.querySelectorAll<HTMLElement>('.ven-metric-num').forEach((el) => animateNumber(el, 1))
+      }
+
+      const setBeat = (i: number) => {
+        if (i === cur) return
+        cur = i
+        photos.forEach((p, j) => p.classList.toggle('active', j === i))
+        pages.forEach((p, j) => p.classList.toggle('active', j === i))
+        items.forEach((it, j) => it.classList.toggle('active', j === i))
+        counter.textContent = pad(i + 1)
+        if (ghost) {
+          ghost.textContent = pad(i + 1)
+          gsap.fromTo(ghost, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' })
+        }
+        countMetrics(pages[i])
+      }
+
+      const st = ScrollTrigger.create({
+        trigger: sec,
+        start: 'top top',
+        end: '+=' + N * 110 + '%',
+        pin: true,
+        onUpdate: (self) => {
+          setBeat(Math.min(N - 1, Math.floor(self.progress * N)))
+          gsap.set('.thx-fill', { scaleX: self.progress })
+        },
+      })
+      setBeat(0)
+
+      const onClick = (e: Event) => {
+        const i = +(e.currentTarget as HTMLElement).dataset.i!
+        const y = st.start + ((st.end - st.start) * (i + 0.5)) / N
+        lenis ? lenis.scrollTo(y, { duration: 0.9 }) : window.scrollTo({ top: y, behavior: 'smooth' })
+      }
+      items.forEach((it) => it.addEventListener('click', onClick))
+      return () => items.forEach((it) => it.removeEventListener('click', onClick))
+    },
+    { scope: ref, dependencies: [N] },
+  )
+
+  return (
+    <section className="act plat-ventures theater-mode" id="ventures" ref={ref}>
+      <div className="theater theater--index">
+        <header className="thx-top">
+          <div className="thx-top-left">
+            <span className="ven-rail-kicker">Inside the platform</span>
+            <img className="thx-wordmark" src={asset(platform.wordmark)} alt={platform.name} loading="lazy" decoding="async" />
+          </div>
+          <span className="th-count">
+            <span id="th-cur">01</span> / {pad(N)}
+          </span>
+        </header>
+        <span className="thx-ghost" aria-hidden="true">
+          01
+        </span>
+        <div className="thx-frame">
+          {ventures.map((v, i) => (
+            <div
+              className={`th-photo${i === 0 ? ' active' : ''}`}
+              key={i}
+              style={{ backgroundImage: `url(${asset(v.photo)})` }}
+            />
+          ))}
+        </div>
+        <div className="thx-stack">
+          {ventures.map((v, i) => (
+            <article className={`thx-page${i === 0 ? ' active' : ''}`} data-i={i} key={i}>
+              <h3 className="thx-name">
+                <span className="thx-name-in">{v.name}</span>
+              </h3>
+              <div className="thx-brand">
+                {v.logo ? <img className="ven-logo" src={asset(v.logo)} alt={v.name} loading="lazy" decoding="async" /> : null}
+                <span className="th-cat">{v.category}</span>
+              </div>
+              <p className="ven-desc">{v.desc}</p>
+              <div className="ven-metrics">
+                {v.metrics.map((m, k) => (
+                  <div className="ven-metric" key={k}>
+                    <span className="ven-metric-num">{m.value}</span>
+                    <span className="ven-metric-label">{m.label}</span>
+                  </div>
+                ))}
+              </div>
+            </article>
+          ))}
+        </div>
+        <nav className="thx-tabs">
+          <ul className="ven-rail-list">
+            {ventures.map((v, i) => (
+              <li className={`ven-rail-item${i === 0 ? ' active' : ''}`} data-i={i} key={i}>
+                <i>{pad(i + 1)}</i>
+                <span>{v.name}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="thx-track">
+            <div className="thx-fill" />
+          </div>
+        </nav>
+      </div>
+    </section>
+  )
+}
+
+/* ---------- STREAM: editorial blocks (mobile / reduced / single venture) ---------- */
+function VentureStream({ platform, ventures }: { platform: PlatformT; ventures: FlatVenture[] }) {
+  const ref = useRef<HTMLElement>(null)
+  const { lenis, reduced } = useSmoothScroll()
+
+  useGSAP(
+    () => {
+      const items = gsap.utils.toArray<HTMLElement>('.ven-rail-item')
+      const blocks = gsap.utils.toArray<HTMLElement>('.ven')
+      if (!blocks.length) return
+      const setActive = (i: number) => items.forEach((it, j) => it.classList.toggle('active', j === i))
+      setActive(0)
+      blocks.forEach((b, i) => {
+        ScrollTrigger.create({
+          trigger: b,
+          start: 'top 55%',
+          end: 'bottom 55%',
+          onToggle: (self) => self.isActive && setActive(i),
+        })
+        if (!reduced) {
+          const img = b.querySelector('.ven-img')
+          gsap.fromTo(
+            img,
+            { scale: 1.08 },
+            { scale: 1, ease: 'none', scrollTrigger: { trigger: b, start: 'top bottom', end: 'top 40%', scrub: 0.5 } },
+          )
+        }
+        b.querySelectorAll<HTMLElement>('.ven-metric-num').forEach((el) => {
+          if (!reduced) ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => animateNumber(el, 1) })
+        })
+      })
+      const onClick = (e: Event) => {
+        const target = blocks[+(e.currentTarget as HTMLElement).dataset.i!]
+        lenis ? lenis.scrollTo(target, { offset: -120, duration: 1 }) : target.scrollIntoView({ behavior: 'smooth' })
+      }
+      items.forEach((it) => it.addEventListener('click', onClick))
+      return () => items.forEach((it) => it.removeEventListener('click', onClick))
+    },
+    { scope: ref, dependencies: [reduced] },
+  )
+
+  // mark the first venture of each category (so we can render a category heading)
+  const startsCategory = (i: number) => i === 0 || ventures[i].category !== ventures[i - 1].category
+  return (
+    <section className="act plat-ventures" id="ventures" ref={ref}>
+      <div className="ven-layout">
+        <aside className="ven-rail">
+          <span className="ven-rail-kicker">Inside the platform</span>
+          <div className="ven-rail-name">
+            <img src={asset(platform.wordmark)} alt={platform.name} loading="lazy" decoding="async" />
+          </div>
+          <ul className="ven-rail-list">
+            {ventures.map((v, i) => (
+              <li className={`ven-rail-item${i === 0 ? ' active' : ''}`} data-i={i} key={i}>
+                <i>{pad(i + 1)}</i>
+                <span>{v.name}</span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+        <div className="ven-stream">
+          {ventures.map((v, i) => {
+            return (
+              <div key={i}>
+                {startsCategory(i) && <div className="ven-cat">{v.category}</div>}
+                <article className="ven" id={`ven-${i}`} data-i={i}>
+                  <div className="ven-media">
+                    <div className="ven-img" style={{ backgroundImage: `url(${asset(v.photo)})` }} />
+                  </div>
+                  <div className="ven-body">
+                    <div className="ven-logo-wrap">
+                      {v.logo ? (
+                        <img className="ven-logo" src={asset(v.logo)} alt={v.name} loading="lazy" decoding="async" />
+                      ) : (
+                        <h3 className="ven-name-text">{v.name}</h3>
+                      )}
+                    </div>
+                    <p className="ven-desc">{v.desc}</p>
+                    <div className="ven-metrics">
+                      {v.metrics.map((m, k) => (
+                        <div className="ven-metric" key={k}>
+                          <span className="ven-metric-num">{m.value}</span>
+                          <span className="ven-metric-label">{m.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </article>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+export function Platform({
+  platform,
+  others,
+  settings,
+}: {
+  platform: PlatformT
+  others: PlatformT[]
+  settings: SiteSettings
+}) {
+  const scope = useRef<HTMLDivElement>(null)
+  const { reduced } = useSmoothScroll()
+  const ventures = flatten(platform)
+  const [mode, setMode] = useState<'stream' | 'theater'>('stream')
+
+  // decide theater vs stream on the client; reload on breakpoint cross (different DOM worlds)
+  useEffect(() => {
+    const bp = window.matchMedia('(min-width: 1024px)')
+    const reducedMM = window.matchMedia('(prefers-reduced-motion: reduce)')
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    if (ventures.length > 1 && bp.matches && !reducedMM.matches) setMode('theater')
+    const atLoad = bp.matches
+    const onChange = () => {
+      if (bp.matches !== atLoad) location.reload()
+    }
+    bp.addEventListener('change', onChange)
+    return () => bp.removeEventListener('change', onChange)
+  }, [ventures.length])
+
+  // hero + intro + totals + switcher motion (ventures handled by sub-components)
+  useGSAP(
+    () => {
+      const root = scope.current!
+
+      // hero video: desktop + non-reduced only
+      const vid = root.querySelector<HTMLVideoElement>('.plat-hero-video')
+      if (vid && platform.video) {
+        const allow =
+          window.matchMedia('(min-width: 1024px)').matches &&
+          !window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        if (!allow) {
+          vid.remove()
+        } else {
+          vid.poster = asset(platform.hero)
+          vid.src = asset(platform.video)
+          vid.load()
+          vid.addEventListener('canplay', () => vid.classList.add('ready'), { once: true })
+          vid.play().catch(() => {})
+        }
+      }
+
+      // line + reveal primitives
+      gsap.utils.toArray<HTMLElement>('.line-inner').forEach((el) => {
+        if (reduced) {
+          gsap.set(el, { y: 0 })
+          return
+        }
+        gsap.to(el, {
+          y: 0,
+          duration: 1.2,
+          ease: EASE,
+          scrollTrigger: el.closest('.plat-hero') ? undefined : { trigger: el.closest('.line'), start: 'top 90%', once: true },
+        })
+      })
+      gsap.utils.toArray<HTMLElement>('.reveal').forEach((el) => {
+        gsap.to(el, {
+          opacity: 1,
+          y: 0,
+          duration: reduced ? 0 : 0.7,
+          ease: EASE,
+          scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+        })
+      })
+
+      if (!reduced) {
+        gsap.from('.plat-wordmark', { opacity: 0, y: 30, duration: 1, ease: EASE, delay: 0.2 })
+        gsap.from('.plat-tagline', { opacity: 0, y: 24, duration: 0.9, ease: EASE, delay: 0.5 })
+        gsap.to('.plat-hero-media', {
+          yPercent: 18,
+          ease: 'none',
+          scrollTrigger: { trigger: '.plat-hero', start: 'top top', end: 'bottom top', scrub: 0.4 },
+        })
+      }
+
+      // totals count-up
+      root.querySelectorAll<HTMLElement>('.total-num').forEach((el) => {
+        if (reduced) return
+        ScrollTrigger.create({ trigger: el, start: 'top 90%', once: true, onEnter: () => animateNumber(el) })
+      })
+    },
+    { scope, dependencies: [reduced, platform.slug, mode] },
+  )
+
+  return (
+    <div ref={scope}>
+      <main id="top">
+        {/* HERO */}
+        <section className="act plat-hero" id="hero">
+          <div className="plat-hero-media">
+            <div className="plat-hero-bg" style={{ backgroundImage: `url(${asset(platform.hero)})` }} />
+            {platform.video ? <video className="plat-hero-video" muted loop playsInline preload="none" /> : null}
+          </div>
+          <div className="plat-hero-veil" />
+          <div className="plat-hero-inner">
+            <h1 className="sr-only">{platform.name} — {platform.sector} platform</h1>
+            <img className="plat-wordmark" src={asset(platform.wordmark)} alt={platform.name} />
+            <p className="plat-tagline">{platform.tagline}</p>
+          </div>
+          <div className="deck-cue plat-cue" aria-hidden="true">
+            <span>Scroll</span>
+            <div className="cue-line" />
+          </div>
+        </section>
+
+        {/* INTRO + TOTALS */}
+        <section className="act plat-intro" id="intro">
+          <div className="grids-head">
+            <h2 className="section-title">
+              <span className="line">
+                <span className="line-inner">The</span>
+              </span>
+              <span className="line">
+                <span className="line-inner em plat-sector">{platform.sector.toLowerCase()}</span>
+              </span>
+              <span className="line">
+                <span className="line-inner">platform</span>
+              </span>
+            </h2>
+            <div className="head-right">
+              <p className="section-copy reveal plat-intro-copy">{platform.intro}</p>
+            </div>
+          </div>
+          <div className="plat-totals reveal">
+            {platform.totals.map((t, i) => (
+              <div className="total" key={i}>
+                <span className="total-num">{t.value}</span>
+                <span className="total-label">{t.label}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* VENTURES */}
+        {mode === 'theater' ? (
+          <VentureTheater platform={platform} ventures={ventures} />
+        ) : (
+          <VentureStream platform={platform} ventures={ventures} />
+        )}
+
+        {/* SWITCHER */}
+        <section className="act plat-switch" id="switch">
+          <h2 className="section-title">
+            <span className="line">
+              <span className="line-inner">
+                Explore the <em>other platforms</em>
+              </span>
+            </span>
+          </h2>
+          <div className="switch-grid">
+            {others.map((o) => (
+              <Link className="switch-tile" href={`/platform/${o.slug}`} key={o.slug}>
+                <div className="switch-img" style={{ backgroundImage: `url(${asset(o.hero)})` }} />
+                <div className="switch-meta">
+                  <img src={asset(o.wordmark)} alt={o.name} loading="lazy" decoding="async" />
+                  <span>{o.sector}</span>
+                </div>
+                <span className="switch-go">
+                  Explore<span className="arrow">→</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* CLOSE */}
+        <ClosingBridge settings={settings} className="plat-close" />
+      </main>
+    </div>
+  )
+}

@@ -1,0 +1,66 @@
+'use client'
+
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react'
+
+const BASE = 1366 // render the desktop layout, then scale to fit the pane
+
+export type PreviewHandle = {
+  post: (section: string, data: unknown) => void
+  reload: () => void
+}
+
+export const PreviewFrame = forwardRef<PreviewHandle, { url: string }>(function PreviewFrame({ url }, ref) {
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const iframeRef = useRef<HTMLIFrameElement>(null)
+  const lastRef = useRef<{ section: string; data: unknown } | null>(null)
+  const [dim, setDim] = useState({ w: BASE, h: 800 })
+
+  const send = () => {
+    const win = iframeRef.current?.contentWindow
+    if (win && lastRef.current) win.postMessage({ source: 'jv-admin', ...lastRef.current }, window.location.origin)
+  }
+
+  useImperativeHandle(ref, () => ({
+    post: (section, data) => {
+      lastRef.current = { section, data }
+      send()
+    },
+    // reload re-mounts the page (rebuilds animations/structure); the iframe's
+    // ready handshake then re-applies the latest unsaved values automatically.
+    reload: () => {
+      const win = iframeRef.current?.contentWindow
+      if (win) win.location.reload()
+      else if (iframeRef.current) iframeRef.current.src = url
+    },
+  }), [url])
+
+  // when the preview iframe says it's ready, push the latest values
+  useEffect(() => {
+    const onMsg = (e: MessageEvent) => {
+      if (e.origin === window.location.origin && e.data?.source === 'jv-preview' && e.data?.ready) send()
+    }
+    window.addEventListener('message', onMsg)
+    return () => window.removeEventListener('message', onMsg)
+  }, [])
+
+  // keep the scaled iframe fitting its column
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el) return
+    const ro = new ResizeObserver(() => setDim({ w: el.clientWidth, h: el.clientHeight }))
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
+
+  const scale = dim.w / BASE
+  return (
+    <div className="editor-preview-frame" ref={wrapRef}>
+      <iframe
+        ref={iframeRef}
+        src={url}
+        title="Live preview"
+        style={{ width: BASE, height: scale ? dim.h / scale : dim.h, transform: `scale(${scale})`, transformOrigin: '0 0' }}
+      />
+    </div>
+  )
+})
