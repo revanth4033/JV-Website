@@ -1,6 +1,6 @@
 'use client'
 
-import { CloudUpload, Eye, EyeOff, Plus, RefreshCw, SquareArrowOutUpRight, Trash2 } from 'lucide-react'
+import { ChevronDown, CloudUpload, Eye, EyeOff, Plus, RefreshCw, SquareArrowOutUpRight, Trash2, X } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -12,7 +12,9 @@ import { join, type FieldDef } from './types'
 
 type SaveResult = { ok: boolean; error?: string }
 const isTech = (f: FieldDef) =>
-  /href|slug|url|link|mailto/i.test(f.name) || /\b(link|url)\b/i.test((f as { label?: string }).label ?? '')
+  /href|slug|url|link|mailto/i.test(('name' in f && f.name) || '') ||
+  /\b(link|url)\b/i.test((f as { label?: string }).label ?? '')
+const keyOf = (f: FieldDef, i: number) => ('name' in f ? f.name : `row-${i}`)
 
 export function EntityForm({
   defs,
@@ -29,12 +31,12 @@ export function EntityForm({
 }) {
   const methods = useForm({ defaultValues })
   const [saving, setSaving] = useState(false)
-  const [showPreview, setShowPreview] = useState(true)
+  const [showPreview, setShowPreview] = useState(false) // collapsed by default — opens on click
   const frameRef = useRef<PreviewHandle>(null)
   const dirty = methods.formState.isDirty
 
   useEffect(() => {
-    if (!preview) return
+    if (!preview || !showPreview) return
     let t: ReturnType<typeof setTimeout>
     frameRef.current?.post(preview.section, methods.getValues())
     const sub = methods.watch((values) => {
@@ -69,16 +71,19 @@ export function EntityForm({
 
   const formInner = (
     <form onSubmit={onSubmit}>
+      {preview && (
+        <div className="editor-toolbar">
+          <span className="spacer" />
+          <button type="button" className="btn btn-sm" onClick={() => setShowPreview((v) => !v)}>
+            {showPreview ? <EyeOff /> : <Eye />} {showPreview ? 'Hide preview' : 'Live preview'}
+          </button>
+        </div>
+      )}
       <Fields fields={defs} prefix="" />
       <div className="savebar">
         <button className="btn btn-primary" type="submit" disabled={saving}>
           <CloudUpload /> {saving ? 'Publishing…' : saveLabel}
         </button>
-        {preview && (
-          <button type="button" className="btn btn-ghost" onClick={() => setShowPreview((v) => !v)}>
-            {showPreview ? <EyeOff /> : <Eye />} {showPreview ? 'Hide preview' : 'Show preview'}
-          </button>
-        )}
         <span className="spacer" />
         <span className="hint-inline">{dirty ? 'Unsaved changes' : 'All changes published'}</span>
       </div>
@@ -117,58 +122,55 @@ export function EntityForm({
 function Fields({ fields, prefix }: { fields: FieldDef[]; prefix: string }) {
   return (
     <>
-      {fields.map((f) => (
-        <FieldView key={f.name} field={f} prefix={prefix} />
+      {fields.map((f, i) => (
+        <FieldView key={keyOf(f, i)} field={f} prefix={prefix} index={i} />
       ))}
     </>
   )
 }
 
-function FieldView({ field, prefix }: { field: FieldDef; prefix: string }) {
+function FieldView({ field, prefix, index }: { field: FieldDef; prefix: string; index: number }) {
   const { register } = useFormContext()
-  const path = join(prefix, field.name)
 
   switch (field.type) {
+    case 'section':
+      return <PanelSection label={field.label} fields={field.fields} bodyPrefix={prefix} defaultOpen={index === 0} />
     case 'group':
-      // top-level groups are full sections; nested groups are lighter
       return prefix === '' ? (
-        <section className="panel">
-          {field.label && (
-            <div className="panel-head">
-              <h2>{field.label}</h2>
-            </div>
-          )}
-          <div className="panel-body">
-            <Fields fields={field.fields} prefix={path} />
-          </div>
-        </section>
+        <PanelSection label={field.label ?? ''} fields={field.fields} bodyPrefix={join(prefix, field.name)} defaultOpen={index === 0} />
       ) : (
         <div className="subgroup">
           {field.label && <div className="subgroup-label">{field.label}</div>}
-          <Fields fields={field.fields} prefix={path} />
+          <Fields fields={field.fields} prefix={join(prefix, field.name)} />
+        </div>
+      )
+    case 'row':
+      return (
+        <div className="field-row" style={{ gridTemplateColumns: `repeat(${field.fields.length}, minmax(0, 1fr))` }}>
+          <Fields fields={field.fields} prefix={prefix} />
         </div>
       )
     case 'array':
       return <ArrayField field={field} prefix={prefix} />
     case 'image':
-      return <ImageField name={path} label={field.label} hint={field.hint} />
+      return <ImageField name={join(prefix, field.name)} label={field.label} hint={field.hint} />
     case 'lines':
-      return <LinesField name={path} label={field.label} hint={field.hint} />
+      return <LinesField name={join(prefix, field.name)} label={field.label} hint={field.hint} />
     case 'stringList':
-      return <StringListField name={path} label={field.label} hint={field.hint} />
+      return <StringListField name={join(prefix, field.name)} label={field.label} hint={field.hint} />
     case 'textarea':
       return (
         <div className={`field${isTech(field) ? ' tech' : ''}`}>
           <label>{field.label}</label>
           {field.hint && <div className="hint" dangerouslySetInnerHTML={{ __html: hintHtml(field.hint) }} />}
-          <textarea {...register(path)} />
+          <textarea {...register(join(prefix, field.name))} />
         </div>
       )
     case 'checkbox':
       return (
         <div className="field">
-          <label className="check" htmlFor={path}>
-            <input type="checkbox" id={path} {...register(path)} />
+          <label className="check" htmlFor={join(prefix, field.name)}>
+            <input type="checkbox" id={join(prefix, field.name)} {...register(join(prefix, field.name))} />
             <span>{field.label}</span>
           </label>
         </div>
@@ -178,7 +180,7 @@ function FieldView({ field, prefix }: { field: FieldDef; prefix: string }) {
         <div className="field">
           <label>{field.label}</label>
           {field.hint && <div className="hint">{field.hint}</div>}
-          <input type="number" {...register(path, { valueAsNumber: true })} />
+          <input type="number" {...register(join(prefix, field.name), { valueAsNumber: true })} />
         </div>
       )
     default:
@@ -186,13 +188,37 @@ function FieldView({ field, prefix }: { field: FieldDef; prefix: string }) {
         <div className={`field${isTech(field) ? ' tech' : ''}`}>
           <label>{field.label}</label>
           {field.hint && <div className="hint" dangerouslySetInnerHTML={{ __html: hintHtml(field.hint) }} />}
-          <input type="text" {...register(path)} />
+          <input type="text" {...register(join(prefix, field.name))} />
         </div>
       )
   }
 }
 
-// turn `<code>x</code>`-style hints (and bare inline code) into styled code chips safely
+function PanelSection({
+  label,
+  fields,
+  bodyPrefix,
+  defaultOpen,
+}: {
+  label: string
+  fields: FieldDef[]
+  bodyPrefix: string
+  defaultOpen: boolean
+}) {
+  const [open, setOpen] = useState(defaultOpen)
+  return (
+    <section className={`panel${open ? ' open' : ''}`}>
+      <button type="button" className="panel-head" onClick={() => setOpen((o) => !o)} aria-expanded={open}>
+        <h2>{label}</h2>
+        <ChevronDown className="panel-chev" />
+      </button>
+      <div className="panel-body" hidden={!open}>
+        <Fields fields={fields} prefix={bodyPrefix} />
+      </div>
+    </section>
+  )
+}
+
 function hintHtml(s: string) {
   const esc = s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   return esc.replace(/&lt;code&gt;(.*?)&lt;\/code&gt;/g, '<code>$1</code>')
@@ -203,6 +229,23 @@ function ArrayField({ field, prefix }: { field: Extract<FieldDef, { type: 'array
   const path = join(prefix, field.name)
   const { fields, append, remove } = useFieldArray({ control, name: path })
   const singular = field.label.replace(/s$/, '')
+  const flat = !!field.flat
+
+  const [openIds, setOpenIds] = useState<Set<string>>(() => new Set(fields[0] ? [fields[0].id] : []))
+  const lenRef = useRef(fields.length)
+  useEffect(() => {
+    if (fields.length > lenRef.current) {
+      const last = fields[fields.length - 1]
+      if (last) setOpenIds((s) => new Set(s).add(last.id))
+    }
+    lenRef.current = fields.length
+  }, [fields])
+  const toggle = (id: string) =>
+    setOpenIds((s) => {
+      const n = new Set(s)
+      n.has(id) ? n.delete(id) : n.add(id)
+      return n
+    })
 
   return (
     <div className="arr">
@@ -212,23 +255,44 @@ function ArrayField({ field, prefix }: { field: Extract<FieldDef, { type: 'array
           <span className="count">{fields.length}</span>
         </span>
       </div>
+
       {fields.map((item, i) => {
+        if (flat) {
+          return (
+            <div className="arr-item flat" key={item.id}>
+              <div className="flat-body">
+                <Fields fields={field.fields} prefix={`${path}.${i}`} />
+              </div>
+              <button type="button" className="arr-rm" onClick={() => remove(i)} aria-label="Remove">
+                <X />
+              </button>
+            </div>
+          )
+        }
         const head = field.itemTitleKey ? String(watch(`${path}.${i}.${field.itemTitleKey}`) || '') : ''
+        const isOpen = openIds.has(item.id)
         return (
-          <div className="arr-item" key={item.id}>
-            <div className="arr-item-head">
+          <div className={`arr-item${isOpen ? ' open' : ''}`} key={item.id}>
+            <div className="arr-item-head" onClick={() => toggle(item.id)} role="button" aria-expanded={isOpen}>
               <span className="idx">{i + 1}</span>
               <span className="arr-item-t">{head || `${singular} ${i + 1}`}</span>
-              <button type="button" className="arr-rm" onClick={() => remove(i)} aria-label="Remove">
+              <ChevronDown className="arr-chev" />
+              <button
+                type="button"
+                className="arr-rm"
+                onClick={(e) => { e.stopPropagation(); remove(i) }}
+                aria-label="Remove"
+              >
                 <Trash2 />
               </button>
             </div>
-            <div className="arr-item-body">
+            <div className="arr-item-body" hidden={!isOpen}>
               <Fields fields={field.fields} prefix={`${path}.${i}`} />
             </div>
           </div>
         )
       })}
+
       <button type="button" className="btn btn-add" onClick={() => append((field.newItem?.() ?? {}) as never)}>
         <Plus /> Add {singular.toLowerCase()}
       </button>
