@@ -3,11 +3,15 @@
 import fs from 'fs/promises'
 import path from 'path'
 import sharp from 'sharp'
+import { del, put } from '@vercel/blob'
 
 import { getSession } from '@/lib/session'
 import { prisma } from '@/lib/prisma'
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads')
+// Use Vercel Blob when a store is connected (BLOB_STORE_ID, OIDC auth) or a
+// static token is set; otherwise local disk (dev).
+const useBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID)
 
 async function requireUser() {
   const s = await getSession()
@@ -24,9 +28,7 @@ export async function uploadMedia(formData: FormData): Promise<MediaItem> {
 
   const safe = file.name.toLowerCase().replace(/[^a-z0-9.\-_]+/g, '-').replace(/-+/g, '-')
   const filename = `${Date.now()}-${safe}`
-  await fs.mkdir(UPLOAD_DIR, { recursive: true })
   const buf = Buffer.from(await file.arrayBuffer())
-  await fs.writeFile(path.join(UPLOAD_DIR, filename), buf)
 
   let width: number | undefined
   let height: number | undefined
@@ -40,7 +42,20 @@ export async function uploadMedia(formData: FormData): Promise<MediaItem> {
     }
   }
 
-  const url = `/uploads/${filename}`
+  let url: string
+  if (useBlob) {
+    const blob = await put(`media/${filename}`, buf, {
+      access: 'public',
+      contentType: file.type || undefined,
+      addRandomSuffix: false,
+    })
+    url = blob.url
+  } else {
+    await fs.mkdir(UPLOAD_DIR, { recursive: true })
+    await fs.writeFile(path.join(UPLOAD_DIR, filename), buf)
+    url = `/uploads/${filename}`
+  }
+
   const media = await prisma.media.create({
     data: { url, filename, alt: formData.get('alt')?.toString() || file.name, mime: file.type, width, height },
   })
@@ -51,8 +66,10 @@ export async function deleteMedia(id: number): Promise<void> {
   await requireUser()
   const m = await prisma.media.findUnique({ where: { id } })
   if (!m) return
-  // only remove the physical file for admin uploads (never the bundled /assets)
-  if (m.url.startsWith('/uploads/')) {
+  // remove the underlying file for admin uploads (never the bundled /assets)
+  if (m.url.startsWith('http')) {
+    if (useBlob) await del(m.url).catch(() => {})
+  } else if (m.url.startsWith('/uploads/')) {
     await fs.rm(path.join(process.cwd(), 'public', m.url), { force: true }).catch(() => {})
   }
   await prisma.media.delete({ where: { id } })

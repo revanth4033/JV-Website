@@ -4,8 +4,11 @@ const nextConfig: NextConfig = {
   images: {
     localPatterns: [
       { pathname: '/assets/**' }, // seeded prototype assets
-      { pathname: '/uploads/**' }, // admin-uploaded media
+      { pathname: '/uploads/**' }, // admin uploads (local dev)
       { pathname: '/favicon.png' },
+    ],
+    remotePatterns: [
+      { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }, // Vercel Blob media
     ],
   },
   // Redirect the old prototype URLs to the new routes (preserve inbound links).
