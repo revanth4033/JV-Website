@@ -1,4 +1,4 @@
-import { ArrowRight, Boxes, ExternalLink, FileText, House, Image as ImageIcon, Settings } from 'lucide-react'
+import { ArrowRight, Boxes, ExternalLink, FileText, House, Image as ImageIcon, Mail, Settings, Users } from 'lucide-react'
 import Link from 'next/link'
 
 import { AdminShell } from '@/components/admin/AdminShell'
@@ -21,6 +21,8 @@ export default async function Dashboard() {
     { href: '/admin/home', icon: House, t: 'Home Page', d: 'The four-slide deck — Investing, Impact, Ecosystems, Platforms.', meta: '4 slides' },
     { href: '/admin/about', icon: FileText, t: 'About Page', d: 'Hero, beliefs, method, models, ecosystem, and the GRIDS section.', meta: '6 sections' },
     { href: '/admin/platforms', icon: Boxes, t: 'Platforms', d: 'PowerEd, PoweRx, PowerCare, PowerPod — ventures, totals, metrics.', meta: `${platforms} platforms` },
+    { href: '/admin/team', icon: Users, t: 'Team Page', d: 'Hero, co-founders, and the venture-by-venture leadership roster.', meta: 'People' },
+    { href: '/admin/contact', icon: Mail, t: 'Contact Page', d: 'Hero, email, enquiry types, and office locations.', meta: 'Reach us' },
     { href: '/admin/media', icon: ImageIcon, t: 'Media', d: 'Upload and manage all images and videos used across the site.', meta: `${media} items` },
   ]
 

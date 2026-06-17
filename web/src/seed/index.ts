@@ -51,6 +51,8 @@ async function run() {
     siteSettings,
     homePage: inv.homePage,
     aboutPage: inv.aboutPage,
+    teamPage: inv.teamPage,
+    contactPage: inv.contactPage,
   })) {
     await prisma.singleton.upsert({ where: { key }, create: { key, data }, update: { data } })
   }

@@ -360,3 +360,96 @@ export const platformSchema: FieldDef[] = [
     ],
   },
 ]
+
+/* ---------------- Team ---------------- */
+const memberFields: FieldDef[] = [
+  { type: 'row', fields: [
+    { type: 'text', name: 'name', label: 'Name' },
+    { type: 'text', name: 'role', label: 'Role' },
+  ] },
+  { type: 'image', name: 'photo', label: 'Photo' },
+  { type: 'textarea', name: 'bio', label: 'Bio' },
+  { type: 'stringList', name: 'highlights', label: 'Highlights', hint: 'One per line (e.g. “20+ years”).' },
+]
+
+export const teamSchema: FieldDef[] = [
+  {
+    type: 'group', name: 'hero', label: 'Hero',
+    fields: [
+      { type: 'text', name: 'actName', label: 'Act label' },
+      { type: 'text', name: 'kicker', label: 'Kicker' },
+      titleField(),
+      { type: 'textarea', name: 'intro', label: 'Intro' },
+      {
+        type: 'array', name: 'stats', label: 'Hero stats', flat: true,
+        newItem: () => ({ value: 0, label: '' }),
+        fields: [{ type: 'row', fields: [{ type: 'number', name: 'value', label: 'Number' }, { type: 'text', name: 'label', label: 'Label' }] }],
+      },
+    ],
+  },
+  {
+    type: 'section', name: 'founders', label: 'Founders',
+    fields: [
+      { type: 'text', name: 'foundersTitle', label: 'Section heading' },
+      {
+        type: 'array', name: 'founders', label: 'Co-founders', itemTitleKey: 'name',
+        newItem: () => ({ name: '', role: '', bio: '', photo: '', highlights: [] }),
+        fields: memberFields,
+      },
+    ],
+  },
+  {
+    type: 'section', name: 'roster', label: 'Roster',
+    fields: [
+      { type: 'text', name: 'rosterTitle', label: 'Section heading' },
+      { type: 'textarea', name: 'rosterCopy', label: 'Copy' },
+      {
+        type: 'array', name: 'groups', label: 'Venture groups', itemTitleKey: 'venture',
+        newItem: () => ({ venture: '', members: [] }),
+        fields: [
+          { type: 'text', name: 'venture', label: 'Venture name' },
+          {
+            type: 'array', name: 'members', label: 'Members', itemTitleKey: 'name',
+            newItem: () => ({ name: '', role: '', bio: '', photo: '', highlights: [] }),
+            fields: memberFields,
+          },
+        ],
+      },
+    ],
+  },
+]
+
+/* ---------------- Contact ---------------- */
+export const contactSchema: FieldDef[] = [
+  {
+    type: 'group', name: 'hero', label: 'Hero',
+    fields: [
+      { type: 'text', name: 'actName', label: 'Act label' },
+      { type: 'text', name: 'kicker', label: 'Kicker' },
+      titleField(),
+      { type: 'textarea', name: 'intro', label: 'Intro' },
+    ],
+  },
+  {
+    type: 'section', name: 'details', label: 'Details',
+    fields: [
+      { type: 'text', name: 'email', label: 'Email' },
+      { type: 'stringList', name: 'enquiryTypes', label: 'Enquiry types', hint: 'One per line.' },
+      { type: 'text', name: 'presence', label: 'Presence line' },
+      { type: 'textarea', name: 'formIntro', label: 'Form intro' },
+    ],
+  },
+  {
+    type: 'section', name: 'offices', label: 'Offices',
+    fields: [
+      {
+        type: 'array', name: 'offices', label: 'Offices', itemTitleKey: 'city',
+        newItem: () => ({ city: '', region: '', address: '' }),
+        fields: [
+          { type: 'row', fields: [{ type: 'text', name: 'city', label: 'City' }, { type: 'text', name: 'region', label: 'Region' }] },
+          { type: 'textarea', name: 'address', label: 'Address' },
+        ],
+      },
+    ],
+  },
+]

@@ -18,6 +18,8 @@ async function guard() {
 async function revalidateSite() {
   revalidatePath('/')
   revalidatePath('/about')
+  revalidatePath('/team')
+  revalidatePath('/contact')
   const plats = await prisma.platform.findMany({ select: { slug: true } })
   for (const p of plats) revalidatePath(`/platform/${p.slug}`)
 }
@@ -37,6 +39,12 @@ export async function saveHome(data: Data): Promise<Result> {
 }
 export async function saveAbout(data: Data): Promise<Result> {
   return saveSingleton('aboutPage', data)
+}
+export async function saveTeam(data: Data): Promise<Result> {
+  return saveSingleton('teamPage', data)
+}
+export async function saveContact(data: Data): Promise<Result> {
+  return saveSingleton('contactPage', data)
 }
 
 export async function savePlatform(slug: string, data: Data): Promise<Result> {

@@ -2,7 +2,7 @@
 
 import dynamic from 'next/dynamic'
 
-import { aboutSchema, homeSchema, platformSchema, siteSettingsSchema } from './schemas'
+import { aboutSchema, contactSchema, homeSchema, platformSchema, siteSettingsSchema, teamSchema } from './schemas'
 
 // Render the RHF form client-only — avoids SSR/hydration churn for a form whose
 // state is entirely client-driven anyway (it's a logged-in admin tool).
@@ -16,6 +16,8 @@ const SCHEMAS = {
   home: homeSchema,
   about: aboutSchema,
   platform: platformSchema,
+  team: teamSchema,
+  contact: contactSchema,
 }
 
 // Client wrapper: the schema (which contains factory functions) lives entirely in

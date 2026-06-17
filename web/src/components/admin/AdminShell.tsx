@@ -8,7 +8,9 @@ import {
   Image as ImageIcon,
   LayoutDashboard,
   LogOut,
+  Mail,
   Settings,
+  Users,
 } from 'lucide-react'
 
 import { logout } from '@/app/(admin)/admin/auth-actions'
@@ -26,6 +28,8 @@ const NAV = [
       { href: '/admin/home', key: 'home', label: 'Home Page', icon: House },
       { href: '/admin/about', key: 'about', label: 'About Page', icon: FileText },
       { href: '/admin/platforms', key: 'platforms', label: 'Platforms', icon: Boxes },
+      { href: '/admin/team', key: 'team', label: 'Team Page', icon: Users },
+      { href: '/admin/contact', key: 'contact', label: 'Contact Page', icon: Mail },
     ],
   },
   {
@@ -43,6 +47,8 @@ const LABELS: Record<string, string> = {
   home: 'Home Page',
   about: 'About Page',
   platforms: 'Platforms',
+  team: 'Team Page',
+  contact: 'Contact Page',
   media: 'Media',
   'site-settings': 'Site Settings',
 }
