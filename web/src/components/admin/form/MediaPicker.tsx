@@ -7,11 +7,14 @@ import { listMedia, uploadMedia, type MediaItem } from '@/app/(admin)/admin/medi
 
 export function MediaPicker({ onPick, onClose }: { onPick: (url: string) => void; onClose: () => void }) {
   const [items, setItems] = useState<MediaItem[]>([])
+  const [loading, setLoading] = useState(true)
   const [busy, startBusy] = useTransition()
   const fileRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    listMedia().then(setItems)
+    listMedia()
+      .then(setItems)
+      .finally(() => setLoading(false))
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
@@ -45,6 +48,15 @@ export function MediaPicker({ onPick, onClose }: { onPick: (url: string) => void
           </div>
         </div>
         <div className="modal-body">
+          {loading ? (
+            <div className="media-grid">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <span className="sk media-cell" key={i} style={{ aspectRatio: '1 / 1', borderRadius: '10px' }} />
+              ))}
+            </div>
+          ) : items.length === 0 ? (
+            <div className="modal-empty">No media yet. Use “Upload new” to add your first image or video.</div>
+          ) : (
           <div className="media-grid">
             {items.map((m) => (
               <div className="media-cell pick" key={m.id} onClick={() => { onPick(m.url); onClose() }}>
@@ -60,6 +72,7 @@ export function MediaPicker({ onPick, onClose }: { onPick: (url: string) => void
               </div>
             ))}
           </div>
+          )}
         </div>
       </div>
     </div>

@@ -11,7 +11,7 @@ export default async function PlatformsListPage() {
     <AdminShell active="platforms" title="Platforms" subtitle="Choose a platform to edit its content.">
       <div className="cards">
         {plats.map((p) => (
-          <Link key={p.slug} href={`/admin/platforms/${p.slug}`} className="card">
+          <Link key={p.slug} href={`/admin/platforms/${p.slug}`} prefetch={false} className="card">
             <div className="card-t">{p.name}</div>
             <div className="card-d">{p.sector}</div>
           </Link>

@@ -58,7 +58,7 @@ export default async function Dashboard() {
         {sections.map((s) => {
           const Icon = s.icon
           return (
-            <Link key={s.href} href={s.href} className="nav-card">
+            <Link key={s.href} href={s.href} prefetch={false} className="nav-card">
               <span className="ic">
                 <Icon strokeWidth={1.9} />
               </span>

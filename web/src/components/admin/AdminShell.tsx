@@ -40,7 +40,7 @@ export function AdminShell({
         <div className="topbar-head">
           <div className="crumbs">
             <RailToggle />
-            <Link href="/admin">Studio</Link>
+            <Link href="/admin" prefetch={false}>Studio</Link>
             {active !== 'dashboard' && (
               <>
                 <ChevronRight />
