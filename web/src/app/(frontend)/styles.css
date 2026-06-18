@@ -48,7 +48,7 @@ em { font-family: inherit; font-style: normal; font-weight: inherit; }
   display: flex; justify-content: space-between; align-items: center;
   padding: 1.4rem var(--gutter);
 }
-.logo img { height: 34px; width: auto; filter: brightness(0) invert(1); }
+.logo img { height: 30px; width: auto; }
 .site-nav { display: flex; gap: 2.2rem; align-items: center; }
 .site-nav a {
   font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
@@ -266,7 +266,7 @@ em { font-family: inherit; font-style: normal; font-weight: inherit; }
   100% { box-shadow: 0 0 0 0 rgba(218, 33, 40, 0); }
 }
 .core-mark {
-  width: clamp(54px, 5vw, 72px); height: auto;
+  width: clamp(48px, 4.6vw, 66px); height: auto;
   filter: drop-shadow(0 4px 10px rgba(4, 14, 36, 0.4));
 }
 .soi-tile {
@@ -1559,6 +1559,28 @@ html, body { overflow-x: clip; }
 
 /* ---- slide 02: numbers wall (centered, monumental) ---- */
 .slide--impact { display: block; position: relative; }
+/* soft halo behind the title so it reads over the bright photo (the masked
+   .line wrappers clip text-shadow, so the contrast comes from this layer) */
+.slide--impact .slide-title { position: relative; }
+.slide--impact .slide-title::before {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  left: 50%; top: 50%; transform: translate(-50%, -50%);
+  width: 132%; height: 270%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(4, 12, 32, 0.62) 0%,
+    rgba(4, 12, 32, 0.32) 42%,
+    rgba(4, 12, 32, 0) 72%
+  );
+}
+/* kicker + numbers aren't masked, so a soft shadow lifts them off the photo */
+.slide--impact .slide-kicker { text-shadow: 0 2px 16px rgba(4, 12, 32, 0.9); }
+/* thin numerals need both a tight shadow (crisp edges) and a wide one (lift) */
+.slide--impact .stat-num {
+  text-shadow: 0 0 4px rgba(4, 12, 32, 0.9), 0 2px 10px rgba(4, 12, 32, 0.95),
+    0 4px 30px rgba(4, 12, 32, 0.85);
+}
+.slide--impact .stat-label { text-shadow: 0 1px 3px rgba(4, 12, 32, 0.95), 0 2px 14px rgba(4, 12, 32, 0.9); }
 .slide--impact .slide-content {
   position: relative; z-index: 1;
   height: 100%;
@@ -1681,7 +1703,7 @@ html, body { overflow-x: clip; }
 .fb-slice {
   flex: 1;
   background-size: cover; background-position: center;
-  filter: grayscale(0.15) brightness(0.62);
+  filter: brightness(1);
 }
 .fb-slice + .fb-slice { border-left: 1px solid rgba(244, 246, 251, 0.08); }
 
@@ -1782,7 +1804,16 @@ html, body { overflow-x: clip; }
    alpha gradient reads the same on these dark images and costs nothing. */
 .fb-veil {
   mix-blend-mode: normal;
-  background: linear-gradient(180deg, rgba(6, 16, 40, 0.38), rgba(4, 12, 32, 0.52));
+  /* targeted scrims: dark only at top (kicker) and bottom (numbers); the
+     middle stays bright so the photos read at full strength */
+  background: linear-gradient(
+    180deg,
+    rgba(4, 12, 32, 0.5) 0%,
+    rgba(4, 12, 32, 0) 16%,
+    rgba(4, 12, 32, 0) 44%,
+    rgba(4, 12, 32, 0.55) 66%,
+    rgba(4, 12, 32, 0.82) 100%
+  );
 }
 .eco-veil {
   background:
@@ -1918,7 +1949,7 @@ html, body { overflow-x: clip; }
   .soi-tile { width: clamp(60px, 18vw, 78px); }
   .tile-label { font-size: 0.5rem; letter-spacing: 0.18em; }
   .soi-core { width: clamp(84px, 24vw, 110px); }
-  .core-mark { width: clamp(42px, 12vw, 56px); }
+  .core-mark { width: clamp(40px, 11vw, 54px); }
   /* slide 01 stacks: thesis text, then sphere centered */
   #s-investing { min-height: auto; padding-bottom: clamp(3rem, 7vh, 5rem); }
   .slide .soi-visual { align-self: center; width: 100%; }
@@ -1941,26 +1972,32 @@ html, body { overflow-x: clip; }
 .plat-hero-bg {
   position: absolute; inset: 0;
   background-size: cover; background-position: center;
-  filter: brightness(0.62) saturate(0.95);
+  filter: brightness(1) saturate(1);
 }
 .plat-hero-video {
   position: absolute; inset: 0;
   width: 100%; height: 100%; object-fit: cover;
-  filter: brightness(0.62) saturate(0.95);
+  filter: brightness(1) saturate(1);
   opacity: 0; transition: opacity 800ms var(--ease);
 }
 .plat-hero-video.ready { opacity: 1; }
 .plat-hero-veil {
   position: absolute; inset: 0;
+  /* corner scrim anchored at the bottom-left, exactly behind the wordmark +
+     tagline; the rest of the photo/video stays bright */
   background:
-    linear-gradient(0deg, rgba(7,25,60,0.85) 0%, rgba(7,25,60,0.15) 45%, rgba(7,25,60,0.35) 100%),
-    linear-gradient(90deg, rgba(7,25,60,0.6) 0%, rgba(7,25,60,0) 60%);
+    radial-gradient(120% 95% at -8% 108%, rgba(4,12,32,0.92) 0%, rgba(4,12,32,0.5) 34%, rgba(4,12,32,0) 64%),
+    linear-gradient(0deg, rgba(4,12,32,0.4) 0%, rgba(4,12,32,0) 18%);
 }
 .plat-hero-inner { position: relative; z-index: 1; max-width: 720px; }
-.plat-wordmark { width: clamp(220px, 32vw, 420px); height: auto; margin-bottom: clamp(1.4rem, 3vh, 2.2rem); }
+.plat-wordmark {
+  width: clamp(220px, 32vw, 420px); height: auto; margin-bottom: clamp(1.4rem, 3vh, 2.2rem);
+  filter: drop-shadow(0 6px 26px rgba(4, 12, 32, 0.95));
+}
 .plat-tagline {
   font-size: clamp(1.1rem, 1.9vw, 1.6rem); font-weight: 300; line-height: 1.5;
   color: var(--text); max-width: 40ch;
+  text-shadow: 0 2px 18px rgba(4, 12, 32, 0.95), 0 1px 4px rgba(4, 12, 32, 0.85);
 }
 .plat-cue { bottom: clamp(1.5rem, 4vh, 2.6rem); right: var(--gutter); }
 
@@ -2238,6 +2275,16 @@ html, body { overflow-x: clip; }
 }
 .thx-page { grid-area: 1 / 1; pointer-events: none; }
 .thx-page.active { pointer-events: auto; }
+
+/* category eyebrow above the venture name */
+.thx-eyebrow {
+  display: block; color: var(--red-soft);
+  font-size: 0.72rem; letter-spacing: 0.28em; text-transform: uppercase; font-weight: 600;
+  margin-bottom: clamp(0.9rem, 2vh, 1.4rem);
+  opacity: 0; transform: translateY(20px);
+  transition: opacity 600ms var(--ease), transform 600ms var(--ease);
+}
+.thx-page.active .thx-eyebrow { opacity: 1; transform: translateY(0); transition-delay: 60ms; }
 
 /* giant name — wraps inside the column */
 .thx-name {

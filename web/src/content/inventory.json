@@ -67,17 +67,17 @@
             { "label": "Healthcare", "image": "assets/Untitled-3-01-2.jpg" },
             { "label": "Managed Living", "image": "assets/Untitled-9-01.jpg" }
           ],
-          "coreMark": "assets/jv-mark.png"
+          "coreMark": "assets/jv-monogram.png"
         },
         {
           "id": "impact",
           "kicker": "Measured by",
           "title": { "lines": ["Impact"], "emphasis": "all" },
           "backgroundSlices": [
-            { "image": "assets/Untitled-2-01-1.jpg" },
-            { "image": "assets/entreprenuer.jpg", "position": "center 20%" },
+            { "image": "assets/impact-students.jpg", "position": "center 30%" },
+            { "image": "assets/impact-person.jpg", "position": "60% center" },
             { "image": "assets/Untitled-1-01-1.jpg" },
-            { "image": "assets/Untitled-6-01-1.jpg" }
+            { "image": "assets/impact-building.jpg", "position": "center 65%" }
           ],
           "stats": [
             { "value": 19000, "suffix": "+", "label": "Students Empowered Annually" },

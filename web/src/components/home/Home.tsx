@@ -161,7 +161,6 @@ export function Home({ home }: { home: HomePage }) {
       const slideEls = gsap.utils.toArray<HTMLElement>('.slide')
       const chapters = gsap.utils.toArray<HTMLElement>('.rail-ch')
       const counterEl = root.querySelector<HTMLElement>('#deck-cur')!
-      const TOTAL = N - 1 + 3
       const counted = new Set<Element>()
       let current = -1
 
@@ -242,26 +241,25 @@ export function Home({ home }: { home: HomePage }) {
         return
       }
 
+      // discrete deck: each scroll gesture advances exactly one slide and
+      // always lands on a full slide (no half-and-half resting state).
+      const STEPS = N - 1
+
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: stage,
           start: 'top top',
-          end: '+=' + (N * 100 + 300) + '%',
+          end: '+=' + STEPS * 100 + '%',
           pin: '.deck-viewport',
           scrub: true,
           onUpdate: (self) => {
-            const t = self.progress * TOTAL
-            const i = t < N - 1 ? Math.round(t) : N - 1
-            activate(i)
-            if (t >= N - 1)
-              openStrip(Math.min(stripEls.length - 1, Math.floor((t - (N - 1)) / 0.75)))
+            activate(Math.round(self.progress * STEPS))
             gsap.set('.rail-fill', { scaleX: self.progress })
           },
         },
       })
 
-      tl.to(track, { xPercent: -100 * ((N - 1) / N), ease: 'none', duration: N - 1 }, 0)
-      tl.to({}, { duration: TOTAL - (N - 1) }, N - 1)
+      tl.to(track, { xPercent: -100 * ((N - 1) / N), ease: 'none', duration: STEPS }, 0)
 
       slideEls.forEach((slide, i) => {
         const content = slide.querySelector('.slide-content')
@@ -288,32 +286,76 @@ export function Home({ home }: { home: HomePage }) {
       })
 
       const st = tl.scrollTrigger!
-      const jumpTo = (i: number) => {
-        const y = st.start + ((st.end - st.start) * i) / TOTAL
-        lenis ? lenis.scrollTo(y, { duration: 1.1 }) : window.scrollTo({ top: y, behavior: 'smooth' })
+      // exact scroll position of each slide; slide 0 = start, slide N-1 = end,
+      // so a scroll past either end releases the deck to the rest of the page.
+      const goTo = (i: number) => {
+        const target = Math.max(0, Math.min(N - 1, i))
+        const y = st.start + ((st.end - st.start) * target) / STEPS
+        lenis ? lenis.scrollTo(y, { duration: 0.9 }) : window.scrollTo({ top: y, behavior: 'smooth' })
       }
-      const onChapterClick = (e: Event) =>
-        jumpTo(+(e.currentTarget as HTMLElement).dataset.i!)
+      // engaged = scroll sits within the pinned range. Position-based (not
+      // st.isActive) so it stays true at the exact end, where the last slide
+      // rests — otherwise scrolling back up from slide N would not be captured.
+      const engaged = () => {
+        const y = st.scroll()
+        return y >= st.start - 2 && y <= st.end + 2
+      }
+
+      const onChapterClick = (e: Event) => goTo(+(e.currentTarget as HTMLElement).dataset.i!)
       chapters.forEach((c) => c.addEventListener('click', onChapterClick))
 
+      // hover a platform strip (slide 04) to fully expand it
+      const onStripEnter = (e: Event) => openStrip(stripEls.indexOf(e.currentTarget as HTMLElement))
+      stripEls.forEach((s) => s.addEventListener('mouseenter', onStripEnter))
+
       const onKey = (e: KeyboardEvent) => {
-        if (!st.isActive) return
+        if (!engaged()) return
         if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
           e.preventDefault()
-          jumpTo(Math.min(N - 1, current + 1))
+          goTo(current + 1)
         }
         if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
           e.preventDefault()
-          jumpTo(Math.max(0, current - 1))
+          goTo(current - 1)
         }
       }
       window.addEventListener('keydown', onKey)
+
+      // wheel hijack (capture-phase, before Lenis): one gesture = one slide.
+      // Momentum keeps the lock alive until the gesture truly settles.
+      let locked = false
+      let unlockTimer: ReturnType<typeof setTimeout> | undefined
+      const scheduleUnlock = () => {
+        clearTimeout(unlockTimer)
+        unlockTimer = setTimeout(() => {
+          locked = false
+        }, 170)
+      }
+      const onWheel = (e: WheelEvent) => {
+        if (!engaged()) return
+        const dir = e.deltaY > 0 ? 1 : -1
+        // let the page scroll away when leaving past either end
+        if ((current >= N - 1 && dir > 0) || (current <= 0 && dir < 0)) return
+        e.preventDefault()
+        e.stopPropagation()
+        if (locked) {
+          scheduleUnlock()
+          return
+        }
+        locked = true
+        goTo(current + dir)
+        scheduleUnlock()
+      }
+      window.addEventListener('wheel', onWheel, { passive: false, capture: true })
 
       activate(0)
 
       return () => {
         chapters.forEach((c) => c.removeEventListener('click', onChapterClick))
+        stripEls.forEach((s) => s.removeEventListener('mouseenter', onStripEnter))
         window.removeEventListener('keydown', onKey)
+        window.removeEventListener('wheel', onWheel, true)
+        clearTimeout(unlockTimer)
       }
     },
     { scope, dependencies: [reduced, N] },

@@ -39,7 +39,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
   return (
     <header ref={headerRef} className={`site-header${scrolled ? ' scrolled' : ''}${open ? ' nav-open' : ''}`}>
       <Link className="logo" href="/" onClick={() => setOpen(false)}>
-        <Image src={asset(logo.src)} alt={logo.alt} width={150} height={34} priority />
+        <Image src={asset(logo.src)} alt={logo.alt} width={240} height={30} priority unoptimized />
       </Link>
       <nav className="site-nav">
         {nav

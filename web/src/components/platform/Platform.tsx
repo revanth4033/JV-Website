@@ -42,6 +42,13 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
   const ref = useRef<HTMLElement>(null)
   const { lenis } = useSmoothScroll()
   const N = ventures.length
+  // the rail navigates by category; a category may hold several ventures
+  // (e.g. Services = Inventre + Abeona), so it stays active across them
+  const cats: { label: string; first: number }[] = []
+  ventures.forEach((v, i) => {
+    if (!cats.some((c) => c.label === v.category)) cats.push({ label: v.category, first: i })
+  })
+  const C = cats.length
 
   useGSAP(
     () => {
@@ -63,12 +70,14 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
       const setBeat = (i: number) => {
         if (i === cur) return
         cur = i
+        const catIdx = cats.findIndex((c) => c.label === ventures[i].category)
         photos.forEach((p, j) => p.classList.toggle('active', j === i))
         pages.forEach((p, j) => p.classList.toggle('active', j === i))
-        items.forEach((it, j) => it.classList.toggle('active', j === i))
-        counter.textContent = pad(i + 1)
+        // rail tracks the category, so Services stays lit for both its ventures
+        items.forEach((it, j) => it.classList.toggle('active', j === catIdx))
+        counter.textContent = pad(catIdx + 1)
         if (ghost) {
-          ghost.textContent = pad(i + 1)
+          ghost.textContent = pad(catIdx + 1)
           gsap.fromTo(ghost, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' })
         }
         countMetrics(pages[i])
@@ -106,7 +115,7 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
             <img className="thx-wordmark" src={asset(platform.wordmark)} alt={platform.name} loading="lazy" decoding="async" />
           </div>
           <span className="th-count">
-            <span id="th-cur">01</span> / {pad(N)}
+            <span id="th-cur">01</span> / {pad(C)}
           </span>
         </header>
         <span className="thx-ghost" aria-hidden="true">
@@ -124,12 +133,12 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
         <div className="thx-stack">
           {ventures.map((v, i) => (
             <article className={`thx-page${i === 0 ? ' active' : ''}`} data-i={i} key={i}>
+              <span className="thx-eyebrow">{v.category}</span>
               <h3 className="thx-name">
                 <span className="thx-name-in">{v.name}</span>
               </h3>
               <div className="thx-brand">
                 {v.logo ? <img className="ven-logo" src={asset(v.logo)} alt={v.name} loading="lazy" decoding="async" /> : null}
-                <span className="th-cat">{v.category}</span>
               </div>
               <p className="ven-desc">{v.desc}</p>
               <div className="ven-metrics">
@@ -145,10 +154,10 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
         </div>
         <nav className="thx-tabs">
           <ul className="ven-rail-list">
-            {ventures.map((v, i) => (
-              <li className={`ven-rail-item${i === 0 ? ' active' : ''}`} data-i={i} key={i}>
-                <i>{pad(i + 1)}</i>
-                <span>{v.name}</span>
+            {cats.map((c, j) => (
+              <li className={`ven-rail-item${j === 0 ? ' active' : ''}`} data-i={c.first} key={c.label}>
+                <i>{pad(j + 1)}</i>
+                <span>{c.label}</span>
               </li>
             ))}
           </ul>
@@ -332,8 +341,8 @@ export function Platform({
       })
 
       if (!reduced) {
-        gsap.from('.plat-wordmark', { opacity: 0, y: 30, duration: 1, ease: EASE, delay: 0.2 })
-        gsap.from('.plat-tagline', { opacity: 0, y: 24, duration: 0.9, ease: EASE, delay: 0.5 })
+        gsap.fromTo('.plat-wordmark', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 1, ease: EASE, delay: 0.2 })
+        gsap.fromTo('.plat-tagline', { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.9, ease: EASE, delay: 0.5 })
         gsap.to('.plat-hero-media', {
           yPercent: 18,
           ease: 'none',
