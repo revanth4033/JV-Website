@@ -53,3 +53,10 @@ model User {
   role         String   @default("editor") // admin | editor
   createdAt    DateTime @default(now())
 }
+
+/// Durable failed-login throttle (brute-force protection), keyed by email.
+model LoginAttempt {
+  key      String   @id
+  fails    Int      @default(0)
+  windowAt DateTime @default(now())
+}
