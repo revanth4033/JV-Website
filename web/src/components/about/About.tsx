@@ -172,7 +172,7 @@ export function About({ about, settings }: { about: AboutPage; settings: SiteSet
 
       <main id="top">
         {/* ACT 0 · ORIGIN */}
-        <section className="act about-hero" data-act="00" data-act-name={hero.actName} data-hero>
+        <section className="act about-hero" data-cms-section="hero" data-act="00" data-act-name={hero.actName} data-hero>
           <AnimatedTitle as="h1" className="about-title" title={hero.title} />
           <div className="about-head">
             <Rich as="p" className="about-sub" html={hero.subtitle} />
@@ -207,7 +207,7 @@ export function About({ about, settings }: { about: AboutPage; settings: SiteSet
         </section>
 
         {/* ACT 1 · BELIEF */}
-        <section className="act act-belief" data-act="01" data-act-name={belief.actName}>
+        <section className="act act-belief" data-cms-section="belief" data-act="01" data-act-name={belief.actName}>
           <p className="belief-kicker reveal">{belief.kicker}</p>
           <div className="belief-triptych">
             {belief.rows.map((r) => (
@@ -225,7 +225,7 @@ export function About({ about, settings }: { about: AboutPage; settings: SiteSet
         </section>
 
         {/* ACT 2 · METHOD */}
-        <section className="act act-method" id="method" data-act="02" data-act-name={method.actName}>
+        <section className="act act-method" id="method" data-cms-section="method" data-act="02" data-act-name={method.actName}>
           <div className="grids-head">
             <AnimatedTitle as="h2" className="section-title" title={method.title} />
             <p className="section-copy reveal">{method.copy}</p>
@@ -249,7 +249,7 @@ export function About({ about, settings }: { about: AboutPage; settings: SiteSet
         </section>
 
         {/* ACT 3 · MODELS */}
-        <section className="act act-models" id="models" data-act="03" data-act-name={models.actName}>
+        <section className="act act-models" id="models" data-cms-section="models" data-act="03" data-act-name={models.actName}>
           <div className="grids-head">
             <AnimatedTitle as="h2" className="section-title" title={models.title} />
             <p className="section-copy reveal">{models.copy}</p>
@@ -282,7 +282,7 @@ export function About({ about, settings }: { about: AboutPage; settings: SiteSet
         </section>
 
         {/* ACT 4 · ECOSYSTEM */}
-        <section className="act act-eco" data-act="04" data-act-name={ecosystem.actName}>
+        <section className="act act-eco" data-cms-section="ecosystem" data-act="04" data-act-name={ecosystem.actName}>
           <div className="grids-head">
             <AnimatedTitle as="h2" className="section-title" title={ecosystem.title} />
             <p className="section-copy reveal">{ecosystem.copy}</p>
@@ -304,7 +304,7 @@ export function About({ about, settings }: { about: AboutPage; settings: SiteSet
         </section>
 
         {/* ACT 5 · GRIDS morph */}
-        <section className="act act-morph" id="grids-deep" data-act="05" data-act-name={grids.actName}>
+        <section className="act act-morph" id="grids-deep" data-cms-section="grids" data-act="05" data-act-name={grids.actName}>
           <div className="grids-head">
             <AnimatedTitle as="h2" className="section-title" title={grids.title} />
             <p className="section-copy reveal">{grids.copy}</p>

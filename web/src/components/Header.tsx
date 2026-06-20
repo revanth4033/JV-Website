@@ -38,10 +38,10 @@ export function Header({ settings }: { settings: SiteSettings }) {
 
   return (
     <header ref={headerRef} className={`site-header${scrolled ? ' scrolled' : ''}${open ? ' nav-open' : ''}`}>
-      <Link className="logo" href="/" onClick={() => setOpen(false)}>
+      <Link className="logo" href="/" onClick={() => setOpen(false)} data-cms-section="logo">
         <Image src={asset(logo.src)} alt={logo.alt} width={240} height={30} priority unoptimized />
       </Link>
-      <nav className="site-nav">
+      <nav className="site-nav" data-cms-section="navigation">
         {nav
           // hide dead placeholder links until a real URL is set in the CMS
           .filter((item) => item.dropdown?.length || (item.href && item.href !== '#'))

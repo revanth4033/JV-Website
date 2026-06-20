@@ -60,6 +60,7 @@ export function ClosingBridge({
       ref={ref}
       className={`act act-close ${className}`.trim()}
       id={id}
+      data-cms-section="closing"
       data-act={dataAct}
       data-act-name={closingQuote.actName || dataActName}
     >

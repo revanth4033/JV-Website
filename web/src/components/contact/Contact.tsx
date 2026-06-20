@@ -81,14 +81,14 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
     <div ref={scope}>
       <main id="top">
         {/* HERO */}
-        <section className="act contact-hero" data-act="01" data-act-name={hero.actName} data-hero>
+        <section className="act contact-hero" data-cms-section="hero" data-act="01" data-act-name={hero.actName} data-hero>
           <span className="contact-kicker">{hero.kicker}</span>
           <AnimatedTitle as="h1" className="contact-title" title={hero.title} />
           <p className="contact-intro reveal">{hero.intro}</p>
         </section>
 
         {/* FORM + DETAILS */}
-        <section className="act contact-body" data-act="02" data-act-name={bodyActName || 'Get in touch'}>
+        <section className="act contact-body" data-cms-section="details" data-act="02" data-act-name={bodyActName || 'Get in touch'}>
           <div className="contact-layout">
             {/* form */}
             <div className="contact-form-wrap">
@@ -110,7 +110,7 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
                   </button>
                 </div>
               ) : (
-                <form className="contact-form" onSubmit={onSubmit} noValidate={false}>
+                <form className="contact-form" data-cms-section="form" onSubmit={onSubmit} noValidate={false}>
                   <div className="field-row">
                     <label className="field">
                       <span className="field-label">{form?.firstName || 'First name'}</span>
@@ -184,7 +184,7 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
               </div>
               <div className="rail-block reveal">
                 <span className="rail-label">Offices</span>
-                <ul className="office-list">
+                <ul className="office-list" data-cms-section="offices">
                   {offices.map((o) => (
                     <li className="office" key={o.address}>
                       <h3 className="office-city">
@@ -205,7 +205,7 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
         </section>
 
         {/* MAP */}
-        <section className="act contact-map" data-act="03" data-act-name={mapActName || 'Find us'}>
+        <section className="act contact-map" data-cms-section="map" data-act="03" data-act-name={mapActName || 'Find us'}>
           <header className="grids-head">
             <h2 className="section-title">
               <span className="line">

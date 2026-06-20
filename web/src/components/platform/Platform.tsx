@@ -132,7 +132,7 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
   )
 
   return (
-    <section className="act plat-ventures theater-mode" id="ventures" ref={ref}>
+    <section className="act plat-ventures theater-mode" id="ventures" ref={ref} data-cms-section="ventures">
       <div className="theater theater--index">
         <header className="thx-top">
           <div className="thx-top-left">
@@ -252,7 +252,7 @@ function VentureStream({ platform, ventures }: { platform: PlatformT; ventures: 
   // mark the first venture of each category (so we can render a category heading)
   const startsCategory = (i: number) => i === 0 || ventures[i].category !== ventures[i - 1].category
   return (
-    <section className="act plat-ventures" id="ventures" ref={ref}>
+    <section className="act plat-ventures" id="ventures" ref={ref} data-cms-section="ventures">
       <div className="ven-layout">
         <aside className="ven-rail">
           <span className="ven-rail-kicker">Inside the platform</span>
@@ -401,7 +401,7 @@ export function Platform({
     <div ref={scope}>
       <main id="top">
         {/* HERO */}
-        <section className="act plat-hero" id="hero">
+        <section className="act plat-hero" id="hero" data-cms-section="hero">
           <div className="plat-hero-media">
             <div className="plat-hero-bg" style={{ backgroundImage: `url(${asset(platform.hero)})` }} />
             {platform.video ? <video className="plat-hero-video" muted loop playsInline preload="none" /> : null}
@@ -409,7 +409,7 @@ export function Platform({
           <div className="plat-hero-veil" />
           <div className="plat-hero-inner">
             <h1 className="sr-only">{platform.name} — {platform.sector} platform</h1>
-            <img className="plat-wordmark" src={asset(platform.wordmark)} alt={platform.name} />
+            <img className="plat-wordmark" src={asset(platform.wordmark)} alt={platform.name} data-cms-section="identity" />
             <p className="plat-tagline">{platform.tagline}</p>
           </div>
           <div className="deck-cue plat-cue" aria-hidden="true">
@@ -436,7 +436,7 @@ export function Platform({
               <p className="section-copy reveal plat-intro-copy">{platform.intro}</p>
             </div>
           </div>
-          <div className="plat-totals reveal">
+          <div className="plat-totals reveal" data-cms-section="totals">
             {platform.totals.map((t, i) => (
               <div className="total" key={i}>
                 <span className="total-num">{t.value}</span>

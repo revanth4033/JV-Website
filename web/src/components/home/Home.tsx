@@ -348,6 +348,10 @@ export function Home({ home }: { home: HomePage }) {
       }
       window.addEventListener('wheel', onWheel, { passive: false, capture: true })
 
+      // live-preview: jump to a slide when the admin editor switches tabs
+      const onGotoSlide = (e: Event) => goTo((e as CustomEvent<{ index: number }>).detail?.index ?? 0)
+      window.addEventListener('jv:goto-slide', onGotoSlide as EventListener)
+
       activate(0)
 
       return () => {
@@ -355,6 +359,7 @@ export function Home({ home }: { home: HomePage }) {
         stripEls.forEach((s) => s.removeEventListener('mouseenter', onStripEnter))
         window.removeEventListener('keydown', onKey)
         window.removeEventListener('wheel', onWheel, true)
+        window.removeEventListener('jv:goto-slide', onGotoSlide as EventListener)
         clearTimeout(unlockTimer)
       }
     },

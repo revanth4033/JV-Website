@@ -6,6 +6,7 @@ const BASE = 1366 // render the desktop layout, then scale to fit the pane
 
 export type PreviewHandle = {
   post: (section: string, data: unknown) => void
+  scrollTo: (sectionId: string) => void
   reload: () => void
 }
 
@@ -24,6 +25,10 @@ export const PreviewFrame = forwardRef<PreviewHandle, { url: string }>(function 
     post: (section, data) => {
       lastRef.current = { section, data }
       send()
+    },
+    scrollTo: (sectionId) => {
+      const win = iframeRef.current?.contentWindow
+      if (win) win.postMessage({ source: 'jv-admin', scrollTo: sectionId }, window.location.origin)
     },
     // reload re-mounts the page (rebuilds animations/structure); the iframe's
     // ready handshake then re-applies the latest unsaved values automatically.

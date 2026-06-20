@@ -6,7 +6,7 @@ import type { SiteSettings } from '@/content/types'
 export function Footer({ settings }: { settings: SiteSettings }) {
   const { footer } = settings
   return (
-    <footer className="site-footer">
+    <footer className="site-footer" data-cms-section="footer">
       <div className="foot-left">
         <span>{footer.locations}</span>
       </div>

@@ -140,7 +140,7 @@ export function Team({ team, settings }: { team: TeamPage; settings: SiteSetting
     <div ref={scope}>
       <main id="top">
         {/* ACT 1 · HERO */}
-        <section className="act team-hero" data-act="01" data-act-name={hero.actName} data-hero>
+        <section className="act team-hero" data-cms-section="hero" data-act="01" data-act-name={hero.actName} data-hero>
           <span className="team-kicker">{hero.kicker}</span>
           <AnimatedTitle as="h1" className="team-title" title={hero.title} />
           <div className="team-head">
@@ -159,7 +159,7 @@ export function Team({ team, settings }: { team: TeamPage; settings: SiteSetting
         </section>
 
         {/* ACT 2 · CO-FOUNDERS */}
-        <section className="act team-founders" data-act="02" data-act-name={foundersActName || 'Founders'}>
+        <section className="act team-founders" data-cms-section="founders" data-act="02" data-act-name={foundersActName || 'Founders'}>
           <header className="team-section-head">
             <h2 className="section-title">
               <span className="line">
@@ -198,7 +198,7 @@ export function Team({ team, settings }: { team: TeamPage; settings: SiteSetting
         </section>
 
         {/* ACT 3 · PORTFOLIO LEADERSHIP — every leader shown, editorial stagger */}
-        <section className="act team-roster" data-act="03" data-act-name={rosterActName || 'Leadership'}>
+        <section className="act team-roster" data-cms-section="roster" data-act="03" data-act-name={rosterActName || 'Leadership'}>
           <header className="grids-head">
             <h2 className="section-title">
               <span className="line">

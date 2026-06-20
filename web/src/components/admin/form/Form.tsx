@@ -50,7 +50,20 @@ export function EntityForm({
   const [hasDraftLocal, setHasDraftLocal] = useState(hasDraft)
   const [publishAtLocal, setPublishAtLocal] = useState<string | null>(publishAt)
   const frameRef = useRef<PreviewHandle>(null)
+  const sectionIdRef = useRef<string>('')
   const draftMode = Boolean(draftAction)
+
+  // Tell the live preview which section the editor is on, so it scrolls there.
+  const onSectionChange = (id: string) => {
+    sectionIdRef.current = id
+    if (showPreview) frameRef.current?.scrollTo(id)
+  }
+  // When the preview is (re)opened, jump it to the section currently being edited.
+  useEffect(() => {
+    if (!showPreview || !sectionIdRef.current) return
+    const t = setTimeout(() => frameRef.current?.scrollTo(sectionIdRef.current), 700)
+    return () => clearTimeout(t)
+  }, [showPreview])
   // isDirty gives false positives with nested object/array Controllers (title/lines),
   // so judge "unsaved" by actual changed fields instead.
   const dirty = Object.keys(methods.formState.dirtyFields).length > 0
@@ -153,7 +166,7 @@ export function EntityForm({
           </button>
         </div>
       )}
-      <FormBody defs={defs} />
+      <FormBody defs={defs} onActiveChange={onSectionChange} />
       <div className="savebar">
         {draftMode ? (
           <>
@@ -235,28 +248,33 @@ function Fields({ fields, prefix }: { fields: FieldDef[]; prefix: string }) {
   )
 }
 
-type Tab = { label: string; fields: FieldDef[]; prefix: string }
+type Tab = { id: string; label: string; fields: FieldDef[]; prefix: string }
 
 /** If every top-level field is a section/group, present them as tabs instead of
  *  a tall stack of accordions — one section on screen at a time. */
 function asTabs(defs: FieldDef[]): Tab[] | null {
   const tabs = defs.map((d): Tab | null => {
-    if (d.type === 'section') return { label: d.label, fields: d.fields, prefix: '' }
-    if (d.type === 'group') return { label: d.label ?? '', fields: d.fields, prefix: d.name }
+    if (d.type === 'section') return { id: d.name, label: d.label, fields: d.fields, prefix: '' }
+    if (d.type === 'group') return { id: d.name, label: d.label ?? '', fields: d.fields, prefix: d.name }
     return null
   })
   return tabs.every((t): t is Tab => t !== null && t.label !== '') ? (tabs as Tab[]) : null
 }
 
-function FormBody({ defs }: { defs: FieldDef[] }) {
+function FormBody({ defs, onActiveChange }: { defs: FieldDef[]; onActiveChange?: (id: string) => void }) {
   const tabs = asTabs(defs)
   if (!tabs) return <Fields fields={defs} prefix="" />
-  return <TabbedSections tabs={tabs} />
+  return <TabbedSections tabs={tabs} onActiveChange={onActiveChange} />
 }
 
-function TabbedSections({ tabs }: { tabs: Tab[] }) {
+function TabbedSections({ tabs, onActiveChange }: { tabs: Tab[]; onActiveChange?: (id: string) => void }) {
   const [active, setActive] = useState(0)
   const cur = tabs[Math.min(active, tabs.length - 1)]
+  // notify the editor (→ live preview) which section is being edited
+  useEffect(() => {
+    onActiveChange?.(cur.id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active])
   return (
     <div className="sec-wrap">
       <div className="sec-tabs" role="tablist" aria-label="Page sections">
