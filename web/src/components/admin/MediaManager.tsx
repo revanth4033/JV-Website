@@ -4,7 +4,7 @@ import { Copy, Search, Trash2, CloudUpload } from 'lucide-react'
 import { useEffect, useRef, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-import { deleteMedia, listMedia, updateMedia, uploadMedia, type MediaItem } from '@/app/(admin)/admin/media-actions'
+import { deleteMedia, findMediaUsage, listMedia, updateMedia, uploadMedia, type MediaItem } from '@/app/(admin)/admin/media-actions'
 
 export function MediaManager({ initial }: { initial: MediaItem[] }) {
   const [items, setItems] = useState(initial)
@@ -42,8 +42,12 @@ export function MediaManager({ initial }: { initial: MediaItem[] }) {
     })
   }
 
-  const onDelete = (m: MediaItem) => {
-    if (!confirm(`Delete “${m.filename}”? This can't be undone.`)) return
+  const onDelete = async (m: MediaItem) => {
+    const uses = await findMediaUsage(m.url).catch(() => [] as string[])
+    const msg = uses.length
+      ? `“${m.filename}” is in use on: ${uses.join(', ')}.\nDeleting it will break those images. Delete anyway?`
+      : `Delete “${m.filename}”? This can't be undone.`
+    if (!confirm(msg)) return
     startBusy(async () => {
       await deleteMedia(m.id)
       setItems((prev) => prev.filter((x) => x.id !== m.id))

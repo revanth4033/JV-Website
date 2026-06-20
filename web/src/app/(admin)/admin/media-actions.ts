@@ -121,6 +121,27 @@ export async function deleteMedia(id: number): Promise<void> {
   await audit(user.email, 'delete', `media:${id}`, m.filename)
 }
 
+/** Where is this media URL referenced? Powers the delete guard (prevents silent orphans). */
+export async function findMediaUsage(url: string): Promise<string[]> {
+  await requireUser()
+  if (!url) return []
+  const hits: string[] = []
+  const labels: Record<string, string> = {
+    siteSettings: 'Site Settings', homePage: 'Home Page', aboutPage: 'About Page', teamPage: 'Team Page', contactPage: 'Contact Page',
+  }
+  for (const s of await prisma.singleton.findMany()) {
+    const inData = JSON.stringify(s.data ?? '').includes(url)
+    const inDraft = s.draft != null && JSON.stringify(s.draft).includes(url)
+    if (inData || inDraft) hits.push(labels[s.key] ?? s.key)
+  }
+  for (const p of await prisma.platform.findMany({ select: { name: true, data: true, draft: true } })) {
+    const inData = JSON.stringify(p.data ?? '').includes(url)
+    const inDraft = p.draft != null && JSON.stringify(p.draft).includes(url)
+    if (inData || inDraft) hits.push(p.name)
+  }
+  return hits
+}
+
 export async function listMedia(opts?: { q?: string; take?: number; skip?: number }): Promise<MediaItem[]> {
   await requireUser()
   const q = opts?.q?.trim()

@@ -22,16 +22,40 @@ const SCHEMAS = {
 
 // Client wrapper: the schema (which contains factory functions) lives entirely in
 // the client bundle, so server pages only pass serializable data + a server action.
+type Save = (data: Record<string, unknown>) => Promise<{ ok: boolean; error?: string }>
+
 export function SectionForm({
   schema,
   defaultValues,
   action,
   preview,
+  draftAction,
+  scheduleAction,
+  discardAction,
+  hasDraft,
+  publishAt,
 }: {
   schema: keyof typeof SCHEMAS
   defaultValues: Record<string, unknown>
-  action: (data: Record<string, unknown>) => Promise<{ ok: boolean; error?: string }>
+  action: Save
   preview?: { url: string; section: string }
+  draftAction?: Save
+  scheduleAction?: (data: Record<string, unknown>, at: string) => Promise<{ ok: boolean; error?: string }>
+  discardAction?: () => Promise<{ ok: boolean; error?: string }>
+  hasDraft?: boolean
+  publishAt?: string | null
 }) {
-  return <EntityForm defs={SCHEMAS[schema]} defaultValues={defaultValues} action={action} preview={preview} />
+  return (
+    <EntityForm
+      defs={SCHEMAS[schema]}
+      defaultValues={defaultValues}
+      action={action}
+      preview={preview}
+      draftAction={draftAction}
+      scheduleAction={scheduleAction}
+      discardAction={discardAction}
+      hasDraft={hasDraft}
+      publishAt={publishAt}
+    />
+  )
 }

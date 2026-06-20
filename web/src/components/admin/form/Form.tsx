@@ -1,6 +1,7 @@
 'use client'
 
-import { ChevronDown, CloudUpload, Eye, EyeOff, Plus, RefreshCw, SquareArrowOutUpRight, Trash2, X } from 'lucide-react'
+import { CalendarClock, ChevronDown, CloudUpload, Eye, EyeOff, Plus, RefreshCw, SquareArrowOutUpRight, Trash2, X } from 'lucide-react'
+import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { FormProvider, useFieldArray, useForm, useFormContext } from 'react-hook-form'
 import { toast } from 'sonner'
@@ -23,17 +24,33 @@ export function EntityForm({
   action,
   saveLabel = 'Save & publish',
   preview,
+  draftAction,
+  scheduleAction,
+  discardAction,
+  hasDraft = false,
+  publishAt = null,
 }: {
   defs: FieldDef[]
   defaultValues: Record<string, unknown>
   action: (data: Record<string, unknown>) => Promise<SaveResult>
   saveLabel?: string
   preview?: { url: string; section: string }
+  draftAction?: (data: Record<string, unknown>) => Promise<SaveResult>
+  scheduleAction?: (data: Record<string, unknown>, at: string) => Promise<SaveResult>
+  discardAction?: () => Promise<SaveResult>
+  hasDraft?: boolean
+  publishAt?: string | null
 }) {
+  const router = useRouter()
   const methods = useForm({ defaultValues })
   const [saving, setSaving] = useState(false)
   const [showPreview, setShowPreview] = useState(false) // collapsed by default — opens on click
+  const [showSchedule, setShowSchedule] = useState(false)
+  const [scheduleAt, setScheduleAt] = useState('')
+  const [hasDraftLocal, setHasDraftLocal] = useState(hasDraft)
+  const [publishAtLocal, setPublishAtLocal] = useState<string | null>(publishAt)
   const frameRef = useRef<PreviewHandle>(null)
+  const draftMode = Boolean(draftAction)
   // isDirty gives false positives with nested object/array Controllers (title/lines),
   // so judge "unsaved" by actual changed fields instead.
   const dirty = Object.keys(methods.formState.dirtyFields).length > 0
@@ -64,27 +81,70 @@ export function EntityForm({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preview, showPreview])
 
-  const onSubmit = methods.handleSubmit(async (data) => {
+  const runSave = async (fn: () => Promise<SaveResult>, ok: string, okDesc: string, refresh = false): Promise<boolean> => {
     setSaving(true)
     try {
-      const res = await action(data)
+      const res = await fn()
       if (res.ok) {
-        methods.reset(data)
-        toast.success('Published', { description: 'Your changes are live within ~30 seconds.' })
-      } else {
-        toast.error('Could not publish', { description: res.error || 'Please try again.' })
+        methods.reset(methods.getValues())
+        toast.success(ok, { description: okDesc })
+        if (refresh) router.refresh()
+        return true
       }
+      toast.error('Could not save', { description: res.error || 'Please try again.' })
+      return false
     } catch (e) {
-      toast.error('Could not publish', { description: e instanceof Error ? e.message : 'Please try again.' })
+      toast.error('Could not save', { description: e instanceof Error ? e.message : 'Please try again.' })
+      return false
     } finally {
       setSaving(false)
     }
+  }
+
+  const onPublish = methods.handleSubmit(async (d) => {
+    const ok = await runSave(() => action(d), 'Published', 'Live on the site within ~30 seconds.', true)
+    if (ok) {
+      setHasDraftLocal(false)
+      setPublishAtLocal(null)
+      setShowSchedule(false)
+    }
   })
+  const onDraft = methods.handleSubmit(async (d) => {
+    const ok = await runSave(() => draftAction!(d), 'Draft saved', 'Not published yet — visitors still see the live version.')
+    if (ok) setHasDraftLocal(true)
+  })
+  const onSchedule = methods.handleSubmit(async (d) => {
+    if (!scheduleAt) return
+    const iso = new Date(scheduleAt).toISOString()
+    const ok = await runSave(() => scheduleAction!(d, iso), 'Scheduled', `Goes live ${new Date(scheduleAt).toLocaleString()}.`)
+    if (ok) {
+      setHasDraftLocal(true)
+      setPublishAtLocal(iso)
+      setShowSchedule(false)
+    }
+  })
+  const onDiscard = () => {
+    if (!discardAction || !confirm('Discard the unpublished draft and revert to the live version?')) return
+    runSave(() => discardAction(), 'Draft discarded', 'Reverted to the published version.', true).then((ok) => {
+      if (ok) {
+        setHasDraftLocal(false)
+        setPublishAtLocal(null)
+      }
+    })
+  }
+
+  const status = publishAtLocal
+    ? `Scheduled for ${new Date(publishAtLocal).toLocaleString()}`
+    : hasDraftLocal
+      ? 'Draft saved — not yet published'
+      : dirty
+        ? 'Unsaved changes'
+        : 'All changes published'
 
   const split = preview && showPreview
 
   const formInner = (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={draftMode ? onDraft : onPublish}>
       {preview && (
         <div className="editor-toolbar">
           <span className="spacer" />
@@ -95,12 +155,44 @@ export function EntityForm({
       )}
       <FormBody defs={defs} />
       <div className="savebar">
-        <button className="btn btn-primary" type="submit" disabled={saving}>
-          <CloudUpload /> {saving ? 'Publishing…' : saveLabel}
-        </button>
+        {draftMode ? (
+          <>
+            <button className="btn btn-primary" type="button" onClick={onPublish} disabled={saving}>
+              <CloudUpload /> {saving ? 'Working…' : 'Publish now'}
+            </button>
+            <button className="btn" type="submit" disabled={saving}>
+              Save draft
+            </button>
+            {scheduleAction && (
+              <button className="btn" type="button" onClick={() => setShowSchedule((s) => !s)} disabled={saving}>
+                <CalendarClock /> Schedule
+              </button>
+            )}
+          </>
+        ) : (
+          <button className="btn btn-primary" type="submit" disabled={saving}>
+            <CloudUpload /> {saving ? 'Publishing…' : saveLabel}
+          </button>
+        )}
         <span className="spacer" />
-        <span className="hint-inline">{dirty ? 'Unsaved changes' : 'All changes published'}</span>
+        <span className="hint-inline">{status}</span>
       </div>
+      {draftMode && showSchedule && scheduleAction && (
+        <div className="schedule-row">
+          <label className="schedule-field">
+            Go live at
+            <input type="datetime-local" value={scheduleAt} onChange={(e) => setScheduleAt(e.target.value)} />
+          </label>
+          <button className="btn btn-sm btn-primary" type="button" onClick={onSchedule} disabled={saving || !scheduleAt}>
+            Schedule publish
+          </button>
+          {(hasDraft || publishAt) && discardAction && (
+            <button className="btn btn-sm" type="button" onClick={onDiscard} disabled={saving}>
+              Discard draft
+            </button>
+          )}
+        </div>
+      )}
     </form>
   )
 

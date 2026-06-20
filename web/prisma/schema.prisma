@@ -15,7 +15,9 @@ datasource db {
 /// Singletons: siteSettings, homePage, aboutPage. `data` holds the full shape.
 model Singleton {
   key       String   @id
-  data      Json
+  data      Json // the published content the public site renders
+  draft     Json? // unpublished edits awaiting publish/schedule
+  publishAt DateTime? // when a scheduled draft should go live (cron)
   updatedAt DateTime @updatedAt
 }
 
@@ -27,6 +29,8 @@ model Platform {
   name      String
   sector    String
   data      Json
+  draft     Json?
+  publishAt DateTime?
   updatedAt DateTime @updatedAt
 
   @@index([order])

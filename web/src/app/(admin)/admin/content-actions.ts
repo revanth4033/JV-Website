@@ -58,10 +58,55 @@ async function saveSingleton(key: string, data: Data): Promise<Result> {
   await prisma.singleton.upsert({
     where: { key },
     create: { key, data: json(clean) },
-    update: { data: json(clean) },
+    update: { data: json(clean), draft: Prisma.DbNull, publishAt: null },
   })
-  await record(key, SINGLETON_LABELS[key] ?? key, 'update', s.email, clean)
+  await record(key, SINGLETON_LABELS[key] ?? key, 'publish', s.email, clean)
   await revalidateSite()
+  return { ok: true }
+}
+
+/* ---------------- Draft / scheduled publishing ---------------- */
+
+type Kind = 'singleton' | 'platform'
+const labelFor = (kind: Kind, id: string) => (kind === 'singleton' ? SINGLETON_LABELS[id] ?? id : id)
+
+async function writeDraft(kind: Kind, id: string, clean: Data, publishAt: Date | null) {
+  if (kind === 'platform') {
+    await prisma.platform.update({ where: { slug: id }, data: { draft: json(clean), publishAt } })
+  } else {
+    await prisma.singleton
+      .update({ where: { key: id }, data: { draft: json(clean), publishAt } })
+      .catch(() => prisma.singleton.create({ data: { key: id, data: json(clean), draft: json(clean), publishAt } }))
+  }
+}
+
+/** Save edits as an unpublished draft (the public site keeps showing the live version). */
+export async function saveDraft(kind: Kind, id: string, data: Data): Promise<Result> {
+  const s = await guard()
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return { ok: false, error: 'Invalid content payload.' }
+  await writeDraft(kind, id, sanitizeContent(data), null)
+  await record(kind === 'platform' ? `platform:${id}` : id, labelFor(kind, id), 'draft', s.email)
+  return { ok: true }
+}
+
+/** Save a draft and schedule it to go live at `at` (ISO). A cron promotes it. */
+export async function schedulePublish(kind: Kind, id: string, data: Data, at: string): Promise<Result> {
+  const s = await guard()
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return { ok: false, error: 'Invalid content payload.' }
+  const when = new Date(at)
+  if (Number.isNaN(when.getTime())) return { ok: false, error: 'Invalid date/time.' }
+  if (when.getTime() < Date.now()) return { ok: false, error: 'Pick a time in the future.' }
+  await writeDraft(kind, id, sanitizeContent(data), when)
+  await record(kind === 'platform' ? `platform:${id}` : id, labelFor(kind, id), 'schedule', s.email)
+  return { ok: true }
+}
+
+/** Throw away the pending draft / schedule. */
+export async function discardDraft(kind: Kind, id: string): Promise<Result> {
+  const s = await guard()
+  if (kind === 'platform') await prisma.platform.update({ where: { slug: id }, data: { draft: Prisma.DbNull, publishAt: null } })
+  else await prisma.singleton.update({ where: { key: id }, data: { draft: Prisma.DbNull, publishAt: null } })
+  await record(kind === 'platform' ? `platform:${id}` : id, labelFor(kind, id), 'discard-draft', s.email)
   return { ok: true }
 }
 
@@ -92,9 +137,11 @@ export async function savePlatform(slug: string, data: Data): Promise<Result> {
       sector: String(clean.sector ?? ''),
       order: Number(clean.order ?? 0),
       data: json(clean),
+      draft: Prisma.DbNull,
+      publishAt: null,
     },
   })
-  await record(`platform:${slug}`, String(clean.name ?? slug), 'update', s.email, clean)
+  await record(`platform:${slug}`, String(clean.name ?? slug), 'publish', s.email, clean)
   await revalidateSite()
   return { ok: true }
 }
