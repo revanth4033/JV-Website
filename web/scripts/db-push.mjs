@@ -14,7 +14,7 @@ try {
 }
 // Idempotent data self-heal (e.g. collapse "$$500M" -> "$500M"). No-op on clean rows.
 try {
-  execSync('npx prisma db execute --schema prisma/schema.prisma --file prisma/normalize-currency.sql', { stdio: 'inherit' })
+  execSync('node scripts/normalize-currency.mjs', { stdio: 'inherit' })
 } catch (e) {
   console.warn('[db-normalize] skipped (continuing build):', e instanceof Error ? e.message : e)
 }
