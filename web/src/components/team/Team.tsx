@@ -10,6 +10,13 @@ import { asset } from '@/content'
 import type { SiteSettings, TeamPage } from '@/content/types'
 import { EASE, gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
 
+/** LinkedIn glyph (lucide dropped brand icons in this version) */
+const LinkedInIcon = () => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.34V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.07 2.07 0 1 1 0-4.14 2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z" />
+  </svg>
+)
+
 /** "Jasmeet Chhabra" -> "JC", "Sai Krishna Narla" -> "SN" */
 const initials = (name: string): string => {
   const parts = name.trim().split(/\s+/)
@@ -18,10 +25,21 @@ const initials = (name: string): string => {
   return (first + last).toUpperCase()
 }
 
-/** portrait: real photo when available, elegant monogram fallback otherwise */
-function Portrait({ name, photo, className = '' }: { name: string; photo?: string; className?: string }) {
+/** portrait: real photo when available, elegant monogram fallback otherwise.
+ *  When `linkedin` is set, a LinkedIn link reveals over the photo on hover. */
+function Portrait({
+  name,
+  photo,
+  linkedin,
+  className = '',
+}: {
+  name: string
+  photo?: string
+  linkedin?: string
+  className?: string
+}) {
   return (
-    <div className={`portrait${photo ? ' has-photo' : ''} ${className}`.trim()} aria-hidden="true">
+    <div className={`portrait${photo ? ' has-photo' : ''} ${className}`.trim()}>
       {photo ? (
         <Image
           src={asset(photo)}
@@ -29,10 +47,22 @@ function Portrait({ name, photo, className = '' }: { name: string; photo?: strin
           fill
           sizes="(max-width: 768px) 45vw, 360px"
           style={{ objectFit: 'cover', objectPosition: 'center 22%' }}
+          aria-hidden="true"
         />
       ) : (
-        <span>{initials(name)}</span>
+        <span aria-hidden="true">{initials(name)}</span>
       )}
+      {linkedin ? (
+        <a
+          className="portrait-li"
+          href={linkedin}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${name} on LinkedIn`}
+        >
+          <LinkedInIcon />
+        </a>
+      ) : null}
     </div>
   )
 }
@@ -174,7 +204,7 @@ export function Team({ team, settings }: { team: TeamPage; settings: SiteSetting
                   <span className="founder-index" aria-hidden="true">
                     {String(i + 1).padStart(2, '0')}
                   </span>
-                  <Portrait name={f.name} photo={f.photo} className="founder-portrait" />
+                  <Portrait name={f.name} photo={f.photo} linkedin={f.linkedin} className="founder-portrait" />
                 </div>
                 <div className="founder-body">
                   <span className="founder-role reveal">{f.role}</span>
@@ -213,7 +243,7 @@ export function Team({ team, settings }: { team: TeamPage; settings: SiteSetting
           <div className="team-gallery">
             {roster.map((m) => (
               <figure className="tm-card" key={m.name}>
-                <Portrait name={m.name} photo={m.photo} className="tm-photo" />
+                <Portrait name={m.name} photo={m.photo} linkedin={m.linkedin} className="tm-photo" />
                 <figcaption>
                   <span className="tm-venture">{m.venture}</span>
                   <h3 className="tm-name">{m.name}</h3>

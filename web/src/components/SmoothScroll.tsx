@@ -1,6 +1,7 @@
 'use client'
 
 import Lenis from 'lenis'
+import { usePathname } from 'next/navigation'
 import { createContext, useContext, useEffect, useState } from 'react'
 
 import { gsap, ScrollTrigger } from '@/lib/gsap'
@@ -20,6 +21,16 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
   // `reduced` must be state (not a ref) so the value propagates to consumers,
   // who re-run their GSAP effects via the [reduced] dependency.
   const [reduced, setReduced] = useState(false)
+  const pathname = usePathname()
+
+  // every route change starts at the top — Lenis keeps its own scroll position
+  // across client navigations otherwise (new page opens where the last one was)
+  useEffect(() => {
+    if (lenis) lenis.scrollTo(0, { immediate: true })
+    else window.scrollTo(0, 0)
+    // pinned layouts need their start/end recomputed after the jump
+    requestAnimationFrame(() => ScrollTrigger.refresh())
+  }, [pathname, lenis])
 
   useEffect(() => {
     const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches

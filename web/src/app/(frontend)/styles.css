@@ -47,6 +47,10 @@ em { font-family: inherit; font-style: normal; font-weight: inherit; }
   position: fixed; inset: 0 0 auto 0; z-index: 50;
   display: flex; justify-content: space-between; align-items: center;
   padding: 1.4rem var(--gutter);
+  /* solid navy bar always, so the white logo/nav stay visible over bright
+     hero media (e.g. the platform video). Solid colour (no backdrop-filter)
+     means it never becomes a containing block for the fixed mobile menu. */
+  background: rgba(7, 20, 48, 0.92);
 }
 .logo img { height: 30px; width: auto; }
 .site-nav { display: flex; gap: 2.2rem; align-items: center; }
@@ -696,13 +700,23 @@ em { font-family: inherit; font-style: normal; font-weight: inherit; }
   }
   .nav-caret { display: none; }
   .nav-drop {
-    position: static; opacity: 1; visibility: visible; pointer-events: auto;
+    /* follow the menu's visibility (hidden when closed) so the dropdown
+       doesn't leak onto the page when the overlay is off-screen */
+    position: static; opacity: 1; visibility: inherit; pointer-events: auto;
     transform: none; margin: 0.9rem 0 0; min-width: 0;
     padding: 0 0 0 1.1rem; gap: 0.1rem;
     background: none; backdrop-filter: none; box-shadow: none;
     border: 0; border-left: 1px solid var(--hair); border-radius: 0;
   }
   .nav-drop::before { display: none; }
+  /* the desktop hover/focus dropdown rules must not apply on mobile — focus
+     left on the trigger after navigation would otherwise force it open
+     (more specific than .nav-drop, so override at matching specificity) */
+  .nav-has-drop:hover .nav-drop,
+  .nav-has-drop:focus-within .nav-drop {
+    visibility: inherit;
+    transform: none;
+  }
   .nav-drop a { padding: 0.5rem 0; flex-direction: row; align-items: baseline; gap: 0.7rem; }
   .nd-name { font-size: 1rem; letter-spacing: 0.06em; }
   .nd-sector { font-size: 0.56rem; }
@@ -1371,9 +1385,11 @@ html, body { overflow-x: clip; }
 
 /* consistent slide template */
 .slide-kicker {
-  display: block;
-  font-size: 0.74rem; letter-spacing: 0.3em; text-transform: uppercase; font-weight: 600;
-  color: var(--red-soft); margin-bottom: 1rem;
+  display: inline-block;
+  background: var(--red); color: #fff;
+  padding: 0.5em 1.05em; border-radius: 99px;
+  font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; font-weight: 600;
+  margin-bottom: 1.1rem;
 }
 .slide-title {
   font-size: clamp(3rem, 7.5vw, 7.5rem);
@@ -1574,7 +1590,6 @@ html, body { overflow-x: clip; }
   );
 }
 /* kicker + numbers aren't masked, so a soft shadow lifts them off the photo */
-.slide--impact .slide-kicker { text-shadow: 0 2px 16px rgba(4, 12, 32, 0.9); }
 /* thin numerals need both a tight shadow (crisp edges) and a wide one (lift) */
 .slide--impact .stat-num {
   text-shadow: 0 0 4px rgba(4, 12, 32, 0.9), 0 2px 10px rgba(4, 12, 32, 0.95),
@@ -1611,14 +1626,17 @@ html, body { overflow-x: clip; }
 
 /* ---- slide 03: full-photo spread (text overlaid bottom-left) ---- */
 .slide--eco { display: flex; align-items: flex-end; position: relative; }
-.slide--eco .fb-img { filter: saturate(0.95) brightness(0.75); }
+.slide--eco .fb-img { filter: saturate(1.05) brightness(1); }
 .eco-veil {
   background:
     linear-gradient(90deg, rgba(7, 25, 60, 0.82) 0%, rgba(7, 25, 60, 0.25) 55%, rgba(7, 25, 60, 0.05) 100%),
     linear-gradient(0deg, rgba(7, 25, 60, 0.7) 0%, rgba(7, 25, 60, 0) 45%);
   mix-blend-mode: normal;
 }
-.slide--eco .slide-content { position: relative; z-index: 1; max-width: 640px; }
+.slide--eco .slide-content { position: relative; z-index: 1; max-width: min(840px, 92vw); }
+/* copy + kicker sit partly over the now-bright image — lift them with a soft
+   shadow rather than darkening the picture (title is in the left scrim) */
+.slide--eco .slide-copy { text-shadow: 0 2px 14px rgba(4, 12, 32, 0.9); }
 
 /* ---- slide 04: vertical platform strips ---- */
 .slide--plat {
@@ -1816,9 +1834,14 @@ html, body { overflow-x: clip; }
   );
 }
 .eco-veil {
-  background:
-    linear-gradient(90deg, rgba(7, 25, 60, 0.85) 0%, rgba(7, 25, 60, 0.3) 55%, rgba(7, 25, 60, 0.08) 100%),
-    linear-gradient(0deg, rgba(7, 25, 60, 0.72) 0%, rgba(7, 25, 60, 0) 45%);
+  /* scrim anchored to the bottom-left corner — exactly where the text sits.
+     The whole top (incl. top-left, below the nav) and the right stay clear. */
+  background: radial-gradient(
+    115% 82% at 0% 100%,
+    rgba(4, 12, 32, 0.9) 0%,
+    rgba(4, 12, 32, 0.45) 38%,
+    rgba(4, 12, 32, 0) 66%
+  );
 }
 
 /* ---- About QA fixes (June 2026) ---- */
@@ -1840,10 +1863,23 @@ html, body { overflow-x: clip; }
               box-shadow 300ms var(--ease);
 }
 .site-header.scrolled {
-  background: rgba(6, 18, 44, 0.74);
-  backdrop-filter: blur(14px);
+  background: rgba(6, 18, 44, 0.97);
   box-shadow: 0 1px 0 rgba(244, 246, 251, 0.08), 0 10px 30px rgba(4, 14, 36, 0.25);
 }
+
+/* ---- back-to-top button (all pages) ---- */
+.scroll-top {
+  position: fixed; right: clamp(1.2rem, 3vw, 2.4rem); bottom: clamp(1.2rem, 3vw, 2.4rem);
+  z-index: 60; width: 48px; height: 48px; border-radius: 50%; cursor: pointer;
+  display: grid; place-items: center; border: 0;
+  background: var(--red); color: #fff;
+  box-shadow: 0 10px 30px rgba(4, 14, 36, 0.4);
+  opacity: 0; transform: translateY(16px); pointer-events: none;
+  transition: opacity var(--d-base) var(--ease), transform var(--d-base) var(--ease),
+    background var(--d-fast) var(--ease);
+}
+.scroll-top.show { opacity: 1; transform: translateY(0); pointer-events: auto; }
+.scroll-top:hover { background: #ec2731; transform: translateY(-3px); }
 
 /* ============================================================
    MOBILE — homepage deck becomes a vertical stack
@@ -1877,7 +1913,8 @@ html, body { overflow-x: clip; }
   .slide--eco { display: flex; flex-direction: column; align-items: stretch; }
   .slide--eco .fullbleed { position: relative; inset: auto; height: 44vh; margin-bottom: 1.8rem; }
   .slide--eco .slide-content { max-width: 100%; }
-  .eco-veil { background: linear-gradient(0deg, rgba(7,25,60,0.6), rgba(7,25,60,0.1)); }
+  /* no text on the stacked mobile image — show it fully clear, no shades */
+  .eco-veil { background: none; }
 
   /* slide 04 — platforms: strips as a 2x2 grid of real cards */
   .slide--plat { display: flex; flex-direction: column; }
@@ -1986,8 +2023,8 @@ html, body { overflow-x: clip; }
   /* corner scrim anchored at the bottom-left, exactly behind the wordmark +
      tagline; the rest of the photo/video stays bright */
   background:
-    radial-gradient(120% 95% at -8% 108%, rgba(4,12,32,0.92) 0%, rgba(4,12,32,0.5) 34%, rgba(4,12,32,0) 64%),
-    linear-gradient(0deg, rgba(4,12,32,0.4) 0%, rgba(4,12,32,0) 18%);
+    radial-gradient(125% 100% at -8% 112%, rgba(4,12,32,0.95) 0%, rgba(4,12,32,0.62) 38%, rgba(4,12,32,0) 70%),
+    linear-gradient(0deg, rgba(4,12,32,0.5) 0%, rgba(4,12,32,0) 24%);
 }
 .plat-hero-inner { position: relative; z-index: 1; max-width: 720px; }
 .plat-wordmark {
@@ -1995,9 +2032,10 @@ html, body { overflow-x: clip; }
   filter: drop-shadow(0 6px 26px rgba(4, 12, 32, 0.95));
 }
 .plat-tagline {
-  font-size: clamp(1.1rem, 1.9vw, 1.6rem); font-weight: 300; line-height: 1.5;
-  color: var(--text); max-width: 40ch;
-  text-shadow: 0 2px 18px rgba(4, 12, 32, 0.95), 0 1px 4px rgba(4, 12, 32, 0.85);
+  font-size: clamp(1.1rem, 1.9vw, 1.6rem); font-weight: 400; line-height: 1.5;
+  color: #fff; max-width: 40ch;
+  text-shadow: 0 1px 2px rgba(4, 12, 32, 0.95), 0 2px 12px rgba(4, 12, 32, 0.92),
+    0 0 28px rgba(4, 12, 32, 0.7);
 }
 .plat-cue { bottom: clamp(1.5rem, 4vh, 2.6rem); right: var(--gutter); }
 
@@ -2312,7 +2350,7 @@ html, body { overflow-x: clip; }
 
 /* logo plate + category — the venture's identity row */
 .thx-brand { display: flex; align-items: center; gap: 1.3rem; margin: 1.6rem 0 1.4rem; }
-.thx-brand .ven-logo { max-height: 46px; max-width: 200px; }
+.thx-brand .ven-logo { max-height: 66px; max-width: 280px; padding: 0.6rem 1rem; }
 .thx-brand .th-cat { margin: 0; }
 
 /* secondary content staggers up behind the name */
@@ -2398,6 +2436,29 @@ html, body { overflow-x: clip; }
 .portrait span { font-size: clamp(2rem, 3.5vw, 3.2rem); font-weight: 200; color: var(--text); letter-spacing: 0.02em; }
 .portrait:not(.has-photo)::after {
   content: ""; position: absolute; left: 0; bottom: 0; width: 42px; height: 2px; background: var(--red);
+}
+/* LinkedIn overlay — reveals over the photo on hover, click opens the profile */
+.portrait-li {
+  position: absolute; inset: 0; z-index: 3;
+  display: grid; place-items: center; color: #fff;
+  background: rgba(4, 12, 32, 0.55);
+  opacity: 0; transition: opacity var(--d-base) var(--ease);
+}
+.portrait:hover .portrait-li,
+.portrait-li:focus-visible { opacity: 1; }
+.portrait-li svg {
+  width: 30px; height: 30px;
+  transform: scale(0.8); transition: transform var(--d-base) var(--ease);
+}
+.portrait:hover .portrait-li svg { transform: scale(1); }
+/* touch devices have no hover — show a small persistent LinkedIn badge */
+@media (hover: none) {
+  .portrait-li {
+    inset: auto 0.55rem 0.55rem auto; width: 34px; height: 34px;
+    border-radius: 50%; background: var(--red); opacity: 1;
+    box-shadow: 0 6px 16px rgba(4, 14, 36, 0.4);
+  }
+  .portrait-li svg { width: 18px; height: 18px; transform: none; }
 }
 
 /* media: framed portrait with a giant outlined index numeral */

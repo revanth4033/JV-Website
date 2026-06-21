@@ -111,7 +111,7 @@ export interface Platform {
 }
 
 // ---- Team ----
-export interface TeamMember { name: string; role: string; bio?: string; photo?: string; highlights?: string[] }
+export interface TeamMember { name: string; role: string; bio?: string; photo?: string; highlights?: string[]; linkedin?: string }
 export interface TeamGroup { venture: string; members: TeamMember[] }
 export interface TeamPage {
   seo: { title: string; description?: string }

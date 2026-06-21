@@ -37,7 +37,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
   }, [open, lenis])
 
   return (
-    <header ref={headerRef} className={`site-header${scrolled ? ' scrolled' : ''}${open ? ' nav-open' : ''}`}>
+    <header ref={headerRef} className={`site-header${scrolled && !open ? ' scrolled' : ''}${open ? ' nav-open' : ''}`}>
       <Link className="logo" href="/" onClick={() => setOpen(false)} data-cms-section="logo">
         <Image src={asset(logo.src)} alt={logo.alt} width={240} height={30} priority unoptimized />
       </Link>

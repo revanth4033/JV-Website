@@ -7,6 +7,7 @@ import { loadSiteSettings } from '@/content/db'
 import { Footer } from '@/components/Footer'
 import { Header } from '@/components/Header'
 import { JsonLd } from '@/components/JsonLd'
+import { ScrollTop } from '@/components/ScrollTop'
 import { SmoothScroll } from '@/components/SmoothScroll'
 
 const montserrat = Montserrat({
@@ -57,6 +58,7 @@ export default async function FrontendLayout({ children }: { children: React.Rea
           <Header settings={settings} />
           {children}
           <Footer settings={settings} />
+          <ScrollTop />
         </SmoothScroll>
       </body>
     </html>
