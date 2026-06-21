@@ -12,4 +12,10 @@ try {
 } catch (e) {
   console.warn('[db-push] schema sync skipped (continuing build):', e instanceof Error ? e.message : e)
 }
+// Idempotent data self-heal (e.g. collapse "$$500M" -> "$500M"). No-op on clean rows.
+try {
+  execSync('npx prisma db execute --schema prisma/schema.prisma --file prisma/normalize-currency.sql', { stdio: 'inherit' })
+} catch (e) {
+  console.warn('[db-normalize] skipped (continuing build):', e instanceof Error ? e.message : e)
+}
 process.exit(0)

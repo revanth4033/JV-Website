@@ -17,8 +17,16 @@ const RICH_CONFIG: sanitizeHtml.IOptions = {
 /** True when a string looks like it contains markup (so plain text is left untouched). */
 const looksLikeHtml = (s: string) => /<[a-z!/]/i.test(s)
 
+/**
+ * Collapse accidental repeated currency symbols ("$$500M" → "$500M"). These slip
+ * in when an editor types a "$" in front of a value that already carries one; a
+ * run of the same currency mark is never intentional in this content.
+ */
+const normalizeCurrency = (s: string) => s.replace(/([$₹€£])\1+/g, '$1')
+
 export function sanitizeRich(s: string): string {
-  return looksLikeHtml(s) ? sanitizeHtml(s, RICH_CONFIG) : s
+  const cleaned = normalizeCurrency(s)
+  return looksLikeHtml(cleaned) ? sanitizeHtml(cleaned, RICH_CONFIG) : cleaned
 }
 
 /**

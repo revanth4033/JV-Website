@@ -62,8 +62,10 @@ em { font-family: inherit; font-style: normal; font-weight: inherit; }
 .site-nav a:hover { color: var(--red-soft); }
 .nav-cta {
   border: 1px solid var(--hair); padding: 0.55em 1.3em; border-radius: 99px;
-  background: var(--glass);
-  backdrop-filter: blur(8px);
+  /* solid translucent fill instead of backdrop-filter: this sits in the fixed
+     header, so a blur here forces a re-sample of the page behind it on every
+     scroll frame (expensive at high DPI). The header is already opaque navy. */
+  background: rgba(255, 255, 255, 0.08);
   transition: border-color var(--d-fast) var(--ease), background var(--d-fast) var(--ease);
 }
 .nav-cta:hover { border-color: var(--red-soft); background: var(--glass-strong); }

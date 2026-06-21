@@ -39,7 +39,18 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     setReduced(rm)
     if (rm) return
 
-    const instance = new Lenis({ lerp: 0.1, smoothWheel: true })
+    // Smooth scroll repaints the whole viewport every frame, which is costly on
+    // touch and low-core machines (and redundant on touch, where the OS already
+    // does momentum). Run it only on precise-pointer, multi-core devices; native
+    // scroll elsewhere is 1:1 and far cheaper. `reduced` stays bound to the OS
+    // preference alone, so entrance animations still run on those devices.
+    const coarse = window.matchMedia('(pointer: coarse)').matches
+    const lowPower = (navigator.hardwareConcurrency || 8) <= 4
+    if (coarse || lowPower) return
+
+    // lerp 0.1 → 0.135: a touch snappier so the view catches up to the wheel
+    // faster (less "laggy" trailing) while keeping the glide.
+    const instance = new Lenis({ lerp: 0.135, smoothWheel: true })
     instance.on('scroll', ScrollTrigger.update)
     ;(window as unknown as { __lenis?: Lenis }).__lenis = instance
 
