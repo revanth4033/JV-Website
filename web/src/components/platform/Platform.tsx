@@ -338,13 +338,11 @@ export function Platform({
     () => {
       const root = scope.current!
 
-      // hero video: desktop + non-reduced only
+      // hero video: play on all viewports (muted + playsInline so it
+      // autoplays inline on mobile too); only skipped under reduced-motion
       const vid = root.querySelector<HTMLVideoElement>('.plat-hero-video')
       if (vid && platform.video) {
-        const allow =
-          window.matchMedia('(min-width: 1024px)').matches &&
-          !window.matchMedia('(prefers-reduced-motion: reduce)').matches
-        if (!allow) {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
           vid.remove()
         } else {
           vid.poster = asset(platform.hero)
