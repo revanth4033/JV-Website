@@ -2435,41 +2435,37 @@ html, body { overflow-x: clip; }
   border: 1px solid var(--hair);
 }
 .portrait.has-photo { background-size: cover; background-position: center 22%; background-repeat: no-repeat; }
-.portrait span { font-size: clamp(2rem, 3.5vw, 3.2rem); font-weight: 200; color: var(--text); letter-spacing: 0.02em; }
+.portrait > span { font-size: clamp(2rem, 3.5vw, 3.2rem); font-weight: 200; color: var(--text); letter-spacing: 0.02em; }
 .portrait:not(.has-photo)::after {
   content: ""; position: absolute; left: 0; bottom: 0; width: 42px; height: 2px; background: var(--red);
 }
-/* LinkedIn — a compact pill that fades + slides up in a lower corner on hover.
-   The face stays visible, so the grayscale→colour reveal still reads. */
+/* the photo gently zooms on hover (clipped by the frame's overflow) */
+.portrait img { transition: transform var(--d-slow, 0.6s) var(--ease); }
+.portrait:hover img { transform: scale(1.06); }
+/* LinkedIn — a round logo button, centred near the photo's bottom edge. It fades
+   and rises in on hover, and fills red when pointed at. */
 .portrait-li {
-  position: absolute; left: 0.7rem; bottom: 0.7rem; z-index: 3;
+  position: absolute; left: 50%; bottom: 1rem; z-index: 3;
   display: inline-flex; align-items: center; justify-content: center;
-  width: 38px; height: 38px; border-radius: 99px; color: #fff;
-  background: rgba(7, 20, 48, 0.78);
-  border: 1px solid rgba(244, 246, 251, 0.28);
-  box-shadow: 0 8px 20px rgba(4, 14, 36, 0.38);
-  opacity: 0; transform: translateY(10px);
+  width: 44px; height: 44px; border-radius: 50%; color: #fff;
+  background: rgba(5, 14, 36, 0.9);
+  border: 1px solid rgba(244, 246, 251, 0.32);
+  box-shadow: 0 10px 26px rgba(4, 14, 36, 0.45);
+  opacity: 0; transform: translate(-50%, 14px);
   transition: opacity var(--d-base) var(--ease), transform var(--d-base) var(--ease),
               background var(--d-fast) var(--ease), border-color var(--d-fast) var(--ease);
 }
 .portrait:hover .portrait-li,
-.portrait-li:focus-visible { opacity: 1; transform: translateY(0); }
+.portrait-li:focus-visible { opacity: 1; transform: translate(-50%, 0); }
 .portrait-li:hover,
 .portrait-li:focus-visible { background: var(--red); border-color: var(--red); }
-.portrait-li svg { width: 18px; height: 18px; }
-/* a founder frame carries a red corner accent that flips by side — keep the pill
-   on the opposite corner so the two never collide */
-.founder[data-side='left'] .portrait-li { left: auto; right: 0.7rem; }
-/* touch devices have no hover — show a small persistent LinkedIn badge */
+.portrait-li svg { width: 21px; height: 21px; }
+/* touch devices have no hover — keep the button visible */
 @media (hover: none) {
   .portrait-li {
-    inset: auto 0.55rem 0.55rem auto; left: auto; width: 34px; height: 34px;
-    border-radius: 50%; background: var(--red); border-color: transparent;
-    opacity: 1; transform: none; box-shadow: 0 6px 16px rgba(4, 14, 36, 0.4);
+    opacity: 1; transform: translate(-50%, 0);
+    background: var(--red); border-color: transparent;
   }
-  .founder[data-side='left'] .portrait-li { right: 0.55rem; }
-  .founder[data-side='right'] .portrait-li { inset: auto auto 0.55rem 0.55rem; }
-  .portrait-li svg { width: 17px; height: 17px; }
 }
 
 /* media: framed portrait with a giant outlined index numeral */
@@ -2484,11 +2480,10 @@ html, body { overflow-x: clip; }
 .founder-portrait {
   aspect-ratio: 4 / 5; width: 100%; will-change: clip-path, transform;
   box-shadow: 0 40px 90px rgba(4, 14, 36, 0.55);
-  filter: grayscale(0.35) brightness(0.95);
-  transition: filter var(--d-base) var(--ease), border-color var(--d-base) var(--ease);
+  transition: box-shadow var(--d-base) var(--ease), border-color var(--d-base) var(--ease);
 }
-.founder:hover .founder-portrait { filter: grayscale(0) brightness(1); border-color: rgba(244, 246, 251, 0.4); }
-.founder-portrait span { font-size: clamp(3rem, 6vw, 5rem); }
+.founder:hover .founder-portrait { box-shadow: 0 52px 110px rgba(4, 14, 36, 0.62); border-color: rgba(244, 246, 251, 0.4); }
+.founder-portrait > span { font-size: clamp(3rem, 6vw, 5rem); }
 /* a hairline accent that anchors the frame's lower-left corner */
 .founder-media::after {
   content: ""; position: absolute; left: -1px; bottom: clamp(1.5rem, 4vw, 3rem);
@@ -2521,10 +2516,10 @@ html, body { overflow-x: clip; }
 .tm-card { margin-bottom: 0; }
 .tm-photo {
   aspect-ratio: 4 / 5; width: 100%;
-  filter: grayscale(0.45) brightness(0.92);
-  transition: filter var(--d-base) var(--ease), border-color var(--d-base) var(--ease);
+  box-shadow: 0 14px 30px rgba(4, 14, 36, 0);
+  transition: transform var(--d-base) var(--ease), box-shadow var(--d-base) var(--ease), border-color var(--d-base) var(--ease);
 }
-.tm-card:hover .tm-photo { filter: grayscale(0) brightness(1); border-color: rgba(244, 246, 251, 0.42); }
+.tm-card:hover .tm-photo { transform: translateY(-7px); box-shadow: 0 28px 52px rgba(4, 14, 36, 0.45); border-color: rgba(244, 246, 251, 0.42); }
 .tm-card figcaption { padding-top: 0.9rem; }
 .tm-venture { display: block; color: var(--red-soft); font-size: 0.56rem; letter-spacing: 0.22em; text-transform: uppercase; font-weight: 600; }
 .tm-name { font-size: clamp(1rem, 1.3vw, 1.25rem); font-weight: 400; letter-spacing: -0.005em; margin-top: 0.4rem; line-height: 1.2; }
