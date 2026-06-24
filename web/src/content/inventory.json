@@ -92,7 +92,7 @@
           "title": { "lines": ["Ecosystems"], "emphasis": "all" },
           "copy": "White spaces in economic corridors are transformed into <strong>GRIDS</strong> — Growth-Ready Innovation Destinations — cohesive, high-performance ecosystems of real assets and enabling services.",
           "cta": { "label": "Explore GRIDS", "href": "about.html#grids-deep" },
-          "backgroundImage": "assets/grid-image-clean.jpg"
+          "backgroundImage": "assets/eco-grid.jpg"
         },
         {
           "id": "platforms",
@@ -200,12 +200,12 @@
         { "value": 4, "label": "Platforms" }
       ]
     },
-    "foundersTitle": "Co-Founders",
+    "foundersTitle": "Mentors",
     "founders": [
       { "name": "Jasmeet Chhabra", "role": "Co-Founder", "photo": "assets/team/jasmeet-chhabra.png", "linkedin": "https://www.linkedin.com/in/jasmeet-singh-chhabra-1892721/", "highlights": ["20+ years", "$400M+ deployed", "Real estate · Infra · PE"], "bio": "Twenty years across real estate, infrastructure, capital-markets fundraising, and private equity — focused on ideation, innovation, and strategic investments in socially relevant and alternative assets. Has deployed over $400 million across lifesciences, education, healthcare, and managed habitats." },
       { "name": "Vishal Goel", "role": "Co-Founder", "photo": "assets/team/vishal-goel.png", "linkedin": "https://www.linkedin.com/in/vishalhbs/", "highlights": ["20+ years", "$600M+ deployed", "Harvard HBS & GSD"], "bio": "Harvard Business School and Harvard Graduate School of Design alumnus with twenty years building integrated ecosystems. Advised the Government of Andhra Pradesh on India's first Biotech Policy and helped shape Hyderabad's Genome Valley. Has led deployment of over $600 million across sectors." }
     ],
-    "rosterTitle": "Portfolio leadership",
+    "rosterTitle": "Intrapreneurs",
     "rosterCopy": "The operators running the businesses we build — venture by venture.",
     "groups": [
       { "venture": "Cappella", "members": [
@@ -222,7 +222,7 @@
       { "venture": "Abeona", "members": [
         { "name": "Santosh Chaubey", "role": "Head", "photo": "assets/team/santosh-chaubey.png", "linkedin": "https://www.linkedin.com/in/santosh-kumar-chaubey/" }
       ] },
-      { "venture": "NXT", "members": [
+      { "venture": "NextQuest Forward", "members": [
         { "name": "Milind Ravi", "role": "Co-Founder & CEO", "photo": "assets/team/milind-ravi.png", "linkedin": "https://www.linkedin.com/in/milind-ravi-07141921/" }
       ] },
       { "venture": "GVRP", "members": [
@@ -260,7 +260,9 @@
       { "city": "Financial District", "region": "Hyderabad", "address": "24th Floor, One West, Nanakramguda Service Road, Financial District, Hyderabad 500008, Telangana, India" }
     ],
     "presence": "India · Dubai · Singapore",
-    "formIntro": "Send us a note"
+    "formIntro": "Send us a note",
+    "mapTitle": "Find us",
+    "mapCopy": "Two offices in Hyderabad, at the heart of India’s deep-tech and lifesciences corridor."
   },
 
   "platforms": [
@@ -273,10 +275,7 @@
       "tagline": "An all-encompassing K-12 education platform cultivating vibrant learning environments across the full lifecycle of the education experience.",
       "intro": "PowerEd builds the institutions, the operating models, and the everyday services that let schools focus on learning — from the buildings themselves to the buses that reach them.",
       "totals": [
-        { "value": "$500M+", "label": "Assets under management" },
-        { "value": "19K+", "label": "Students served" },
-        { "value": "33", "label": "Schools" },
-        { "value": "4", "label": "Operating ventures" }
+        { "value": "19,000+", "label": "Students empowered" }
       ],
       "categories": [
         { "label": "Infrastructure", "ventures": [
@@ -308,19 +307,16 @@
       "tagline": "A lifesciences ecosystem driving innovation through purpose-built infrastructure, advanced research environments, and integrated support services.",
       "intro": "PoweRx creates enabling ecosystems that combine world-class laboratories, specialised operational services, and collaborative environments — letting scientists, researchers, and businesses focus on discovery, development, and growth.",
       "totals": [
-        { "value": "6.5 Mn+", "label": "SFT of labspace" },
-        { "value": "03", "label": "Clusters" },
-        { "value": "85+", "label": "Research clients" },
-        { "value": "2", "label": "Operating verticals" }
+        { "value": "6.5 Mn+", "label": "SFT of labspace" }
       ],
       "categories": [
         { "label": "Infrastructure", "ventures": [
-          { "name": "NXT", "logo": "assets/plat/logo-nxt.png", "photo": "assets/plat/rx-infra.jpg",
+          { "name": "NXT", "logo": "assets/plat/logo-nxt2.png", "photo": "assets/plat/rx-infra.jpg",
             "desc": "Tailored infrastructure solutions for dynamic lifesciences clusters — modular & customised environments, build-outs, campus management, and flexible ownership models.",
-            "metrics": [{ "value": "1 Mn+ SFT", "label": "Operational" }, { "value": "3 Mn+ SFT", "label": "Planning & design" }, { "value": "2.5 Mn+ SFT", "label": "Under development" }, { "value": "4 Lakh SFT", "label": "AALV" }] }
+            "metrics": [{ "value": "1 Mn+ SFT", "label": "Operational" }, { "value": "3 Mn+ SFT", "label": "Planning & design" }, { "value": "2.5 Mn+ SFT", "label": "Under development" }, { "value": "2.5 Mn+ SFT", "label": "Exited" }, { "value": "4 Lakh SFT", "label": "AALV" }, { "value": "03", "label": "Clusters" }] }
         ]},
-        { "label": "Research & Manufacturing", "ventures": [
-          { "name": "CRAMS", "logo": "", "photo": "assets/plat/rx-crams.jpg",
+        { "label": "CRAMS", "ventures": [
+          { "name": "CRAMS", "logo": "assets/plat/logo-gv.png", "photo": "assets/plat/rx-crams.jpg",
             "desc": "Contract Research and Manufacturing Services — an integrated research platform offering drug discovery and preclinical solutions for pharma and biotech companies.",
             "metrics": [{ "value": "35K+ SFT", "label": "Active" }, { "value": "35K+ SFT", "label": "Pipeline" }, { "value": "85+", "label": "Clients" }] }
         ]}
@@ -335,10 +331,7 @@
       "tagline": "A healthcare solutions network designed around patient and practitioner needs — creating seamless care experiences through thoughtfully planned environments and high-quality infrastructure.",
       "intro": "PowerCare reimagines where care happens: experiential medical environments and flexible clinical spaces built around the people who deliver and receive care.",
       "totals": [
-        { "value": "1st", "label": "Centre launched" },
-        { "value": "2.4 Lakh+", "label": "SFT in pipeline" },
-        { "value": "35-40", "label": "Centres (5-yr target)" },
-        { "value": "2", "label": "Care formats" }
+        { "value": "2.4 Lakh+", "label": "SFT in pipeline" }
       ],
       "categories": [
         { "label": "Infrastructure", "ventures": [
@@ -360,10 +353,7 @@
       "tagline": "An infrastructure platform reimagining how professionals live — from purpose-built living spaces to integrated hospitality experiences.",
       "intro": "PowerPod brings institutional discipline to hospitality and living, delivering curated dining, lifestyle, and service experiences for professionals across cities.",
       "totals": [
-        { "value": "07", "label": "Assets" },
-        { "value": "05", "label": "Cities" },
-        { "value": "13.4 Lakh+", "label": "SFT pipeline + planned" },
-        { "value": "1,024", "label": "Keys across tiers" }
+        { "value": "10.9 Lakh+", "label": "SFT planned development" }
       ],
       "categories": [
         { "label": "Infrastructure", "ventures": [

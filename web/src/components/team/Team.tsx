@@ -172,19 +172,9 @@ export function Team({ team, settings }: { team: TeamPage; settings: SiteSetting
         {/* ACT 1 · HERO */}
         <section className="act team-hero" data-cms-section="hero" data-act="01" data-act-name={hero.actName} data-hero>
           <span className="team-kicker">{hero.kicker}</span>
-          <AnimatedTitle as="h1" className="team-title" title={hero.title} />
-          <div className="team-head">
+          <div className="team-hero-row">
+            <AnimatedTitle as="h1" className="team-title" title={hero.title} />
             <p className="team-intro reveal">{hero.intro}</p>
-            <div className="team-stats reveal">
-              {hero.stats.map((s) => (
-                <div className="team-stat" key={s.label}>
-                  <span className="count-num" data-count={s.value}>
-                    0
-                  </span>
-                  <span className="team-stat-label">{s.label}</span>
-                </div>
-              ))}
-            </div>
           </div>
         </section>
 
@@ -201,9 +191,6 @@ export function Team({ team, settings }: { team: TeamPage; settings: SiteSetting
             {founders.map((f, i) => (
               <article className="founder" data-side={i % 2 === 0 ? 'left' : 'right'} key={f.name}>
                 <div className="founder-media">
-                  <span className="founder-index" aria-hidden="true">
-                    {String(i + 1).padStart(2, '0')}
-                  </span>
                   <Portrait name={f.name} photo={f.photo} linkedin={f.linkedin} className="founder-portrait" />
                 </div>
                 <div className="founder-body">

@@ -237,7 +237,6 @@ export function About({ about, settings }: { about: AboutPage; settings: SiteSet
                 <span className="dcard-ghost">{pad(i + 1)}</span>
                 <div className="dcard-left">
                   <img className="step-icon" src={asset(c.icon)} alt="" loading="lazy" decoding="async" />
-                  <span className="dcard-stage">{c.stage}</span>
                   <h3 className="dcard-title" dangerouslySetInnerHTML={{ __html: c.title }} />
                 </div>
                 <div className="dcard-right">

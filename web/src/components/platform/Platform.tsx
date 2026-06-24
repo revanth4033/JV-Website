@@ -16,23 +16,34 @@ type FlatVenture = Venture & { category: string }
 const flatten = (p: PlatformT): FlatVenture[] =>
   p.categories.flatMap((cat) => cat.ventures.map((v) => ({ ...v, category: cat.label })))
 
-/* count-up that preserves the surrounding text of a metric/total string */
+/* count-up that preserves the surrounding text of a metric/total string.
+   The true value is cached on the element so a re-run (e.g. React Strict-Mode
+   double-invoke, which can leave a half-animated "0" behind) always animates
+   toward the real number instead of reading the stale "0" and bailing out. */
 function animateNumber(el: HTMLElement, duration = 1.3) {
-  const raw = el.textContent || ''
+  const raw = el.dataset.full ?? el.textContent ?? ''
+  el.dataset.full = raw
   const m = raw.match(/([\d,.]+)/)
   if (!m) return
   const numStr = m[1]
   const target = parseFloat(numStr.replace(/,/g, ''))
-  if (!isFinite(target) || target === 0) return
+  if (!isFinite(target) || target === 0) {
+    el.textContent = raw
+    return
+  }
   const decimals = (numStr.split('.')[1] || '').length
   const obj = { v: 0 }
   gsap.to(obj, {
     v: target,
     duration,
     ease: 'power2.out',
+    overwrite: true,
     onUpdate: () => {
       const val = decimals ? obj.v.toFixed(decimals) : Math.round(obj.v).toLocaleString('en-IN')
       el.textContent = raw.replace(numStr, val)
+    },
+    onComplete: () => {
+      el.textContent = raw
     },
   })
 }
@@ -59,7 +70,6 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
       const pages = gsap.utils.toArray<HTMLElement>('.thx-page')
       const items = gsap.utils.toArray<HTMLElement>('.ven-rail-item')
       const ghost = sec.querySelector<HTMLElement>('.thx-ghost')
-      const counter = sec.querySelector<HTMLElement>('#th-cur')!
       const counted = new Set<Element>()
       const selected = cats.map((c) => c.idxs[0]) // remembered venture per category
       let curCat = -1
@@ -79,7 +89,6 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
         photos.forEach((p, j) => p.classList.toggle('active', j === gi))
         pages.forEach((p, j) => p.classList.toggle('active', j === gi))
         items.forEach((it, j) => it.classList.toggle('active', j === catIdx))
-        counter.textContent = pad(catIdx + 1)
         if (ghost) {
           ghost.textContent = pad(catIdx + 1)
           gsap.fromTo(ghost, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.9, ease: 'power3.out' })
@@ -114,18 +123,27 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
       }
       items.forEach((it) => it.addEventListener('click', onRail))
 
-      // chip click -> switch venture within the current category (no scroll)
-      const chips = gsap.utils.toArray<HTMLElement>('.thx-chip')
-      const onChip = (e: Event) => {
-        const gi = +(e.currentTarget as HTMLElement).dataset.go!
-        if (curCat >= 0) selected[curCat] = gi
+      // prev/next arrows -> cycle ventures within the current category (no scroll)
+      const step = (dir: number) => {
+        if (curCat < 0) return
+        const idxs = cats[curCat].idxs
+        if (idxs.length < 2) return
+        const pos = idxs.indexOf(curVen)
+        const gi = idxs[(pos + dir + idxs.length) % idxs.length]
+        selected[curCat] = gi
         showVenture(gi)
       }
-      chips.forEach((c) => c.addEventListener('click', onChip))
+      const prevBtns = gsap.utils.toArray<HTMLElement>('.thx-nav--prev')
+      const nextBtns = gsap.utils.toArray<HTMLElement>('.thx-nav--next')
+      const onPrev = () => step(-1)
+      const onNext = () => step(1)
+      prevBtns.forEach((btn) => btn.addEventListener('click', onPrev))
+      nextBtns.forEach((btn) => btn.addEventListener('click', onNext))
 
       return () => {
         items.forEach((it) => it.removeEventListener('click', onRail))
-        chips.forEach((c) => c.removeEventListener('click', onChip))
+        prevBtns.forEach((btn) => btn.removeEventListener('click', onPrev))
+        nextBtns.forEach((btn) => btn.removeEventListener('click', onNext))
       }
     },
     { scope: ref, dependencies: [C] },
@@ -139,9 +157,6 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
             <span className="ven-rail-kicker">Inside the platform</span>
             <img className="thx-wordmark" src={asset(platform.wordmark)} alt={platform.name} loading="lazy" decoding="async" />
           </div>
-          <span className="th-count">
-            <span id="th-cur">01</span> / {pad(C)}
-          </span>
         </header>
         <span className="thx-ghost" aria-hidden="true">
           01
@@ -158,35 +173,27 @@ function VentureTheater({ platform, ventures }: { platform: PlatformT; ventures:
         <div className="thx-stack">
           {ventures.map((v, i) => (
             <article className={`thx-page${i === 0 ? ' active' : ''}`} data-i={i} key={i}>
-              <h3 className="thx-name">
-                <span className="thx-name-in">{v.name}</span>
-              </h3>
-              {cats[catOf(i)].idxs.length > 1 ? (
-                <div className="thx-chips">
-                  {cats[catOf(i)].idxs.map((gi) => (
-                    <button
-                      type="button"
-                      className={`thx-chip${gi === i ? ' active' : ''}`}
-                      data-go={gi}
-                      key={gi}
-                    >
-                      {ventures[gi].name}
-                    </button>
+              <h3 className="sr-only">{v.name}</h3>
+              <div className="thx-brand">
+                {v.logo ? <img className="ven-logo" src={asset(v.logo)} alt={v.name} loading="lazy" decoding="async" /> : null}
+                {cats[catOf(i)].idxs.length > 1 ? (
+                  <div className="thx-nav-pair">
+                    <button type="button" className="thx-nav thx-nav--prev" aria-label="Previous venture">‹</button>
+                    <button type="button" className="thx-nav thx-nav--next" aria-label="Next venture">›</button>
+                  </div>
+                ) : null}
+              </div>
+              <p className="ven-desc">{v.desc}</p>
+              {v.metrics.length > 0 ? (
+                <div className="ven-metrics">
+                  {v.metrics.map((m, k) => (
+                    <div className="ven-metric" key={k}>
+                      <span className="ven-metric-num">{m.value}</span>
+                      <span className="ven-metric-label">{m.label}</span>
+                    </div>
                   ))}
                 </div>
               ) : null}
-              <div className="thx-brand">
-                {v.logo ? <img className="ven-logo" src={asset(v.logo)} alt={v.name} loading="lazy" decoding="async" /> : null}
-              </div>
-              <p className="ven-desc">{v.desc}</p>
-              <div className="ven-metrics">
-                {v.metrics.map((m, k) => (
-                  <div className="ven-metric" key={k}>
-                    <span className="ven-metric-num">{m.value}</span>
-                    <span className="ven-metric-label">{m.label}</span>
-                  </div>
-                ))}
-              </div>
             </article>
           ))}
         </div>
@@ -286,14 +293,16 @@ function VentureStream({ platform, ventures }: { platform: PlatformT; ventures: 
                       )}
                     </div>
                     <p className="ven-desc">{v.desc}</p>
-                    <div className="ven-metrics">
-                      {v.metrics.map((m, k) => (
-                        <div className="ven-metric" key={k}>
-                          <span className="ven-metric-num">{m.value}</span>
-                          <span className="ven-metric-label">{m.label}</span>
-                        </div>
-                      ))}
-                    </div>
+                    {v.metrics.length > 0 ? (
+                      <div className="ven-metrics">
+                        {v.metrics.map((m, k) => (
+                          <div className="ven-metric" key={k}>
+                            <span className="ven-metric-num">{m.value}</span>
+                            <span className="ven-metric-label">{m.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
                   </div>
                 </article>
               </div>
@@ -324,7 +333,7 @@ export function Platform({
     const bp = window.matchMedia('(min-width: 1024px)')
     const reducedMM = window.matchMedia('(prefers-reduced-motion: reduce)')
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    if (ventures.length > 1 && bp.matches && !reducedMM.matches) setMode('theater')
+    if (ventures.length >= 1 && bp.matches && !reducedMM.matches) setMode('theater')
     const atLoad = bp.matches
     const onChange = () => {
       if (bp.matches !== atLoad) location.reload()
@@ -418,29 +427,18 @@ export function Platform({
 
         {/* INTRO + TOTALS */}
         <section className="act plat-intro" id="intro">
-          <div className="grids-head">
-            <h2 className="section-title">
-              <span className="line">
-                <span className="line-inner">The</span>
-              </span>
-              <span className="line">
-                <span className="line-inner em plat-sector">{platform.sector.toLowerCase()}</span>
-              </span>
-              <span className="line">
-                <span className="line-inner">platform</span>
-              </span>
-            </h2>
+          <div className="grids-head plat-intro-head">
+            <div className="plat-totals reveal" data-cms-section="totals">
+              {platform.totals.map((t, i) => (
+                <div className="total" key={i}>
+                  <span className="total-num">{t.value}</span>
+                  <span className="total-label">{t.label}</span>
+                </div>
+              ))}
+            </div>
             <div className="head-right">
               <p className="section-copy reveal plat-intro-copy">{platform.intro}</p>
             </div>
-          </div>
-          <div className="plat-totals reveal" data-cms-section="totals">
-            {platform.totals.map((t, i) => (
-              <div className="total" key={i}>
-                <span className="total-num">{t.value}</span>
-                <span className="total-label">{t.label}</span>
-              </div>
-            ))}
           </div>
         </section>
 

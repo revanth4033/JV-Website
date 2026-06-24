@@ -4,24 +4,25 @@ import { route } from '@/content'
 import type { SiteSettings } from '@/content/types'
 
 export function Footer({ settings }: { settings: SiteSettings }) {
-  const { footer } = settings
+  const { footer, nav } = settings
   return (
     <footer className="site-footer" data-cms-section="footer">
+      {/* same links as the top nav */}
       <div className="foot-left">
-        <span>{footer.locations}</span>
+        {nav
+          .filter((item) => item.dropdown?.length || (item.href && item.href !== '#'))
+          .map((item) => (
+            <Link
+              key={item.label}
+              href={route(item.href)}
+              {...(item.external ? { target: '_blank', rel: 'noopener' } : {})}
+            >
+              {item.label}
+            </Link>
+          ))}
       </div>
       <div className="foot-right">
-        {footer.links
-          .filter((l) => l.href && l.href !== '#')
-          .map((l) => (
-          <Link
-            key={l.label}
-            href={route(l.href)}
-            {...(l.external ? { target: '_blank', rel: 'noopener' } : {})}
-          >
-            {l.label}
-          </Link>
-        ))}
+        <span>{footer.locations}</span>
       </div>
     </footer>
   )

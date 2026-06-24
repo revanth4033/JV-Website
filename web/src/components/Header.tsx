@@ -13,20 +13,41 @@ export function Header({ settings }: { settings: SiteSettings }) {
   const headerRef = useRef<HTMLElement>(null)
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [atTopEdge, setAtTopEdge] = useState(false)
+  // auto-hide only where there's a real pointer to reveal it again; touch
+  // devices keep the bar pinned so the menu button is always reachable.
+  const [autoHide, setAutoHide] = useState(false)
   const { lenis } = useSmoothScroll()
 
-  // smart header: backdrop after 40px (Lenis scroll if present, else native)
+  // auto-hide header: track scroll position (Lenis if present, else native) and
+  // whether the pointer is hovering the top edge so the bar can pull back down.
   useEffect(() => {
+    setAutoHide(window.matchMedia('(pointer: fine)').matches)
+
     const onScroll = (y: number) => setScrolled(y > 40)
+    let cleanupScroll: () => void
     if (lenis) {
       const handler = (e: { scroll: number }) => onScroll(e.scroll)
       lenis.on('scroll', handler)
-      return () => lenis.off('scroll', handler)
+      cleanupScroll = () => lenis.off('scroll', handler)
+    } else {
+      const native = () => onScroll(window.scrollY)
+      window.addEventListener('scroll', native, { passive: true })
+      cleanupScroll = () => window.removeEventListener('scroll', native)
     }
-    const native = () => onScroll(window.scrollY)
-    window.addEventListener('scroll', native, { passive: true })
-    return () => window.removeEventListener('scroll', native)
+
+    const onMove = (e: MouseEvent) => setAtTopEdge(e.clientY <= 70)
+    window.addEventListener('mousemove', onMove, { passive: true })
+
+    return () => {
+      cleanupScroll()
+      window.removeEventListener('mousemove', onMove)
+    }
   }, [lenis])
+
+  // hidden once scrolled past the top, unless the pointer is at the top edge or
+  // the mobile menu is open. Disabled on touch (autoHide=false → never hidden).
+  const hidden = autoHide && scrolled && !atTopEdge && !open
 
   // mobile menu controls Lenis + closes on Escape
   useEffect(() => {
@@ -37,7 +58,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
   }, [open, lenis])
 
   return (
-    <header ref={headerRef} className={`site-header${scrolled && !open ? ' scrolled' : ''}${open ? ' nav-open' : ''}`}>
+    <header ref={headerRef} className={`site-header${scrolled && !open ? ' scrolled' : ''}${hidden ? ' is-hidden' : ''}${open ? ' nav-open' : ''}`}>
       <Link className="logo" href="/" onClick={() => setOpen(false)} data-cms-section="logo">
         <Image src={asset(logo.src)} alt={logo.alt} width={240} height={30} priority unoptimized />
       </Link>

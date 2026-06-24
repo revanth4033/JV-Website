@@ -111,6 +111,23 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
                 </div>
               ) : (
                 <form className="contact-form" data-cms-section="form" onSubmit={onSubmit} noValidate={false}>
+                  <div className="enquiry">
+                    <span className="field-label">{form?.enquiryLabel || 'Enquiry type'}</span>
+                    <div className="enquiry-chips">
+                      {enquiryTypes.map((t) => (
+                        <button
+                          type="button"
+                          key={t}
+                          className={`enquiry-chip${t === enquiry ? ' active' : ''}`}
+                          onClick={() => setEnquiry(t)}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                    <input type="hidden" name="enquiry" value={enquiry} />
+                  </div>
+
                   <div className="field-row">
                     <label className="field">
                       <span className="field-label">{form?.firstName || 'First name'}</span>
@@ -140,23 +157,6 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
                     <input type="text" name="company" autoComplete="organization" />
                     <span className="field-line" aria-hidden="true" />
                   </label>
-
-                  <div className="enquiry">
-                    <span className="field-label">{form?.enquiryLabel || 'Enquiry type'}</span>
-                    <div className="enquiry-chips">
-                      {enquiryTypes.map((t) => (
-                        <button
-                          type="button"
-                          key={t}
-                          className={`enquiry-chip${t === enquiry ? ' active' : ''}`}
-                          onClick={() => setEnquiry(t)}
-                        >
-                          {t}
-                        </button>
-                      ))}
-                    </div>
-                    <input type="hidden" name="enquiry" value={enquiry} />
-                  </div>
 
                   <label className="field">
                     <span className="field-label">{form?.message || 'Your message'}</span>
@@ -214,7 +214,7 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
             </h2>
             <div className="head-right">
               <p className="section-copy reveal">
-                {mapCopy || 'Two homes in Hyderabad — at the heart of India’s deep-tech and lifesciences corridor.'}
+                {mapCopy || 'Two offices in Hyderabad, at the heart of India’s deep-tech and lifesciences corridor.'}
               </p>
             </div>
           </header>
