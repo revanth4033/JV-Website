@@ -15,7 +15,7 @@
   --text-dim: #f4f6fb;          /* sub-text is fully white everywhere — no grey */
   --hair: rgba(244, 246, 251, 0.16);
   --red: #da2128;
-  --red-soft: #da2128;          /* single brand red everywhere (#DA2128) */
+  --red-soft: #ff5a60;          /* brighter red for TEXT/accents on the blue (fills use --red) */
   --glass: rgba(217, 217, 217, 0.07);
   --glass-strong: rgba(217, 217, 217, 0.16);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
@@ -404,7 +404,7 @@ em { font-family: inherit; font-weight: inherit; }
 .section-copy {
   margin-top: 2rem;
   font-size: clamp(1rem, 1.5vw, 1.3rem);
-  font-weight: 300; line-height: 1.65; max-width: 58ch; color: var(--text);
+  font-weight: 400; line-height: 1.65; max-width: 58ch; color: var(--text);
 }
 .section-copy strong { font-weight: 600; color: var(--text); }
 .grids-stage {
@@ -642,7 +642,7 @@ em { font-family: inherit; font-weight: inherit; }
   font-size: clamp(1.9rem, 5vw, 4.4rem);
   font-weight: 300; line-height: 1.15; letter-spacing: -0.01em;
 }
-.close-statement em { color: var(--red); }
+.close-statement em { color: var(--red-soft); }
 .close-cta {
   margin-top: clamp(2.5rem, 6vh, 4rem);
   display: inline-flex; align-items: center; gap: 0.8rem;
@@ -667,7 +667,7 @@ em { font-family: inherit; font-weight: inherit; }
   font-size: 0.78rem; letter-spacing: 0.08em;
 }
 .foot-left { display: flex; align-items: center; gap: 2rem; flex-wrap: wrap; }
-.foot-left a:hover { color: var(--red); }
+.foot-left a:hover { color: var(--red-soft); }
 .foot-right { display: flex; align-items: center; }
 
 /* ---------- responsive ---------- */
@@ -771,7 +771,7 @@ em { font-family: inherit; font-weight: inherit; }
 .about-intro { justify-self: end; max-width: 52ch; }
 .about-intro p {
   font-size: clamp(0.95rem, 1.3vw, 1.15rem);
-  font-weight: 300; line-height: 1.7; color: var(--text);
+  font-weight: 400; line-height: 1.7; color: var(--text);
 }
 .sector-chips {
   list-style: none; display: flex; flex-wrap: wrap; gap: 0.6rem;
@@ -1414,7 +1414,7 @@ html, body { overflow-x: clip; }
 .slide-copy {
   margin-top: clamp(1.4rem, 3vh, 2.2rem);
   font-size: clamp(1rem, 1.5vw, 1.35rem);
-  font-weight: 300; line-height: 1.6; max-width: 44ch; color: var(--text);
+  font-weight: 400; line-height: 1.6; max-width: 44ch; color: var(--text);
 }
 .slide-copy strong { color: var(--text); font-weight: 600; }
 .slide-copy em { font-style: normal; }
@@ -2450,7 +2450,7 @@ html, body { overflow-x: clip; }
 }
 .team-intro {
   max-width: 46ch; font-size: clamp(1rem, 1.4vw, 1.3rem);
-  font-weight: 300; line-height: 1.6; color: var(--text);
+  font-weight: 400; line-height: 1.6; color: var(--text);
   padding-top: clamp(0.6rem, 2vh, 1.6rem);
 }
 .team-stats { display: flex; gap: clamp(1.8rem, 4vw, 3.5rem); justify-self: end; }
@@ -2615,7 +2615,7 @@ html, body { overflow-x: clip; }
 }
 .contact-intro {
   max-width: 54ch; font-size: clamp(1rem, 1.4vw, 1.3rem);
-  font-weight: 300; line-height: 1.6; color: var(--text-dim);
+  font-weight: 400; line-height: 1.6; color: var(--text-dim);
 }
 
 .contact-body { padding: clamp(3rem, 8vh, 6rem) var(--gutter) clamp(4.5rem, 11vh, 8rem); }
