@@ -108,12 +108,22 @@ export interface MethodCard { stage: string; icon: string; title: string; desc: 
 export interface ModelRow { num: string; icon: string; image: string; title: string; desc: string }
 export interface EcoTile { image: string; imageAlt?: string; logo: string; logoAlt: string; text: string; moreLabel: string; href: Href }
 export interface GridsLayer { num: string; icon: string; title: string; subtitle: string }
+/** A platform card shown in the About "Four Platforms" section. */
+export interface AboutPlatformCard { logo: string; logoAlt?: string; image: string; imageAlt?: string; desc: string; href: Href; ctaLabel?: string }
 export interface AboutPage {
   seo: { title: string; description?: string }
   hero: {
     actName: string; actIndex?: string; title: AnimatedTitle; subtitle: string; intro: string
+    /** Optional second hero paragraph (old design has two). */
+    intro2?: string
     sectorChips: string[]; heroImage: string; heroImageAlt?: string; ledger: LedgerItem[]
+    /** Caption framed under the stats band. */
+    ledgerCaption?: string
+    /** Orbiting ecosystem nodes around the JV mark (label + icon). */
+    orbit?: SoiTile[]
   }
+  /** "Four Platforms. One Integrated Ecosystem." section. */
+  platformsSection?: { actName?: string; actIndex?: string; title: AnimatedTitle; copy: string; cards: AboutPlatformCard[] }
   belief: { actName: string; actIndex?: string; kicker: string; rows: BeliefRow[] }
   method: { actName: string; actIndex?: string; title: AnimatedTitle; copy: string; cards: MethodCard[] }
   models: { actName: string; actIndex?: string; title: AnimatedTitle; copy: string; rows: ModelRow[] }
@@ -127,19 +137,21 @@ export interface AboutPage {
 
 // ---- Platform ----
 export interface Metric { value: string; label: string }
-export interface Venture { name: string; logo: string; photo: string; photoAlt?: string; desc: string; metrics: Metric[] }
+export interface Venture { name: string; logo: string; logoAlt?: string; photo: string; photoAlt?: string; desc: string; href?: Href; metrics: Metric[] }
 export interface Category { label: string; ventures: Venture[] }
 export interface Total { value: string; label: string }
 export interface Platform {
   slug: string; order: number; name: string; sector: string
   wordmark: string; hero: string; heroAlt?: string; video: string
   tagline: string; intro: string
+  /** Optional overview paragraph under the tagline (old design: only PoweRx). */
+  overview?: string
   totals: Total[]; categories: Category[]
   seo?: { title?: string; description?: string }
 }
 
 // ---- Team ----
-export interface TeamMember { name: string; role: string; bio?: string; photo?: string; photoAlt?: string; highlights?: string[]; linkedin?: string }
+export interface TeamMember { name: string; role: string; bio?: string; bioFull?: string; photo?: string; photoAlt?: string; highlights?: string[]; linkedin?: string }
 export interface TeamGroup { venture: string; members: TeamMember[] }
 export interface TeamPage {
   seo: { title: string; description?: string }
@@ -156,7 +168,7 @@ export interface TeamPage {
 }
 
 // ---- Contact ----
-export interface Office { city: string; region: string; address: string; lat?: number; lng?: number }
+export interface Office { city: string; region: string; address: string; lat?: number; lng?: number; mapQuery?: string }
 export interface ContactPage {
   seo: { title: string; description?: string }
   hero: { actName: string; actIndex?: string; kicker: string; title: AnimatedTitle; intro: string }

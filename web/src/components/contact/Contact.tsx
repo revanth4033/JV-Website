@@ -2,80 +2,57 @@
 
 import { type FormEvent, useRef, useState } from 'react'
 
-import { AnimatedTitle } from '@/components/AnimatedTitle'
-import { ClosingBridge } from '@/components/ClosingBridge'
-import { OfficeMap } from '@/components/contact/OfficeMap'
 import { useSmoothScroll } from '@/components/SmoothScroll'
 import type { ContactPage, SiteSettings } from '@/content/types'
-import { EASE, gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
+import { EASE, gsap, useGSAP } from '@/lib/gsap'
 
 import { submitEnquiry } from '@/app/(frontend)/contact/actions'
 
-export function Contact({ contact, settings }: { contact: ContactPage; settings: SiteSettings }) {
-  const scope = useRef<HTMLDivElement>(null)
+import styles from './Contact.module.css'
+
+const mapSrc = (query: string) =>
+  `https://maps.google.com/maps?q=${encodeURIComponent(query)}&t=m&z=10&output=embed&iwloc=near`
+
+export function Contact({ contact }: { contact: ContactPage; settings: SiteSettings }) {
+  const scope = useRef<HTMLElement>(null)
   const { reduced } = useSmoothScroll()
-  const {
-    hero, email, enquiryTypes, offices, presence, formIntro, mapTitle, mapCopy, form,
-    bodyActName, bodyActIndex, mapActName, mapActIndex, emailLabel, officesLabel, presenceLabel,
-  } = contact
-  const arrow = settings.ui?.ctaArrow || '→'
+
+  const hero = contact?.hero
+  const offices = contact?.offices ?? []
+  const enquiryTypes = contact?.enquiryTypes ?? []
+  const form = contact?.form
   const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/
 
-  const [enquiry, setEnquiry] = useState(enquiryTypes[0])
+  const heroHeading = hero?.title?.lines?.join(' ') || 'Contact Us'
+
+  // Form state / validation (preserved from the original component).
+  const [enquiry, setEnquiry] = useState(enquiryTypes[0] ?? '')
   const [sent, setSent] = useState(false)
   const [firstName, setFirstName] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
+  // Which office's map is visible (default = first office).
+  const [activeOffice, setActiveOffice] = useState(0)
+
   useGSAP(
     () => {
-      const root = scope.current!
-
-      const idxEl = root.querySelector<HTMLElement>('#act-index')
-      const nameEl = root.querySelector<HTMLElement>('#act-name')
-      root.querySelectorAll<HTMLElement>('[data-act]').forEach((sec) => {
-        ScrollTrigger.create({
-          trigger: sec,
-          start: 'top 50%',
-          end: 'bottom 50%',
-          onToggle: (self) => {
-            if (!self.isActive) return
-            if (idxEl) idxEl.textContent = sec.dataset.act || ''
-            if (nameEl) nameEl.textContent = sec.dataset.actName || ''
-          },
-        })
-      })
-
-      if (!reduced) {
-        gsap.utils.toArray<HTMLElement>('.line-inner').forEach((el, i) => {
-          const inHero = !!el.closest('[data-hero]')
-          gsap.to(el, {
-            y: 0,
-            duration: 1.2,
-            ease: EASE,
-            delay: inHero ? 0.15 + (i % 6) * 0.12 : 0,
-            scrollTrigger: inHero ? undefined : { trigger: el.closest('.line'), start: 'top 88%', once: true },
-          })
-        })
-        gsap.utils.toArray<HTMLElement>('.reveal').forEach((el) => {
-          gsap.to(el, {
+      if (reduced) return
+      const root = scope.current
+      if (!root) return
+      gsap.utils.toArray<HTMLElement>(`.${styles.fade}`).forEach((el) => {
+        gsap.fromTo(
+          el,
+          { opacity: 0, y: 24 },
+          {
             opacity: 1,
             y: 0,
             duration: 0.7,
             ease: EASE,
-            scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-          })
-        })
-        // form fields rise in, staggered
-        gsap.from('.contact-form .field, .contact-form .enquiry, .contact-form .contact-submit', {
-          opacity: 0,
-          y: 26,
-          duration: 0.7,
-          ease: EASE,
-          stagger: 0.08,
-          scrollTrigger: { trigger: '.contact-form', start: 'top 80%', once: true },
-        })
-      }
+            scrollTrigger: { trigger: el, start: 'top 88%', once: true },
+          },
+        )
+      })
     },
     { scope, dependencies: [reduced] },
   )
@@ -88,7 +65,6 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
     const em = String(data.get('email') || '').trim()
     const msg = String(data.get('message') || '').trim()
     setError('')
-    // Client-side validation using the CMS-editable messages.
     if (!fn) return setError(form?.errorName || 'Please enter your first name.')
     if (!EMAIL_RE.test(em)) return setError(form?.errorEmail || 'Please enter a valid email address.')
     if (!msg) return setError(form?.errorMessage || 'Please enter a message.')
@@ -116,165 +92,202 @@ export function Contact({ contact, settings }: { contact: ContactPage; settings:
     }
   }
 
+  const active = offices[activeOffice] ?? offices[0]
+
   return (
-    <div ref={scope}>
-      <main id="top">
-        {/* HERO */}
-        <section className="act contact-hero" data-cms-section="hero" data-act={hero.actIndex || '01'} data-act-name={hero.actName} data-hero>
-          <span className="contact-kicker">{hero.kicker}</span>
-          <AnimatedTitle as="h1" className="contact-title" title={hero.title} />
-          <p className="contact-intro reveal">{hero.intro}</p>
-        </section>
+    <main id="top" ref={scope} className={styles.main}>
+      {/* HERO — faint ghosted watermark heading overlapping the top of the content */}
+      <section className={styles.hero} data-cms-section="hero">
+        <h1 className={styles.heroTitle}>{heroHeading}</h1>
+      </section>
 
-        {/* FORM + DETAILS */}
-        <section className="act contact-body" data-cms-section="details" data-act={bodyActIndex || '02'} data-act-name={bodyActName || 'Get in touch'}>
-          <div className="contact-layout">
-            {/* form */}
-            <div className="contact-form-wrap">
-              <span className="contact-form-intro reveal">{formIntro}</span>
-              {sent ? (
-                <div className="contact-success" role="status">
-                  <span className="success-mark" aria-hidden="true">
-                    {arrow}
-                  </span>
-                  <h2>
-                    {form?.successTitle || 'Thank you'}{firstName ? `, ${firstName}` : ''}.
-                  </h2>
-                  <p>
-                    {form?.successBody ||
-                      'Your message is on its way. Someone from the team will be in touch shortly — usually within two business days.'}
-                  </p>
-                  <button type="button" className="success-reset" onClick={() => setSent(false)}>
-                    {form?.resetLabel || 'Send another message'}
+      {/* TWO-COLUMN BLOCK */}
+      <section className={styles.section} data-cms-section="details">
+        <div className={styles.layout}>
+          {/* LEFT — offices + map */}
+          <div className={`${styles.fade} ${styles.leftCol}`}>
+            <ul className={styles.officeList} data-cms-section="offices">
+              {(offices ?? []).map((o, i) => (
+                <li key={o?.address || o?.city || i}>
+                  <button
+                    type="button"
+                    className={`${styles.officeBtn}${i === activeOffice ? ` ${styles.officeBtnActive}` : ''}`}
+                    aria-pressed={i === activeOffice}
+                    onClick={() => setActiveOffice(i)}
+                  >
+                    <span className={styles.officeCity}>
+                      <svg
+                        className={styles.officePin}
+                        viewBox="0 0 384 512"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path d="M172.268 501.67C26.97 291.031 0 269.413 0 192 0 85.961 85.961 0 192 0s192 85.961 192 192c0 77.413-26.97 99.031-172.268 309.67-9.535 13.774-29.93 13.773-39.464 0zM192 272c44.183 0 80-35.817 80-80s-35.817-80-80-80-80 35.817-80 80 35.817 80 80 80z" />
+                      </svg>
+                      {o?.city}
+                    </span>
+                    {o?.address ? <span className={styles.officeAddress}>{o.address}</span> : null}
                   </button>
-                </div>
-              ) : (
-                <form className="contact-form" data-cms-section="form" onSubmit={onSubmit} noValidate={false}>
-                  <div className="enquiry">
-                    <span className="field-label">{form?.enquiryLabel || 'Enquiry type'}</span>
-                    <div className="enquiry-chips">
-                      {enquiryTypes.map((t) => (
-                        <button
-                          type="button"
-                          key={t}
-                          className={`enquiry-chip${t === enquiry ? ' active' : ''}`}
-                          onClick={() => setEnquiry(t)}
-                        >
-                          {t}
-                        </button>
+                </li>
+              ))}
+            </ul>
+
+            {active ? (
+              <div className={styles.mapFrame}>
+                <iframe
+                  key={active.mapQuery || active.city}
+                  className={styles.mapIframe}
+                  src={mapSrc(active.mapQuery || active.city)}
+                  title={active.mapQuery || active.city}
+                  aria-label={active.mapQuery || active.city}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            ) : null}
+          </div>
+
+          {/* RIGHT — enquiry selector + form */}
+          <div className={`${styles.fade} ${styles.rightCol}`}>
+            {sent ? (
+              <div className={styles.success} role="status">
+                <h2 className={styles.successTitle}>
+                  {form?.successTitle || 'Thank you'}
+                  {firstName ? `, ${firstName}` : ''}.
+                </h2>
+                <p className={styles.successBody}>
+                  {form?.successBody ||
+                    'Your message is on its way. Someone from the team will be in touch shortly.'}
+                </p>
+                <button type="button" className={styles.reset} onClick={() => setSent(false)}>
+                  {form?.resetLabel || 'Send another message'}
+                </button>
+              </div>
+            ) : (
+              <>
+                {(enquiryTypes ?? []).length > 0 ? (
+                  <details className={styles.accordion}>
+                    <summary className={styles.accordionSummary}>
+                      <span>{form?.enquiryLabel || 'Enquiry Type'}</span>
+                      <svg
+                        className={styles.accordionChevron}
+                        viewBox="0 0 448 512"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path d="M201.4 374.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 306.7 86.6 169.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z" />
+                      </svg>
+                    </summary>
+                    <ul className={styles.enquiryOptions} role="group" aria-label={form?.enquiryLabel || 'Enquiry Type'}>
+                      {(enquiryTypes ?? []).map((t) => (
+                        <li key={t}>
+                          <button
+                            type="button"
+                            className={`${styles.enquiryOption}${t === enquiry ? ` ${styles.enquiryOptionActive}` : ''}`}
+                            aria-pressed={t === enquiry}
+                            onClick={() => setEnquiry(t)}
+                          >
+                            {t}
+                          </button>
+                        </li>
                       ))}
-                    </div>
-                    <input type="hidden" name="enquiry" value={enquiry} />
+                    </ul>
+                  </details>
+                ) : null}
+
+                <form className={styles.form} data-cms-section="form" onSubmit={onSubmit}>
+                  <input type="hidden" name="enquiry" value={enquiry} />
+
+                  <div className={styles.row}>
+                    <label className={styles.field}>
+                      <input
+                        className={styles.input}
+                        type="text"
+                        name="firstName"
+                        autoComplete="given-name"
+                        placeholder={`${form?.firstName || 'First Name'}*`}
+                        aria-label={form?.firstName || 'First Name'}
+                        required
+                      />
+                    </label>
+                    <label className={styles.field}>
+                      <input
+                        className={styles.input}
+                        type="text"
+                        name="lastName"
+                        autoComplete="family-name"
+                        placeholder={`${form?.lastName || 'Last Name'}*`}
+                        aria-label={form?.lastName || 'Last Name'}
+                        required
+                      />
+                    </label>
                   </div>
 
-                  <div className="field-row">
-                    <label className="field">
-                      <span className="field-label">{form?.firstName || 'First name'}</span>
-                      <input type="text" name="firstName" autoComplete="given-name" required />
-                      <span className="field-line" aria-hidden="true" />
-                    </label>
-                    <label className="field">
-                      <span className="field-label">{form?.lastName || 'Last name'}</span>
-                      <input type="text" name="lastName" autoComplete="family-name" required />
-                      <span className="field-line" aria-hidden="true" />
-                    </label>
-                  </div>
-                  <div className="field-row">
-                    <label className="field">
-                      <span className="field-label">{form?.email || 'Email'}</span>
+                  <div className={styles.row}>
+                    <label className={styles.field}>
                       <input
+                        className={styles.input}
+                        type="tel"
+                        name="phone"
+                        autoComplete="tel"
+                        placeholder={`${form?.phone || 'Phone no'}*`}
+                        aria-label={form?.phone || 'Phone'}
+                        required
+                      />
+                    </label>
+                    <label className={styles.field}>
+                      <input
+                        className={styles.input}
                         type="email"
                         name="email"
                         autoComplete="email"
-                        required
+                        placeholder={`${form?.email || 'Email Id'}*`}
+                        aria-label={form?.email || 'Email'}
                         aria-invalid={error.toLowerCase().includes('email') || undefined}
+                        required
                       />
-                      <span className="field-line" aria-hidden="true" />
-                    </label>
-                    <label className="field">
-                      <span className="field-label">{form?.phone || 'Phone'}</span>
-                      <input type="tel" name="phone" autoComplete="tel" />
-                      <span className="field-line" aria-hidden="true" />
                     </label>
                   </div>
-                  <label className="field">
-                    <span className="field-label">{form?.company || 'Company'}</span>
-                    <input type="text" name="company" autoComplete="organization" />
-                    <span className="field-line" aria-hidden="true" />
+
+                  <label className={styles.field}>
+                    <input
+                      className={styles.input}
+                      type="text"
+                      name="company"
+                      autoComplete="organization"
+                      placeholder={`${form?.company || 'Company Name'}*`}
+                      aria-label={form?.company || 'Company Name'}
+                      required
+                    />
                   </label>
 
-                  <label className="field">
-                    <span className="field-label">{form?.message || 'Your message'}</span>
-                    <textarea name="message" rows={4} required />
-                    <span className="field-line" aria-hidden="true" />
+                  <label className={styles.field}>
+                    <textarea
+                      className={styles.textarea}
+                      name="message"
+                      rows={6}
+                      maxLength={2000}
+                      placeholder={`${form?.message || 'Query'}*`}
+                      aria-label={form?.message || 'Query'}
+                      required
+                    />
                   </label>
 
                   {error ? (
-                    <p className="contact-error" role="alert">
+                    <p className={styles.error} role="alert">
                       {error}
                     </p>
                   ) : null}
 
-                  <button type="submit" className="contact-submit" disabled={submitting} aria-busy={submitting}>
-                    {submitting ? form?.submitting || 'Sending…' : form?.submit || 'Send message'}
-                    <span className="arrow" aria-hidden="true">
-                      {arrow}
-                    </span>
+                  <button type="submit" className={styles.submit} disabled={submitting} aria-busy={submitting}>
+                    {submitting ? form?.submitting || 'Sending…' : form?.submit || 'SUBMIT'}
                   </button>
                 </form>
-              )}
-            </div>
-
-            {/* details rail */}
-            <aside className="contact-rail">
-              <div className="rail-block reveal">
-                <span className="rail-label">{emailLabel || 'Email'}</span>
-                <a className="rail-email" href={`mailto:${email}`}>
-                  {email}
-                </a>
-              </div>
-              <div className="rail-block reveal">
-                <span className="rail-label">{officesLabel || 'Offices'}</span>
-                <ul className="office-list" data-cms-section="offices">
-                  {offices.map((o) => (
-                    <li className="office" key={o.address}>
-                      <h3 className="office-city">
-                        {o.city}
-                        <span className="office-region">{o.region}</span>
-                      </h3>
-                      <p className="office-address">{o.address}</p>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="rail-block reveal">
-                <span className="rail-label">{presenceLabel || 'Presence'}</span>
-                <p className="rail-presence">{presence}</p>
-              </div>
-            </aside>
+              </>
+            )}
           </div>
-        </section>
-
-        {/* MAP */}
-        <section className="act contact-map" data-cms-section="map" data-act={mapActIndex || '03'} data-act-name={mapActName || 'Find us'}>
-          <header className="grids-head">
-            <h2 className="section-title">
-              <span className="line">
-                <span className="line-inner">{mapTitle || 'Find us'}</span>
-              </span>
-            </h2>
-            <div className="head-right">
-              <p className="section-copy reveal">
-                {mapCopy || 'Two offices in Hyderabad, at the heart of India’s deep-tech and lifesciences corridor.'}
-              </p>
-            </div>
-          </header>
-          <OfficeMap offices={offices} />
-        </section>
-
-        {/* CLOSE */}
-        <ClosingBridge settings={settings} dataAct="04" dataActName="Invitation" />
-      </main>
-    </div>
+        </div>
+      </section>
+    </main>
   )
 }

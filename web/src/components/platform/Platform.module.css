@@ -1,0 +1,405 @@
+/* Platform — clean rebuild of the old jv.ventures platform template
+   (powered / powerx / powercare / powerpod all share ONE fixed theme).
+   Sits on the global blue gradient (body); sections are transparent, text white.
+   Fixed theme tokens: bg gradient lives on <body>, accent brand blue #1F4EA8,
+   font Montserrat (global), entrance = fadeInUp. */
+
+.main {
+  --accent: #1f4ea8;
+  color: #fff;
+}
+
+/* Entrance target for GSAP fadeInUp; reduced-motion users see it immediately. */
+.fade {
+  opacity: 1;
+  transform: none;
+}
+
+.section {
+  width: min(1180px, 92vw);
+  margin-inline: auto;
+}
+
+/* ---------- 1. HERO ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) 1.3fr;
+  align-items: center;
+  gap: 48px;
+  width: min(1180px, 92vw);
+  margin-inline: auto;
+  padding-block: clamp(5rem, 13vw, 9rem) clamp(2.5rem, 6vw, 4rem);
+}
+
+.heroText {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.heroMedia {
+  min-width: 0;
+}
+
+.heroImg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1198 / 844;
+  border-radius: 14px;
+  object-fit: cover;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.wordmark {
+  display: block;
+  width: auto;
+  max-width: 280px;
+  height: auto;
+  max-height: 96px;
+  object-fit: contain;
+}
+
+.tagline {
+  margin: 0;
+  max-width: 42ch;
+  font-size: clamp(0.95rem, 1.4vw, 1rem);
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.overview {
+  margin: 0;
+  max-width: 46ch;
+  font-size: clamp(0.9rem, 1.3vw, 0.95rem);
+  font-weight: 400;
+  line-height: 1.6;
+  text-align: left;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ---------- 2. INTRO VIDEO ---------- */
+.videoWrap {
+  width: min(1180px, 94vw);
+  margin: clamp(1rem, 3vw, 2rem) auto clamp(3rem, 7vw, 5rem);
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: clamp(12px, 2vw, 22px);
+  background: rgba(0, 0, 0, 0.25);
+  object-fit: cover;
+  box-shadow: 0 24px 60px -28px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- 3. CATEGORIES / VENTURES ACCORDION ---------- */
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-bottom: clamp(3rem, 8vw, 6rem);
+  padding: clamp(1rem, 2.2vw, 1.75rem);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.cat {
+  border: 0;
+  border-radius: 9999px;
+  background: transparent;
+  overflow: visible;
+}
+
+.catOpen {
+  border-radius: 18px;
+}
+
+/* a11y: title rows are real <button>s — styled as rounded pill bars */
+.catTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+  margin: 0;
+  padding: 14px 24px;
+  border: 0;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(1.05rem, 2.4vw, 1.55rem);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-align: left;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* OPEN category header = white pill, royal-blue uppercase label + blue chevron */
+.catOpen .catTitle {
+  background: #fff;
+  color: #1f4ea8;
+}
+
+.catTitle:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+  border-radius: 9999px;
+}
+
+.chevron {
+  flex: none;
+  width: 1.4rem;
+  height: 1.4rem;
+  transition: transform 0.4s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+/* grid-rows trick: animates to the panel's natural height with no JS measuring */
+.panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.4s ease, opacity 0.4s ease;
+}
+
+.panelOpen {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.panelInner {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panelPad {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2rem, 5vw, 3.5rem);
+  padding: clamp(1.25rem, 3vw, 1.75rem) 0 clamp(1.5rem, 4vw, 2.5rem);
+}
+
+/* ---- venture card ---- */
+.card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  gap: 0;
+  align-items: stretch;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.cardText {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  min-width: 0;
+  background: #dee0e8;
+  border-radius: 0;
+  color: #10243f;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.logoLink {
+  display: inline-flex;
+  align-self: flex-start;
+  border-radius: 8px;
+}
+
+.logoLink:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.logo {
+  display: block;
+  width: auto;
+  max-width: min(200px, 60vw);
+  height: auto;
+  max-height: 40px;
+  object-fit: contain;
+  transition: filter 0.4s ease;
+}
+
+/* When the parent category is OPEN, recolor every venture wordmark to brand
+   blue so white logos stay visible on the light open panel (matches old site). */
+.logoTint {
+  filter: brightness(0) saturate(100%) invert(24%) sepia(76%) saturate(1225%)
+    hue-rotate(203deg) brightness(92%) contrast(92%);
+}
+
+.desc {
+  margin: 0;
+  max-width: 52ch;
+  font-size: clamp(0.95rem, 1.7vw, 1.08rem);
+  line-height: 1.6;
+  color: rgba(16, 36, 63, 0.82);
+}
+
+/* ---- stats grid ---- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem 2rem;
+  margin-top: 0.4rem;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.statValue {
+  font-size: clamp(1.15rem, 2vw, 1.5rem);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  color: #10243f;
+}
+
+.statValue sup {
+  font-size: 0.55em;
+  font-weight: 700;
+  vertical-align: super;
+}
+
+.statLabel {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: rgba(16, 36, 63, 0.65);
+}
+
+.photoWrap {
+  min-width: 0;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  object-fit: cover;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* ---------- 4. EXPLORE OTHER PLATFORMS ---------- */
+.others {
+  width: min(1180px, 92vw);
+  margin-inline: auto;
+  padding-block: clamp(2.5rem, 6vw, 4rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.othersLabel {
+  margin: 0 0 1.1rem;
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.othersRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.6rem;
+}
+
+.otherLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+  font-weight: 700;
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  transition: color 0.25s ease;
+}
+
+.otherLink:hover {
+  color: #fff;
+}
+
+.otherLink::after {
+  content: '\2192';
+  font-weight: 400;
+  opacity: 0.55;
+  transition: transform 0.25s ease;
+}
+
+.otherLink:hover::after {
+  transform: translateX(4px);
+}
+
+.otherLink:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 900px) {
+  /* Hero: single column, photo FIRST then wordmark/tagline (left-aligned). */
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+
+  .heroMedia {
+    order: -1;
+  }
+
+  .heroText {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .tagline,
+  .overview {
+    text-align: left;
+    max-width: none;
+  }
+
+  .card {
+    grid-template-columns: 1fr;
+  }
+
+  .photoWrap {
+    order: -1;
+  }
+
+  /* Single column: let the photo size itself by aspect ratio again. */
+  .photo {
+    height: auto;
+    aspect-ratio: 1198 / 844;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel,
+  .chevron,
+  .logo,
+  .otherLink,
+  .otherLink::after {
+    transition: none;
+  }
+}

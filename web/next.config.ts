@@ -5,6 +5,13 @@ const nextConfig: NextConfig = {
   // Dockerfile's `COPY .next/standalone` / `node server.js` actually have something
   // to run. Vercel ignores this; it only matters for the Docker/self-host path.
   output: 'standalone',
+  experimental: {
+    // The admin CMS sends content + media through Server Actions. The default 1 MB
+    // body limit 500s ("Body exceeded 1 MB limit") when saving a large page payload
+    // or uploading a sizeable image/video (media allows up to 50 MB). Raise it to
+    // comfortably cover that cap. These actions are all admin-authenticated.
+    serverActions: { bodySizeLimit: '60mb' },
+  },
   images: {
     // No image optimization: every image/video is served at its original quality
     // (no resizing, no recompression, no format change). next/image acts as a
@@ -24,9 +31,15 @@ const nextConfig: NextConfig = {
   // restricting img/media/connect origins. The stored-XSS vector is additionally
   // closed by server-side sanitisation.
   async headers() {
+    // React's dev build uses eval() for debugging features; production never does.
+    // Allow 'unsafe-eval' only in development so the strict prod CSP stays intact.
+    const scriptSrc =
+      process.env.NODE_ENV === 'production'
+        ? "script-src 'self' 'unsafe-inline'"
+        : "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
     const csp = [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline'",
+      scriptSrc,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://api.mapbox.com https://*.tiles.mapbox.com",
       "media-src 'self' https://*.public.blob.vercel-storage.com",
@@ -35,7 +48,7 @@ const nextConfig: NextConfig = {
       "connect-src 'self' https://*.public.blob.vercel-storage.com https://api.mapbox.com https://events.mapbox.com",
       "worker-src 'self' blob:", // Mapbox GL runs its renderer in a blob web worker
       "child-src blob:",
-      "frame-src 'self' https://www.google.com",
+      "frame-src 'self' https://www.google.com https://maps.google.com https://*.google.com",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "object-src 'none'",

@@ -10,7 +10,20 @@ import { prisma } from '@/lib/prisma'
 import { getSession } from '@/lib/session'
 
 const UPLOAD_DIR = path.join(process.cwd(), 'public', 'uploads')
-const useBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN || process.env.BLOB_STORE_ID)
+// Only use Vercel Blob when its read-write token is present — `put()` authenticates
+// with BLOB_READ_WRITE_TOKEN, so a bare BLOB_STORE_ID (no token) would send us down
+// the Blob path only to throw "No token found". On a read-only serverless FS the disk
+// fallback can't work either, so surface a clear, actionable error instead of a 500.
+const useBlob = Boolean(process.env.BLOB_READ_WRITE_TOKEN)
+const canWriteDisk = process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1'
+function assertWritableTarget() {
+  if (!useBlob && !canWriteDisk) {
+    throw new Error(
+      'Image uploads need blob storage in production. Set BLOB_READ_WRITE_TOKEN ' +
+        '(connect the Vercel Blob store to this project) and redeploy.',
+    )
+  }
+}
 
 async function requireUser() {
   const s = await getSession()
@@ -94,6 +107,7 @@ export async function uploadMedia(formData: FormData): Promise<MediaItem> {
   const safe = (file.name.replace(/\.[^.]+$/, '') || 'file').toLowerCase().replace(/[^a-z0-9.\-_]+/g, '-').replace(/-+/g, '-')
   const filename = `${Date.now()}-${safe}.${EXT[mime]}`
 
+  assertWritableTarget()
   let url: string
   if (useBlob) {
     const blob = await put(`media/${filename}`, buf, { access: 'public', contentType: mime, addRandomSuffix: false })

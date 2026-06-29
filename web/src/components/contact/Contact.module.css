@@ -1,0 +1,388 @@
+/* Contact — clean rebuild of the old jv.ventures/contact-us layout.
+   Sits on the global blue gradient (body); sections are transparent, text white. */
+
+.main {
+  color: #fff;
+  position: relative;
+}
+
+.section {
+  position: relative;
+  z-index: 1;
+  width: min(1200px, 92vw);
+  margin-inline: auto;
+  padding-block: clamp(3rem, 8vw, 6rem);
+}
+
+/* Entrance target for GSAP fadeInUp; reduced-motion users see it immediately. */
+.fade {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Hero — faint ghosted watermark heading overlapping the top of content ---- */
+.hero {
+  position: relative;
+  width: min(1200px, 92vw);
+  margin-inline: auto;
+  height: 0;
+}
+
+.heroTitle {
+  position: absolute;
+  top: 140px;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: clamp(4rem, 9vw, 8rem);
+  font-weight: 800;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+@media (max-width: 1024px) {
+  .heroTitle {
+    top: 110px;
+  }
+}
+
+/* ---- Two-column block ---- */
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- Left: offices + maps ---- */
+/* Narrower left column so the map (~500px) and addresses match the old proportions. */
+.leftCol {
+  max-width: 510px;
+}
+
+.officeList {
+  list-style: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.officeBtn {
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  padding: 0.35rem 0;
+  border: none;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  transition: opacity 0.3s ease;
+}
+
+.officeBtn:hover {
+  opacity: 0.85;
+}
+
+.officeBtnActive {
+  background: transparent;
+}
+
+.officeCity {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.officePin {
+  flex: none;
+  width: 0.85rem;
+  height: 1.1rem;
+  fill: #fff;
+}
+
+.officeAddress {
+  display: block;
+  margin: 0;
+  padding-left: 1.35rem;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: #ffffff;
+}
+
+.mapFrame {
+  position: relative;
+  overflow: hidden;
+  max-width: 500px;
+  margin-right: auto;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.08);
+  aspect-ratio: 16 / 11;
+}
+
+.mapIframe {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  /* Slight tone so the embed sits on the blue palette. */
+  filter: grayscale(0.15);
+}
+
+/* ---- Right: enquiry selector (collapsed accordion) + form ---- */
+/* Constrain the form so it stays inset from the right page edge like the source. */
+.rightCol {
+  width: 100%;
+  max-width: 480px;
+}
+
+@media (max-width: 1024px) {
+  .rightCol {
+    max-width: none;
+  }
+}
+
+.accordion {
+  margin: 0 0 1.5rem;
+}
+
+.accordionSummary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  cursor: pointer;
+  list-style: none;
+  padding: 0.95rem 1.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+  font-size: 0.95rem;
+  transition: background 0.3s ease;
+}
+
+.accordionSummary::-webkit-details-marker {
+  display: none;
+}
+
+.accordionSummary:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.accordionChevron {
+  flex: none;
+  width: 0.9rem;
+  height: 0.9rem;
+  fill: currentColor;
+  transition: transform 0.3s ease;
+}
+
+.accordion[open] .accordionChevron {
+  transform: rotate(180deg);
+}
+
+.enquiryOptions {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.enquiryOption {
+  display: block;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  padding: 0.7rem 1.1rem;
+  border: none;
+  border-radius: 9px;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.enquiryOption:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.enquiryOptionActive {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-weight: 600;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formIntro {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.input,
+.textarea {
+  width: 100%;
+  padding: 0.95rem 1.5rem;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font: inherit;
+  font-size: 0.95rem;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.textarea {
+  resize: vertical;
+  min-height: 9rem;
+  border-radius: 18px;
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.input:hover,
+.textarea:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.input:focus,
+.textarea:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.error {
+  margin: 0;
+  color: #ffb4b8;
+  font-size: 0.88rem;
+}
+
+.submit {
+  width: 100%;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  padding: 0.95rem 2.4rem;
+  border: 2px solid #da2128;
+  border-radius: 13px;
+  background: #da2128;
+  color: #fff;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease, transform 0.15s ease;
+}
+
+/* Old design: SUBMIT inverts to white background with red text on hover. */
+.submit:hover:not(:disabled) {
+  background: #fff;
+  color: #da2128;
+  border-color: #da2128;
+}
+
+.submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.submit:disabled {
+  opacity: 0.65;
+  cursor: progress;
+}
+
+/* ---- Success ---- */
+.success {
+  padding: 2rem 1.75rem;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.successTitle {
+  margin: 0 0 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.successBody {
+  margin: 0 0 1.5rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.reset {
+  cursor: pointer;
+  padding: 0.7rem 1.5rem;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: background 0.25s ease;
+}
+
+.reset:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* ---- Focus visibility (a11y) ---- */
+.officeBtn:focus-visible,
+.accordionSummary:focus-visible,
+.enquiryOption:focus-visible,
+.submit:focus-visible,
+.reset:focus-visible,
+.input:focus-visible,
+.textarea:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}

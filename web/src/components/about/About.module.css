@@ -1,0 +1,976 @@
+/* ============================================================================
+   About — old-design rebuild. Sits on the global blue gradient (white text,
+   Montserrat from globals). Local accents below.
+   ========================================================================== */
+
+.about {
+  --accent: #da2128;
+  --accent-hover: #f1262e;
+  --accent-border: #eb7f83;
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-2: rgba(255, 255, 255, 0.1);
+  --surface-3: rgba(255, 255, 255, 0.15);
+  --line: rgba(255, 255, 255, 0.16);
+  --maxw: 1200px;
+  --pad: clamp(3.5rem, 8vw, 7rem);
+  position: relative;
+}
+
+.about :focus-visible {
+  outline: 2px solid var(--accent-border);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* shared section + heading -------------------------------------------------- */
+.hero,
+.stats,
+.belief,
+.approach,
+.platforms,
+.models,
+.grids {
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding: var(--pad) clamp(1.25rem, 5vw, 3rem);
+}
+
+.sectionHead {
+  max-width: 60ch;
+  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+}
+
+.sectionTitle {
+  font-size: clamp(1.9rem, 4.5vw, 3.2rem);
+  line-height: 1.05;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.sectionCopy {
+  margin-top: 1.2rem;
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 56ch;
+}
+
+/* Centered section intro (Our Approach / Pioneering / GRIDS) — old design has
+   no preceding heading, just a centered lead paragraph. */
+.sectionHeadCenter {
+  max-width: 64ch;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.sectionLead {
+  margin: 0 auto;
+  font-size: clamp(1.15rem, 2vw, 1.6rem);
+  line-height: 1.4;
+  font-weight: 600;
+  color: #fff;
+  max-width: 36ch;
+}
+
+/* ============================================================================
+   1 · HERO
+   ========================================================================== */
+.heroInner {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: clamp(2rem, 5vw, 4.5rem);
+  align-items: center;
+}
+
+.heroTitle {
+  font-size: clamp(2.1rem, 4.4vw, 3rem);
+  line-height: 1.05;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #fff;
+}
+
+/* Old design: the whole headline is a single solid-white, non-italic line. */
+.heroTitle :global(.line-inner.em) {
+  font-style: normal;
+  color: #fff;
+}
+
+.heroSub {
+  margin-top: 1.4rem;
+  font-size: clamp(0.92rem, 1.4vw, 1.1rem);
+  font-weight: 600;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+}
+
+.heroSub :global(em) {
+  font-style: normal;
+}
+
+.heroIntro {
+  margin-top: 1.3rem;
+  font-size: clamp(0.98rem, 1.2vw, 1.08rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.82);
+  max-width: 54ch;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 1.8rem;
+  list-style: none;
+  padding: 0;
+}
+
+.chips li {
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.5em 1.1em;
+  border: 1px solid var(--line);
+  border-radius: 99px;
+  background: var(--surface);
+}
+
+/* ---- orbital ecosystem diagram ---- */
+.scene {
+  position: relative;
+  width: min(100%, 460px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+}
+
+.ringOuter,
+.ringInner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.ringOuter {
+  animation: spin 26s linear infinite;
+}
+
+.ringInner {
+  inset: 16%;
+  border-style: dashed;
+  border-color: rgba(235, 127, 131, 0.4);
+  animation: spinRev 20s linear infinite;
+}
+
+.spokes {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+}
+
+.spokes::before,
+.spokes::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: linear-gradient(transparent, rgba(255, 255, 255, 0.22), transparent);
+}
+
+.spokes::before {
+  width: 1px;
+  height: 100%;
+  transform: translate(-50%, -50%);
+}
+
+.spokes::after {
+  width: 100%;
+  height: 1px;
+  transform: translate(-50%, -50%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+}
+
+.core {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 34%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.04) 65%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 0 50px rgba(39, 105, 221, 0.45);
+}
+
+.core img {
+  width: 64%;
+  height: auto;
+  object-fit: contain;
+}
+
+.node {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  width: max-content;
+}
+
+.node[data-dir='top'] {
+  left: 50%;
+  top: 0;
+}
+.node[data-dir='bottom'] {
+  left: 50%;
+  top: 100%;
+}
+.node[data-dir='left'] {
+  left: 0;
+  top: 50%;
+}
+.node[data-dir='right'] {
+  left: 100%;
+  top: 50%;
+}
+
+.nodeIcon {
+  display: grid;
+  place-items: center;
+  width: clamp(46px, 8vw, 62px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgba(12, 39, 88, 0.85);
+  border: 1px solid var(--line);
+}
+
+.nodeIcon img {
+  width: 55%;
+  height: auto;
+  object-fit: contain;
+}
+
+.nodeLabel {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  white-space: nowrap;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes spinRev {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ringOuter,
+  .ringInner {
+    animation: none;
+  }
+}
+
+/* ============================================================================
+   2 · STATS BAND
+   ========================================================================== */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(0.8rem, 2vw, 1.4rem);
+}
+
+.statCard {
+  padding: clamp(1.6rem, 2.5vw, 2.4rem) 1.2rem;
+  text-align: center;
+  border-radius: 16px;
+  background: rgba(7, 20, 48, 0.45);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.statBadge {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+.statNum {
+  font-size: clamp(1.8rem, 4vw, 2.9rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.statLabel {
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Short red divider rule beneath each stat label (old design). */
+.statRule {
+  width: 36px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+  margin-top: 0.4rem;
+}
+
+.framedCaption {
+  position: relative;
+  margin: clamp(2.5rem, 5vw, 4rem) auto 0;
+  max-width: 52ch;
+  text-align: center;
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.5;
+  padding: clamp(1.4rem, 3vw, 2.2rem) clamp(1.8rem, 4vw, 3rem);
+}
+
+.framedCaption::before,
+.framedCaption::after {
+  content: '';
+  position: absolute;
+  width: 26px;
+  height: 26px;
+}
+
+.framedCaption::before {
+  left: 0;
+  top: 0;
+  border-left: 2px solid var(--accent-border);
+  border-top: 2px solid var(--accent-border);
+}
+
+.framedCaption::after {
+  right: 0;
+  bottom: 0;
+  border-right: 2px solid var(--accent-border);
+  border-bottom: 2px solid var(--accent-border);
+}
+
+/* ============================================================================
+   3 · BELIEF TRIAD
+   ========================================================================== */
+.beliefKicker {
+  text-align: center;
+  max-width: 50ch;
+  margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  font-weight: 500;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.88);
+}
+
+.beliefRow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(1.5rem, 4vw, 3rem);
+  text-align: center;
+}
+
+.beliefWord {
+  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.beliefWord :global(strong) {
+  font-weight: 700;
+}
+
+.beliefWord :global(em) {
+  display: block;
+  font-style: italic;
+  font-size: 0.34em;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-top: 0.7rem;
+  color: var(--accent-border);
+}
+
+.beliefNote {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.74);
+  max-width: 34ch;
+  margin-inline: auto;
+}
+
+/* Old design: the qualifier keyword (INTENT / EXECUTION / SCALE) is italic. */
+.beliefNote em {
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* ============================================================================
+   4 · OUR APPROACH
+   ========================================================================== */
+/* Old design: the intro lead is a compact bold line — keep it close to a single
+   line rather than the larger shared lead size. */
+.approach .sectionLead {
+  max-width: 52ch;
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+}
+
+/* Old design: one continuous dark panel, 4 columns separated by thin vertical
+   divider rules. */
+.approachGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border-radius: 18px;
+  background: rgba(7, 20, 48, 0.45);
+  border: 1px solid var(--line);
+  overflow: hidden;
+}
+
+.approachCard {
+  padding: clamp(1.6rem, 2.5vw, 2.4rem);
+  background: transparent;
+  border: 0;
+  border-left: 1px solid var(--line);
+  transition: background var(--d-fast, 300ms) var(--ease);
+}
+
+.approachCard:first-child {
+  border-left: 0;
+}
+
+.approachCard:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.approachIcon {
+  width: clamp(48px, 7vw, 68px);
+  height: auto;
+  margin-bottom: 1.2rem;
+}
+
+.approachTitle {
+  font-size: clamp(1.1rem, 1.6vw, 1.35rem);
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.approachDesc {
+  margin-top: 0.9rem;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* ============================================================================
+   5 · FOUR PLATFORMS
+   ========================================================================== */
+/* Old design: two-column layout — sticky left-aligned text block (col-lg-5) +
+   the platform cards on the right (col-lg-7, an animated stack that morphs into
+   the grid on scroll; the grid is the guaranteed fallback). */
+.platformsRow {
+  display: grid;
+  grid-template-columns: 5fr 7fr;
+  gap: clamp(2rem, 5vw, 48px);
+  align-items: start;
+}
+
+.platformsText {
+  position: sticky;
+  top: 6rem;
+  text-align: left;
+  max-width: none;
+}
+
+/* Heading: "Four Platforms." on line 1, "One Integrated Ecosystem." bold on
+   line 2 — sentence case, left-aligned. */
+.platformsTitle {
+  text-transform: none;
+}
+
+.platformsTitle :global(.line-inner.em) {
+  font-weight: 700;
+  font-style: normal;
+  color: #fff;
+}
+
+.platformsText .sectionCopy {
+  text-align: left;
+  margin-top: 1.4rem;
+}
+
+.platformsCards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1rem, 2vw, 1.4rem);
+}
+
+/* Stack mode (desktop, JS + not reduced-motion): cards overlap absolutely; the
+   GSAP runtime supplies the per-card transforms. */
+.platformsCards.stackActive {
+  display: block;
+  position: relative;
+  overflow: visible;
+}
+
+.platformsCards.stackActive > * {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  will-change: transform;
+}
+
+.platformCard {
+  display: flex;
+  flex-direction: column;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.platformImg {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background-size: cover;
+  background-position: center;
+  display: grid;
+  place-items: center;
+}
+
+.platformImg::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(7, 20, 48, 0.15), rgba(7, 20, 48, 0.55));
+}
+
+.platformLogo {
+  position: relative;
+  z-index: 1;
+  max-width: 60%;
+  max-height: 46px;
+  width: auto;
+  object-fit: contain;
+}
+
+.platformBody {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding: clamp(1.2rem, 2vw, 1.6rem);
+  flex: 1;
+}
+
+.platformDesc {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.82);
+  flex: 1;
+}
+
+.platformCta {
+  align-self: flex-start;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #fff;
+  text-decoration: none;
+  padding: 0.7em 1.5em;
+  border-radius: 99px;
+  background: var(--accent);
+  border: 1px solid var(--accent-border);
+  transition: background var(--d-fast, 300ms) var(--ease), color var(--d-fast, 300ms) var(--ease);
+}
+
+/* Old design: card buttons invert to white background with red text on hover. */
+.platformCta:hover {
+  background: #fff;
+  color: var(--accent);
+  border-color: #fff;
+}
+
+/* ============================================================================
+   6 · PIONEERING MODELS
+   ========================================================================== */
+.modelsSplit {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+}
+
+.modelsStage {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  position: sticky;
+  top: 6rem;
+}
+
+.stageImg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease, ease);
+}
+
+.stageActive {
+  opacity: 1;
+}
+
+.accordion {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.7rem, 1.5vw, 1rem);
+}
+
+/* Old design: each item is a rounded dark panel with a larger row height. */
+.accItem {
+  border-radius: 16px;
+  background: rgba(7, 20, 48, 0.45);
+  border: 1px solid var(--line);
+  padding-inline: clamp(1.1rem, 2vw, 1.6rem);
+  transition: border-color var(--d-fast, 300ms) var(--ease);
+}
+
+.accOpen.accItem {
+  border-color: var(--accent-border);
+}
+
+.accHead {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  padding: clamp(1.3rem, 2.2vw, 1.7rem) 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  text-align: left;
+  color: #fff;
+}
+
+.accNum {
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
+  font-weight: 700;
+  color: var(--accent-border);
+  min-width: 2.4ch;
+  line-height: 1;
+}
+
+.accIcon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.accTitle {
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.accPanel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.4s var(--ease, ease);
+}
+
+.accPanel > p {
+  overflow: hidden;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.accOpen .accPanel {
+  grid-template-rows: 1fr;
+}
+
+.accOpen .accPanel > p {
+  padding-bottom: 1.4rem;
+}
+
+/* ============================================================================
+   7 · GRIDS
+   ========================================================================== */
+/* Old design: large bold "GRIDS" eyebrow word centered above the title. */
+.gridsEyebrow {
+  font-size: clamp(2.4rem, 6vw, 4.2rem);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 800;
+  color: #fff;
+  text-align: center;
+  margin: 0 0 0.6rem;
+}
+
+.gridsTitle {
+  text-transform: uppercase;
+}
+
+.gridsStage {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+}
+
+.gridsImg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.gridsCompare {
+  position: absolute;
+  left: clamp(1rem, 3vw, 2.5rem);
+  bottom: clamp(1rem, 3vw, 2.5rem);
+  right: clamp(1rem, 3vw, 2.5rem);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(0.8rem, 2vw, 1.4rem);
+}
+
+.compareCol {
+  padding: clamp(1rem, 2vw, 1.5rem);
+  border-radius: 14px;
+  background: rgba(7, 20, 48, 0.72);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+}
+
+.compareB {
+  border-color: var(--accent-border);
+}
+
+.compareCol h4 {
+  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.compareCol p {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+/* Old design: light rounded panel; "BUILT ON INTEGRATED LAYERS" label inline
+   to the left, dark icons/text. */
+.layersBlock {
+  margin-top: clamp(3rem, 6vw, 5rem);
+  display: grid;
+  grid-template-columns: minmax(150px, 0.8fr) 3fr;
+  gap: clamp(1.5rem, 4vw, 3rem);
+  align-items: center;
+  background: #f4f6fb;
+  border-radius: 20px;
+  padding: clamp(1.6rem, 3vw, 2.6rem);
+  color: #0c2758;
+}
+
+.layersHeading {
+  text-align: left;
+  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #0c2758;
+  margin: 0;
+}
+
+.layersGrid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: clamp(0.8rem, 2vw, 1.4rem);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.layer {
+  text-align: center;
+  padding: clamp(0.8rem, 1.5vw, 1.2rem) 0.4rem;
+  border-radius: 14px;
+  background: transparent;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.layerIcon {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.layerTitle {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #0c2758;
+}
+
+.layerSub {
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: rgba(12, 39, 88, 0.7);
+}
+
+/* ---- Mobile carousel dot indicators (hidden on desktop) ---- */
+.dots {
+  display: none;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-top: 1.4rem;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border-radius: 50%;
+  border: 0;
+  background: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: background 250ms ease, transform 250ms ease;
+}
+
+.dotOn {
+  background: var(--accent);
+  transform: scale(1.2);
+}
+
+/* ============================================================================
+   RESPONSIVE
+   ========================================================================== */
+@media (max-width: 1023px) {
+  .heroInner {
+    grid-template-columns: 1fr;
+  }
+  /* Old design (mobile): heading/sub text first, then the orbital graphic. */
+  .scene {
+    width: min(80%, 380px);
+  }
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .beliefRow {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
+  .modelsSplit {
+    grid-template-columns: 1fr;
+  }
+  .modelsStage {
+    display: none;
+  }
+  .layersBlock {
+    grid-template-columns: 1fr;
+  }
+  .layersHeading {
+    text-align: center;
+  }
+  .layersGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Mobile (<768px): Approach + Platforms become auto-advancing scroll-snap
+   carousels (one card per view) with dot indicators. */
+@media (max-width: 767px) {
+  .platformsRow {
+    grid-template-columns: 1fr;
+    gap: clamp(1.5rem, 5vw, 2rem);
+  }
+  .platformsText {
+    position: static;
+  }
+
+  .approachGrid,
+  .platformsCards {
+    display: flex;
+    flex-direction: row;
+    grid-template-columns: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 1rem;
+    position: relative;
+    padding-bottom: 0.4rem;
+    border: 0;
+    background: transparent;
+    scrollbar-width: none;
+  }
+  .approachGrid::-webkit-scrollbar,
+  .platformsCards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .approachCard,
+  .platformCard {
+    flex: 0 0 100%;
+    min-width: 0;
+    scroll-snap-align: center;
+  }
+
+  /* Each approach card is its own panel in the carousel. */
+  .approachCard {
+    border: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+    border-radius: 16px;
+    background: rgba(7, 20, 48, 0.45);
+  }
+
+  .dots {
+    display: flex;
+  }
+}
+
+@media (max-width: 600px) {
+  .statsGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .gridsCompare {
+    grid-template-columns: 1fr;
+  }
+  .layersGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
