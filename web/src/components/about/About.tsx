@@ -205,7 +205,10 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
             )
           })
         }
-        const st = ScrollTrigger.create({ trigger: row, start: 'top 28%', once: true, onEnter: morphToGrid })
+        // Flip to the grid only once the deck has risen near the top of the
+        // viewport (old site flips when the front card's top hits the top), so
+        // the fanned stack stays on screen while the section is comfortably in view.
+        const st = ScrollTrigger.create({ trigger: row, start: 'top 12%', once: true, onEnter: morphToGrid })
         cleanups.push(() => st.kill())
 
         cleanups.push(() => {
@@ -229,10 +232,8 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
       if (!root) return
 
       if (!reduced) {
-        /* masked line reveals — hero plays on load with a stagger, rest on scroll.
-           The Four Platforms section is handled separately (replaying), so skip it. */
+        /* masked line reveals — hero plays on load with a stagger, rest on scroll */
         gsap.utils.toArray<HTMLElement>('.line-inner').forEach((el, i) => {
-          if (el.closest('#platforms')) return
           const inHero = !!el.closest('[data-hero]')
           gsap.to(el, {
             y: 0,
@@ -245,9 +246,8 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
           })
         })
 
-        /* generic fadeInUp entrance (Four Platforms handled separately below) */
+        /* generic fadeInUp entrance */
         gsap.utils.toArray<HTMLElement>('.reveal').forEach((el) => {
-          if (el.closest('#platforms')) return
           gsap.to(el, {
             opacity: 1,
             y: 0,
@@ -256,38 +256,6 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
             scrollTrigger: { trigger: el, start: 'top 90%', once: true },
           })
         })
-
-        /* Four Platforms — a replaying reveal: the heading lines and copy expand
-           when the section scrolls in and collapse when it scrolls out, in BOTH
-           directions, every pass. A paused timeline driven by explicit
-           enter/leave callbacks (not toggleActions) so it re-fires reliably; the
-           trigger is anchored to the section top (≈ the heading) so ordinary
-           up/down scrolling near the heading toggles it. */
-        const platformsSec = root.querySelector<HTMLElement>('#platforms')
-        if (platformsSec) {
-          const lines = platformsSec.querySelectorAll<HTMLElement>('.line-inner')
-          const copy = platformsSec.querySelectorAll<HTMLElement>('.reveal')
-          gsap.set(lines, { yPercent: 110 })
-          gsap.set(copy, { opacity: 0, y: 24 })
-          const tl = gsap.timeline({ paused: true })
-          if (lines.length) {
-            tl.to(lines, { yPercent: 0, duration: 1.1, ease: EASE, stagger: 0.1 })
-          }
-          if (copy.length) {
-            tl.to(copy, { opacity: 1, y: 0, duration: 0.7, ease: EASE }, '-=0.5')
-          }
-          const expand = () => tl.play(0)
-          const collapse = () => tl.reverse()
-          ScrollTrigger.create({
-            trigger: platformsSec,
-            start: 'top 82%',
-            end: 'bottom 18%',
-            onEnter: expand,
-            onEnterBack: expand,
-            onLeave: collapse,
-            onLeaveBack: collapse,
-          })
-        }
 
         /* The orbital diagram (rings, spokes, dots, node entrance) is driven by
            pure CSS animations in the module — no GSAP needed here. */
@@ -505,7 +473,19 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
                       className={styles.platformImg}
                       {...imgA11y(card.imageAlt)}
                       style={{ backgroundImage: `url(${asset(card.image)})` }}
-                    />
+                    >
+                      {/* Deck-only: the platform wordmark sits over the card image
+                          (matches the old auto-cycling stack); hidden in grid mode. */}
+                      {card.logo ? (
+                        <img
+                          className={styles.platformImgLogo}
+                          src={asset(card.logo)}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : null}
+                    </div>
                     <div className={styles.platformBody}>
                       {card.logo ? (
                         <img
