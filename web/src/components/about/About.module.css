@@ -528,7 +528,7 @@
 }
 
 .approachCard {
-  padding: clamp(1.6rem, 2.5vw, 2.4rem);
+  padding: clamp(1.3rem, 1.8vw, 1.8rem);
   background: transparent;
   border: 0;
   border-left: 1px solid var(--line);
@@ -583,21 +583,25 @@
 
 .platformsText {
   text-align: left;
-  max-width: 46ch;
+  max-width: 52ch;
   margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
 .platformsRowDeck .platformsText {
   position: sticky;
   top: 6rem;
-  max-width: 40ch;
+  max-width: 46ch;
   margin-bottom: 0;
 }
 
 /* Heading: "Four Platforms." on line 1, "One Integrated Ecosystem." bold on
    line 2 — sentence case, left-aligned. */
+/* Old design: ~40px, line 1 regular weight, line 2 bold — fits 2 lines. */
 .platformsTitle {
   text-transform: none;
+  font-size: clamp(1.7rem, 3vw, 2.5rem);
+  font-weight: 400;
+  line-height: 1.12;
 }
 
 .platformsTitle :global(.line-inner.em) {
@@ -609,6 +613,7 @@
 .platformsText .sectionCopy {
   text-align: left;
   margin-top: 1.4rem;
+  max-width: none;
 }
 
 .platformsCards {
@@ -796,18 +801,20 @@
   line-height: 1;
 }
 
-/* Old design: a large isometric diamond icon per row. */
+/* Old design: a large isometric diamond icon per row (big left zone). */
 .accIcon {
-  width: clamp(52px, 7vw, 76px);
-  height: clamp(52px, 7vw, 76px);
+  width: clamp(84px, 9vw, 120px);
+  height: clamp(84px, 9vw, 120px);
   object-fit: contain;
   flex-shrink: 0;
 }
 
+/* Constrain the title so it breaks like the old (narrower right column). */
 .accTitle {
   font-size: clamp(1.05rem, 1.6vw, 1.3rem);
   font-weight: 600;
   line-height: 1.25;
+  max-width: 22ch;
 }
 
 .accPanel {
@@ -949,7 +956,7 @@
 .layersGrid {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
-  gap: clamp(0.8rem, 2vw, 1.4rem);
+  gap: clamp(0.5rem, 1vw, 0.9rem);
   list-style: none;
   padding: 0;
   margin: 0;
@@ -982,8 +989,8 @@
 }
 
 .layerSub {
-  font-size: 0.78rem;
-  line-height: 1.45;
+  font-size: 0.74rem;
+  line-height: 1.4;
   color: rgba(12, 39, 88, 0.7);
 }
 
