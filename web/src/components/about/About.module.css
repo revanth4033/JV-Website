@@ -855,11 +855,15 @@
   line-height: 1.2;
 }
 
-/* Old design: the GRIDS intro is small regular copy on ~2 lines. */
+/* Old design: a wide heading block so the title stays on ONE line and the intro
+   copy wraps to ~2 lines (not a narrow column that breaks them up). */
+.grids .sectionHeadCenter {
+  max-width: min(1040px, 100%);
+}
 .grids .sectionLead {
   font-size: clamp(1rem, 1.4vw, 1.18rem);
   font-weight: 400;
-  max-width: 62ch;
+  max-width: none;
 }
 
 /* Old design: full-bleed corridor image (edge to edge, no rounding/border). */
