@@ -229,9 +229,12 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
       if (!root) return
 
       if (!reduced) {
-        /* masked line reveals — hero plays on load with a stagger, rest on scroll */
+        /* masked line reveals — hero plays on load with a stagger, rest on scroll.
+           The Four Platforms heading replays: it collapses when scrolled back up
+           and re-reveals on the way down (toggleActions instead of once). */
         gsap.utils.toArray<HTMLElement>('.line-inner').forEach((el, i) => {
           const inHero = !!el.closest('[data-hero]')
+          const replay = !!el.closest('#platforms')
           gsap.to(el, {
             y: 0,
             duration: 1.2,
@@ -239,18 +242,23 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
             delay: inHero ? 0.15 + (i % 6) * 0.12 : 0,
             scrollTrigger: inHero
               ? undefined
-              : { trigger: el.closest('.line'), start: 'top 88%', once: true },
+              : replay
+                ? { trigger: el.closest('.line'), start: 'top 88%', toggleActions: 'restart none none reverse' }
+                : { trigger: el.closest('.line'), start: 'top 88%', once: true },
           })
         })
 
-        /* generic fadeInUp entrance */
+        /* generic fadeInUp entrance (Four Platforms copy replays — see above) */
         gsap.utils.toArray<HTMLElement>('.reveal').forEach((el) => {
+          const replay = !!el.closest('#platforms')
           gsap.to(el, {
             opacity: 1,
             y: 0,
             duration: 0.7,
             ease: EASE,
-            scrollTrigger: { trigger: el, start: 'top 90%', once: true },
+            scrollTrigger: replay
+              ? { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
+              : { trigger: el, start: 'top 90%', once: true },
           })
         })
 
