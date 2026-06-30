@@ -65,7 +65,9 @@
   align-content: flex-start;
   min-height: clamp(380px, 34vw, 480px);
   padding: clamp(1.5rem, 3vw, 2rem);
-  padding-right: clamp(7.5rem, 30%, 14rem);
+  /* Reserve more than the portrait's width so the bio text always clears the
+     photo (the portrait is 30% wide — keep a gap so long bios never collide). */
+  padding-right: clamp(9rem, 36%, 16rem);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
   overflow: hidden;
@@ -77,7 +79,7 @@
   bottom: 0;
   align-self: flex-end;
   height: 100%;
-  width: clamp(8rem, 32%, 15rem);
+  width: clamp(8rem, 30%, 14rem);
 }
 
 .founderMedia :global(img) {
@@ -416,12 +418,12 @@
   }
 
   .founder {
-    padding-right: clamp(6rem, 34%, 9rem);
+    padding-right: clamp(7.5rem, 40%, 11rem);
     min-height: clamp(340px, 90vw, 460px);
   }
 
   .founderMedia {
-    width: clamp(6rem, 34%, 9rem);
+    width: clamp(6rem, 32%, 9rem);
   }
 
   /* overlay always visible on touch / small screens — pinned as a bottom strip
