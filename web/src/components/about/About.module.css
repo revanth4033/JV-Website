@@ -369,8 +369,11 @@
   padding: clamp(1.6rem, 2.5vw, 2.4rem) 1.2rem;
   text-align: center;
   border-radius: 16px;
-  background: rgba(7, 20, 48, 0.45);
+  /* Old design: top-lit card — bright blue glow along the top fading to navy. */
+  background: linear-gradient(180deg, rgba(45, 95, 185, 0.32) 0%, rgba(7, 20, 48, 0.5) 55%);
   border: 1px solid var(--line);
+  border-top: 1px solid rgba(90, 150, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(120, 170, 255, 0.4);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -401,8 +404,8 @@
 
 /* Short red divider rule beneath each stat label (old design). */
 .statRule {
-  width: 36px;
-  height: 3px;
+  width: 28px;
+  height: 2px;
   border-radius: 2px;
   background: var(--accent);
   margin-top: 0.4rem;
@@ -414,11 +417,12 @@
   max-width: 52ch;
   text-align: center;
   font-size: clamp(1rem, 1.6vw, 1.3rem);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.5;
   padding: clamp(1.4rem, 3vw, 2.2rem) clamp(1.8rem, 4vw, 3rem);
 }
 
+/* Old design: thin white corner brackets (not thick pink). */
 .framedCaption::before,
 .framedCaption::after {
   content: '';
@@ -430,15 +434,15 @@
 .framedCaption::before {
   left: 0;
   top: 0;
-  border-left: 2px solid var(--accent-border);
-  border-top: 2px solid var(--accent-border);
+  border-left: 1px solid rgba(255, 255, 255, 0.65);
+  border-top: 1px solid rgba(255, 255, 255, 0.65);
 }
 
 .framedCaption::after {
   right: 0;
   bottom: 0;
-  border-right: 2px solid var(--accent-border);
-  border-bottom: 2px solid var(--accent-border);
+  border-right: 1px solid rgba(255, 255, 255, 0.65);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
 }
 
 /* ============================================================================
@@ -462,7 +466,7 @@
 }
 
 .beliefWord {
-  font-size: clamp(2rem, 5vw, 3.4rem);
+  font-size: clamp(2rem, 5vw, 3rem);
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
@@ -485,7 +489,7 @@
 }
 
 .beliefNote {
-  margin-top: 1rem;
+  margin-top: 0.6rem;
   font-size: 0.95rem;
   line-height: 1.6;
   color: rgba(255, 255, 255, 0.74);
@@ -564,18 +568,15 @@
 /* Old design: two-column layout — sticky left-aligned text block (col-lg-5) +
    the platform cards on the right (col-lg-7, an animated stack that morphs into
    the grid on scroll; the grid is the guaranteed fallback). */
+/* Old end-state: heading block on top, then a full-width 4-up row of cards. */
 .platformsRow {
-  display: grid;
-  grid-template-columns: 5fr 7fr;
-  gap: clamp(2rem, 5vw, 48px);
-  align-items: start;
+  display: block;
 }
 
 .platformsText {
-  position: sticky;
-  top: 6rem;
   text-align: left;
-  max-width: none;
+  max-width: 46ch;
+  margin-bottom: clamp(2rem, 4vw, 3rem);
 }
 
 /* Heading: "Four Platforms." on line 1, "One Integrated Ecosystem." bold on
@@ -597,8 +598,8 @@
 
 .platformsCards {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: clamp(1rem, 2vw, 1.4rem);
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 1.5vw, 1.3rem);
 }
 
 /* Stack mode (desktop, JS + not reduced-motion): cards overlap absolutely; the
@@ -626,58 +627,54 @@
   border: 1px solid var(--line);
 }
 
+/* Old design: image on top (fixed height), then a translucent body panel below. */
 .platformImg {
   position: relative;
-  aspect-ratio: 4 / 3;
+  height: 250px;
   background-size: cover;
   background-position: center;
-  display: grid;
-  place-items: center;
-}
-
-.platformImg::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(7, 20, 48, 0.15), rgba(7, 20, 48, 0.55));
 }
 
 .platformLogo {
-  position: relative;
-  z-index: 1;
-  max-width: 60%;
-  max-height: 46px;
+  display: block;
   width: auto;
+  max-width: 150px;
+  max-height: 42px;
+  margin-bottom: 0.5rem;
   object-fit: contain;
+  object-position: left center;
 }
 
 .platformBody {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
-  padding: clamp(1.2rem, 2vw, 1.6rem);
+  gap: 0.9rem;
+  padding: 20px;
+  text-align: left;
+  background: rgba(217, 217, 217, 0.2);
   flex: 1;
 }
 
 .platformDesc {
-  font-size: 0.9rem;
+  font-size: 0.94rem;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.82);
+  color: #fff;
+  min-height: 135px;
   flex: 1;
 }
 
+/* Old design: red button with a pink border, square-ish, hugging its text. */
 .platformCta {
   align-self: flex-start;
-  font-size: 0.78rem;
-  letter-spacing: 0.1em;
+  font-size: 0.875rem;
   text-transform: uppercase;
   font-weight: 600;
   color: #fff;
   text-decoration: none;
-  padding: 0.7em 1.5em;
-  border-radius: 99px;
+  padding: 5px 15px;
+  border-radius: 5px;
   background: var(--accent);
-  border: 1px solid var(--accent-border);
+  border: 2px solid var(--accent-border);
   transition: background var(--d-fast, 300ms) var(--ease), color var(--d-fast, 300ms) var(--ease);
 }
 
@@ -691,6 +688,13 @@
 /* ============================================================================
    6 · PIONEERING MODELS
    ========================================================================== */
+/* Old design: the models intro is small, regular-weight copy (not a big bold lead). */
+.models .sectionLead {
+  font-size: clamp(1rem, 1.4vw, 1.2rem);
+  font-weight: 400;
+  max-width: 64ch;
+}
+
 .modelsSplit {
   display: grid;
   grid-template-columns: 0.9fr 1.1fr;
@@ -753,23 +757,25 @@
   color: #fff;
 }
 
+/* Old design: small white number (not a big coral one). */
 .accNum {
-  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
-  font-weight: 700;
-  color: var(--accent-border);
-  min-width: 2.4ch;
+  font-size: clamp(0.9rem, 1.4vw, 1.1rem);
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.7);
+  min-width: 2.2ch;
   line-height: 1;
 }
 
+/* Old design: a large isometric diamond icon per row. */
 .accIcon {
-  width: 34px;
-  height: 34px;
+  width: clamp(52px, 7vw, 76px);
+  height: clamp(52px, 7vw, 76px);
   object-fit: contain;
   flex-shrink: 0;
 }
 
 .accTitle {
-  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
   font-weight: 600;
   line-height: 1.25;
 }
@@ -810,15 +816,30 @@
   margin: 0 0 0.6rem;
 }
 
+/* Old design: a single-line, lighter, letter-spaced subtitle (not a big bold wrap). */
 .gridsTitle {
   text-transform: uppercase;
+  font-size: clamp(1.3rem, 3vw, 2rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
 }
 
+/* Old design: the GRIDS intro is small regular copy on ~2 lines. */
+.grids .sectionLead {
+  font-size: clamp(1rem, 1.4vw, 1.18rem);
+  font-weight: 400;
+  max-width: 62ch;
+}
+
+/* Old design: full-bleed corridor image (edge to edge, no rounding/border). */
 .gridsStage {
   position: relative;
-  border-radius: 18px;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  border-radius: 0;
   overflow: hidden;
-  border: 1px solid var(--line);
+  border: 0;
 }
 
 .gridsImg {
@@ -837,16 +858,18 @@
   gap: clamp(0.8rem, 2vw, 1.4rem);
 }
 
+/* Old design: bare white text overlaid on the image — no card/box. */
 .compareCol {
-  padding: clamp(1rem, 2vw, 1.5rem);
-  border-radius: 14px;
-  background: rgba(7, 20, 48, 0.72);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--line);
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  border: 0;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
 }
 
 .compareB {
-  border-color: var(--accent-border);
+  border: 0;
 }
 
 .compareCol h4 {
@@ -868,18 +891,20 @@
 .layersBlock {
   margin-top: clamp(3rem, 6vw, 5rem);
   display: grid;
-  grid-template-columns: minmax(150px, 0.8fr) 3fr;
-  gap: clamp(1.5rem, 4vw, 3rem);
+  grid-template-columns: minmax(150px, 0.7fr) 3fr;
+  gap: clamp(1.2rem, 3vw, 2.2rem);
   align-items: center;
-  background: #f4f6fb;
-  border-radius: 20px;
-  padding: clamp(1.6rem, 3vw, 2.6rem);
+  background: #d7dbe3;
+  border-radius: 16px;
+  padding: clamp(1.1rem, 2vw, 1.6rem) clamp(1.4rem, 3vw, 2.2rem);
   color: #0c2758;
 }
 
 .layersHeading {
   text-align: left;
-  font-size: clamp(1.1rem, 2vw, 1.5rem);
+  border-right: 1px solid rgba(12, 39, 88, 0.22);
+  padding-right: clamp(1rem, 2.5vw, 2rem);
+  font-size: clamp(1.05rem, 1.8vw, 1.4rem);
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -915,8 +940,10 @@
 }
 
 .layerTitle {
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
   color: #0c2758;
 }
 
@@ -983,11 +1010,22 @@
   .modelsStage {
     aspect-ratio: 16 / 9;
   }
+  /* Tablet: platform cards reflow to 2-up (not a cramped 4-across). */
+  .platformsCards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .platformLogo {
+    margin-bottom: 0.7rem;
+  }
   .layersBlock {
     grid-template-columns: 1fr;
   }
   .layersHeading {
     text-align: center;
+    border-right: 0;
+    border-bottom: 1px solid rgba(12, 39, 88, 0.22);
+    padding-right: 0;
+    padding-bottom: 1rem;
   }
   .layersGrid {
     grid-template-columns: repeat(3, 1fr);

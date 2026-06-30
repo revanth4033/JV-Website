@@ -472,7 +472,8 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
                       className={styles.platformImg}
                       {...imgA11y(card.imageAlt)}
                       style={{ backgroundImage: `url(${asset(card.image)})` }}
-                    >
+                    />
+                    <div className={styles.platformBody}>
                       {card.logo ? (
                         <img
                           className={styles.platformLogo}
@@ -482,8 +483,6 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
                           decoding="async"
                         />
                       ) : null}
-                    </div>
-                    <div className={styles.platformBody}>
                       <p className={styles.platformDesc}>{card.desc}</p>
                       <Link className={styles.platformCta} href={route(card.href)}>
                         {card.ctaLabel || 'LEARN MORE'}
