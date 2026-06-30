@@ -337,7 +337,7 @@
       "categories": [
         { "label": "Infrastructure", "ventures": [
           { "name": "Cappella", "logo": "assets/old/cappella-01-e1779887851616.png", "logoAlt": "Cappella", "photo": "assets/old/powered-ionfra.jpg", "href": "https://cappella.in/",
-            "desc": "Pan-Asian edu-infrastructure solutions — sale/leaseback, development, and acquisitions across the spectrum, spanning India and Dubai.",
+            "desc": "Pan-Asian edu-infra solutions — sale/leaseback, development, and acquisitions across the spectrum, spanning India and Dubai.",
             "metrics": [{ "value": "16", "label": "Assets" }, { "value": "$500M+", "label": "AUM" }] }
         ]},
         { "label": "Operations", "ventures": [

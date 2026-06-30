@@ -5,7 +5,7 @@ import { useRef, useState } from 'react'
 import { useSmoothScroll } from '@/components/SmoothScroll'
 import { asset } from '@/content'
 import type { Platform as PlatformT, SiteSettings, Venture } from '@/content/types'
-import { EASE, gsap, useGSAP } from '@/lib/gsap'
+import { EASE, gsap, ScrollTrigger, useGSAP } from '@/lib/gsap'
 
 import styles from './Platform.module.css'
 
@@ -29,9 +29,11 @@ function Chevron({ open }: { open: boolean }) {
 
 /** A single venture card: logo (linked) + description + stats grid + photo. */
 function VentureCard({ venture, open }: { venture: Venture; open: boolean }) {
+  // Old site shows each venture's real brand logo (e.g. red CAPPELLA) on the
+  // light open panel — the logos are already colour assets, so no tint.
   const logo = venture.logo ? (
     <img
-      className={`${styles.logo} ${open ? styles.logoTint : ''}`}
+      className={styles.logo}
       src={asset(venture.logo)}
       alt={venture.logoAlt ?? venture.name}
       loading="lazy"
@@ -93,6 +95,9 @@ export function Platform({
   settings: SiteSettings
 }) {
   const scope = useRef<HTMLElement>(null)
+  const heroRef = useRef<HTMLElement>(null)
+  const gridRef = useRef<HTMLDivElement>(null)
+  const heroTextRef = useRef<HTMLDivElement>(null)
   const { reduced } = useSmoothScroll()
 
   const categories = platform?.categories ?? []
@@ -120,59 +125,83 @@ export function Platform({
           },
         )
       })
+
+      /* Hero banner — the video grid expands from (text | video) to full-width
+         while the section is pinned, exactly like the old jv.ventures platform
+         banner (gridTemplateColumns 38% 62% -> 0% 100%, text slides up & fades).
+         Desktop only; mobile keeps the static stacked layout. */
+      const hero = heroRef.current
+      const grid = gridRef.current
+      const heroText = heroTextRef.current
+      if (hero && grid && heroText && platform?.video && window.matchMedia('(min-width: 768px)').matches) {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: hero,
+            start: 'top top',
+            end: '+=70%',
+            scrub: 0.3,
+            pin: true,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+        tl.fromTo(
+          grid,
+          { gridTemplateColumns: '38% 62%' },
+          { gridTemplateColumns: '0% 100%', ease: 'none' },
+          0,
+        ).to(heroText, { yPercent: -40, opacity: 0, ease: 'none' }, 0)
+      }
     },
     { scope, dependencies: [reduced, platform?.slug] },
   )
 
   return (
     <main id="top" className={styles.main} ref={scope}>
-      {/* 1. HERO */}
-      <section className={`${styles.hero} ${styles.fade}`} data-cms-section="hero">
+      {/* 1. HERO — text + video banner that expands to full-width on scroll. */}
+      <section className={`${styles.hero} ${styles.fade}`} data-cms-section="hero" ref={heroRef}>
         <h1 className="sr-only">
           {platform?.name} — {platform?.sector} platform
         </h1>
-        <div className={styles.heroText}>
-          {platform?.wordmark ? (
-            <img
-              className={styles.wordmark}
-              src={asset(platform.wordmark)}
-              alt={platform?.name ?? ''}
-              data-cms-section="identity"
-            />
-          ) : null}
-          {platform?.tagline ? <p className={styles.tagline}>{platform.tagline}</p> : null}
-          {platform?.overview ? <p className={styles.overview}>{platform.overview}</p> : null}
-        </div>
-        {platform?.hero ? (
-          <div className={styles.heroMedia}>
-            <img
-              className={styles.heroImg}
-              src={asset(platform.hero)}
-              alt={platform?.name ?? ''}
-              loading="eager"
-              decoding="async"
-            />
+        <div className={styles.heroGrid} ref={gridRef}>
+          <div className={styles.heroText} ref={heroTextRef}>
+            {platform?.wordmark ? (
+              <img
+                className={styles.wordmark}
+                src={asset(platform.wordmark)}
+                alt={platform?.name ?? ''}
+                data-cms-section="identity"
+              />
+            ) : null}
+            {platform?.tagline ? <p className={styles.tagline}>{platform.tagline}</p> : null}
+            {platform?.overview ? <p className={styles.overview}>{platform.overview}</p> : null}
           </div>
-        ) : null}
+          <div className={styles.heroMedia}>
+            {platform?.video ? (
+              <video
+                className={styles.heroVideo}
+                src={asset(platform.video)}
+                poster={platform?.hero ? asset(platform.hero) : undefined}
+                autoPlay={!reduced}
+                loop
+                muted
+                playsInline
+                preload="metadata"
+              />
+            ) : platform?.hero ? (
+              <img
+                className={styles.heroImg}
+                src={asset(platform.hero)}
+                alt={platform?.name ?? ''}
+                loading="eager"
+                decoding="async"
+              />
+            ) : null}
+          </div>
+        </div>
       </section>
 
-      {/* 2. INTRO VIDEO — controlled by JSX/state, never imperatively removed. */}
-      {platform?.video ? (
-        <div className={`${styles.videoWrap} ${styles.fade}`} data-cms-section="intro-video">
-          <video
-            className={styles.video}
-            src={asset(platform.video)}
-            poster={asset(platform.hero)}
-            autoPlay={!reduced}
-            loop
-            muted
-            playsInline
-            preload="metadata"
-          />
-        </div>
-      ) : null}
-
-      {/* 3. CATEGORIES / VENTURES ACCORDION */}
+      {/* 2. CATEGORIES / VENTURES ACCORDION */}
       <div className={`${styles.accordion} ${styles.section}`} data-cms-section="categories">
         {categories.map((cat, i) => {
           const open = openCat === i

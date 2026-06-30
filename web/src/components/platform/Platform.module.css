@@ -21,14 +21,22 @@
 }
 
 /* ---------- 1. HERO ---------- */
+/* Full-bleed banner: text (left) + video (right) that the JS expands to
+   full-width on scroll. The grid spans the viewport so the expanded video runs
+   edge-to-edge, matching the old jv.ventures platform banner. */
 .hero {
+  position: relative;
+  width: 100%;
+  padding-block: clamp(4rem, 10vw, 7rem) 0;
+}
+
+.heroGrid {
   display: grid;
-  grid-template-columns: minmax(320px, 1fr) 1.3fr;
+  grid-template-columns: 38% 62%;
   align-items: center;
-  gap: 48px;
-  width: min(1180px, 92vw);
-  margin-inline: auto;
-  padding-block: clamp(5rem, 13vw, 9rem) clamp(2.5rem, 6vw, 4rem);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  width: 100%;
+  min-height: min(70vh, 700px);
 }
 
 .heroText {
@@ -38,18 +46,23 @@
   text-align: left;
   gap: 1rem;
   min-width: 0;
+  overflow: hidden;
+  padding-left: clamp(1.25rem, 5vw, 6rem);
 }
 
 .heroMedia {
   min-width: 0;
+  height: 100%;
 }
 
+.heroVideo,
 .heroImg {
   display: block;
   width: 100%;
-  height: auto;
-  aspect-ratio: 1198 / 844;
-  border-radius: 14px;
+  height: 100%;
+  min-height: min(70vh, 700px);
+  max-height: min(70vh, 700px);
+  border-radius: 14px 0 0 14px;
   object-fit: cover;
   background: rgba(0, 0, 0, 0.2);
 }
@@ -358,19 +371,32 @@
 
 /* ---------- responsive ---------- */
 @media (max-width: 900px) {
-  /* Hero: single column, photo FIRST then wordmark/tagline (left-aligned). */
-  .hero {
+  /* Hero: single column, video FIRST then wordmark/tagline (left-aligned). No
+     expand animation on mobile (matches the old site). */
+  .heroGrid {
     grid-template-columns: 1fr;
     gap: 1.6rem;
+    min-height: 0;
   }
 
   .heroMedia {
     order: -1;
+    height: auto;
+  }
+
+  .heroVideo,
+  .heroImg {
+    min-height: 0;
+    max-height: none;
+    aspect-ratio: 1198 / 844;
+    border-radius: 14px;
   }
 
   .heroText {
     align-items: flex-start;
     text-align: left;
+    overflow: visible;
+    padding-left: clamp(1.25rem, 6vw, 2rem);
   }
 
   .tagline,
