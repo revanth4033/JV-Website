@@ -720,10 +720,10 @@
 }
 
 .platformDesc {
-  font-size: 0.94rem;
-  line-height: 1.6;
+  font-size: 0.82rem;
+  line-height: 1.55;
   color: #fff;
-  min-height: 135px;
+  min-height: 120px;
   flex: 1;
 }
 
@@ -921,7 +921,7 @@
 .gridsCompare {
   position: absolute;
   left: clamp(1rem, 3vw, 2.5rem);
-  bottom: clamp(1rem, 3vw, 2.5rem);
+  bottom: clamp(3rem, 6vw, 6rem);
   right: clamp(1rem, 3vw, 2.5rem);
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -943,23 +943,28 @@
 }
 
 .compareCol h4 {
-  font-size: clamp(0.85rem, 1.4vw, 1.05rem);
+  font-size: clamp(1.5rem, 2.4vw, 2.7rem);
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.03em;
+  line-height: 1.05;
 }
 
 .compareCol p {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  line-height: 1.5;
-  color: rgba(255, 255, 255, 0.82);
+  margin-top: 0.55rem;
+  font-size: clamp(0.95rem, 1.35vw, 1.5rem);
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.88);
 }
 
 /* Old design: light rounded panel; "BUILT ON INTEGRATED LAYERS" label inline
    to the left, dark icons/text. */
 .layersBlock {
-  margin-top: clamp(3rem, 6vw, 5rem);
+  position: relative;
+  z-index: 2;
+  /* Pull the panel up so it overlaps the bottom edge of the corridor image
+     (old jv.ventures look) instead of floating in the navy band below it. */
+  margin-top: -1.5rem;
   display: grid;
   grid-template-columns: minmax(150px, 0.7fr) 3fr;
   gap: clamp(1.2rem, 3vw, 2.2rem);
