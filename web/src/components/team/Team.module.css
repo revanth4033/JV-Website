@@ -13,26 +13,25 @@
    founder row overlaps from below (ghosted background heading). */
 .hero {
   position: relative;
-  height: 0;
-  padding: 0;
   z-index: 0;
+  /* Clear space between the fixed navbar and the ghosted TEAM title.
+     High min keeps the gap comfortable even on scaled-down laptop widths. */
+  padding-top: clamp(7.5rem, 7vw, 8rem);
+  text-align: center;
 }
 
+/* Ghosted "TEAM" title sits ABOVE the founder cards (live jv.ventures layout);
+   the cards overlap only its very bottom edge. */
 .heroTitle {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 100%;
   margin: 0;
-  text-align: center;
+  width: 100%;
   pointer-events: none;
   font-weight: 800;
-  line-height: 0.92;
+  line-height: 0.9;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  color: rgba(255, 255, 255, 0.12);
-  font-size: clamp(4rem, 14vw, 11rem);
+  color: rgba(255, 255, 255, 0.1);
+  font-size: clamp(3.5rem, 11vw, 9rem);
 }
 
 .heroTitle em {
@@ -47,7 +46,8 @@
 .founders {
   position: relative;
   z-index: 1;
-  margin-top: clamp(5rem, 14vw, 11rem);
+  /* Cards sit BELOW the TEAM title with a small gap — no text collision. */
+  margin-top: clamp(0.5rem, 1.5vw, 1.5rem);
   padding: 0 clamp(1.25rem, 6vw, 6rem) clamp(3rem, 8vw, 7rem);
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -63,13 +63,23 @@
   display: flex;
   align-items: stretch;
   align-content: flex-start;
-  min-height: clamp(380px, 34vw, 480px);
-  padding: clamp(1.5rem, 3vw, 2rem);
+  /* Normal card height (slightly taller so the bottom-anchored portrait reads a
+     touch larger without inflating the box). */
+  min-height: clamp(380px, 26vw, 500px);
+  padding: clamp(1.5rem, 2.6vw, 2.25rem);
   /* Reserve more than the portrait's width so the bio text always clears the
-     photo (the portrait is 30% wide — keep a gap so long bios never collide). */
-  padding-right: clamp(9rem, 36%, 16rem);
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
+     photo (the portrait is ~45% wide — keep a gap so long bios never collide). */
+  padding-right: clamp(12rem, 56%, 26rem);
+  border-radius: 18px;
+  /* Lighter translucent blue panel (matches the live jv.ventures team cards) */
+  background: linear-gradient(
+    158deg,
+    rgba(78, 126, 210, 0.42) 0%,
+    rgba(36, 82, 165, 0.34) 52%,
+    rgba(24, 62, 132, 0.30) 100%
+  );
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 24px 60px rgba(6, 18, 44, 0.35);
   overflow: hidden;
 }
 
@@ -79,12 +89,14 @@
   bottom: 0;
   align-self: flex-end;
   height: 100%;
-  width: clamp(8rem, 30%, 14rem);
+  width: clamp(14rem, 57%, 29rem);
 }
 
+/* Full-figure cutout, anchored flush to the bottom-right frame of the card
+   (matches the live jv.ventures cards). No cropping, no empty gap at the edge. */
 .founderMedia :global(img) {
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;
+  object-position: bottom right;
 }
 
 .founderBody {
@@ -98,65 +110,65 @@
 
 .founderRole {
   margin: 0;
-  font-size: 0.95rem;
-  color: #9bb6ec;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #8fb2f0;
 }
 
 .founderName {
   margin: 0;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.05;
   letter-spacing: 0.01em;
   text-transform: uppercase;
-  font-size: clamp(1.1rem, 1.6vw, 1.3rem);
+  font-size: clamp(1.55rem, 2.2vw, 2.1rem);
   color: #fff;
 }
 
 .founderBio {
-  margin: 0;
-  max-width: 46ch;
-  font-size: clamp(0.95rem, 1.2vw, 1.05rem);
-  line-height: 1.7;
-  color: rgba(255, 255, 255, 0.82);
+  margin: 0.4rem 0 0;
+  max-width: 32ch;
+  font-size: clamp(0.95rem, 1.2vw, 1.08rem);
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .actions {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-top: 0.5rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.15rem;
+  margin-top: 1.1rem;
 }
 
-/* READ MORE — plain borderless white text link with chevron */
+/* READ MORE — plain borderless white text link with chevron (no pill/box) */
 .btn {
   display: inline-flex;
   align-items: center;
-  gap: 0.45rem;
-  padding: 0.6em 1.4em;
-  border: 1px solid rgba(255, 255, 255, 0.55);
-  border-radius: 99px;
+  gap: 0.5rem;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
   background: transparent;
   color: #fff;
   font: inherit;
-  font-size: 0.78rem;
+  font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   cursor: pointer;
-  transition: background 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+  transition: opacity 0.25s ease, color 0.25s ease;
 }
 
-/* Old design: READ MORE fills white with dark text on hover. */
 .btn:hover,
 .btn:focus-visible {
-  background: #fff;
-  color: #0c2758;
-  border-color: #fff;
+  background: transparent;
+  color: #cfe0ff;
 }
 
 .btn svg {
-  width: 1em;
-  height: 1em;
+  width: 1.05em;
+  height: 1.05em;
 }
 
 /* LinkedIn — bare white glyph, no surrounding shape */
@@ -168,8 +180,8 @@
 }
 
 .liLink svg {
-  width: 1.3rem;
-  height: 1.3rem;
+  width: 1.6rem;
+  height: 1.6rem;
 }
 
 .liLink:hover,
@@ -220,15 +232,18 @@
    balloon to full width (the old tablet 13000px bug). */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
-  gap: clamp(1rem, 2vw, 1.6rem);
+  /* Live jv.ventures roster = a FIXED 4 cards per row on desktop/laptop. Using an
+     explicit column count (not auto-fill) so display scaling on a 14" laptop can't
+     drop it to 3. Reflows to 3 / 2 only on real tablet / phone widths below. */
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(1rem, 1.6vw, 1.4rem);
 }
 
 .card {
   position: relative;
   overflow: hidden;
-  border-radius: 12px;
-  aspect-ratio: 420 / 480;
+  border-radius: 10px;
+  aspect-ratio: 345 / 411;
   background: #fff;
 }
 
@@ -409,8 +424,16 @@
 }
 
 /* ------------------------------------------------------ Responsive --- */
-/* The leaders .grid uses auto-fill minmax (above), so it reflows to ~3 cols on
-   tablet and 2 on large phones without per-breakpoint overrides. */
+/* Roster grid steps down from the fixed 4 columns only at real tablet/phone
+   widths (a scaled-down 14" laptop stays at 4). */
+@media (max-width: 1024px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+}
+
 @media (max-width: 768px) {
   /* Founders stack into a single column on small screens */
   .founders {
