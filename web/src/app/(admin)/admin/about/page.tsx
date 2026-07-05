@@ -14,7 +14,7 @@ export default async function AboutEditPage() {
     <AdminShell
       active="about"
       title="About Page"
-      subtitle="Hero, beliefs, method, models, ecosystem, GRIDS."
+      subtitle="Hero, beliefs, method, four platforms, models, GRIDS."
       actions={<PreviewLink href="/about" label="Open page" />}
       wide
     >

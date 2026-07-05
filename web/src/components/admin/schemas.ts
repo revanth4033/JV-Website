@@ -244,9 +244,20 @@ export const aboutSchema: FieldDef[] = [
       titleField(),
       { type: 'rich', name: 'subtitle', label: 'Subtitle' },
       { type: 'textarea', name: 'intro', label: 'Intro paragraph' },
+      { type: 'textarea', name: 'intro2', label: 'Second intro paragraph', hint: 'Optional — a second paragraph under the intro.' },
       { type: 'stringList', name: 'sectorChips', label: 'Sector chips' },
-      { type: 'image', name: 'heroImage', label: 'Hero band image' },
-      { type: 'text', name: 'heroImageAlt', label: 'Hero image alt text', hint: 'Leave blank if decorative.' },
+      { type: 'image', name: 'heroImage', label: 'Centre mark (orbital diagram)' },
+      { type: 'text', name: 'heroImageAlt', label: 'Centre mark alt text', hint: 'Leave blank if decorative.' },
+      {
+        type: 'array', name: 'orbit', label: 'Ecosystem nodes', itemTitleKey: 'label',
+        newItem: () => ({ label: '', image: '' }),
+        fields: [
+          { type: 'row', fields: [
+            { type: 'text', name: 'label', label: 'Label' },
+            { type: 'image', name: 'image', label: 'Icon' },
+          ] },
+        ],
+      },
       {
         type: 'array', name: 'ledger', label: 'Ledger stats', flat: true,
         newItem: () => ({ value: 0, prefix: '', suffix: '', plain: false, label: '' }),
@@ -260,6 +271,7 @@ export const aboutSchema: FieldDef[] = [
           { type: 'checkbox', name: 'plain', label: 'No thousands separator (for years)' },
         ],
       },
+      { type: 'textarea', name: 'ledgerCaption', label: 'Caption under the stats', hint: 'Optional framed caption below the stats band.' },
     ],
   },
   {
@@ -305,6 +317,36 @@ export const aboutSchema: FieldDef[] = [
     ],
   },
   {
+    type: 'group', name: 'platformsSection', label: 'Four Platforms',
+    fields: [
+      { type: 'row', fields: [
+        { type: 'text', name: 'actName', label: 'Act label' },
+        { type: 'text', name: 'actIndex', label: 'Act number' },
+      ] },
+      titleField(),
+      { type: 'textarea', name: 'copy', label: 'Copy' },
+      {
+        type: 'array', name: 'cards', label: 'Platform cards', itemTitleKey: 'logoAlt',
+        newItem: () => ({ logo: '', logoAlt: '', image: '', imageAlt: '', desc: '', href: '', ctaLabel: 'Learn More' }),
+        fields: [
+          { type: 'row', fields: [
+            { type: 'image', name: 'logo', label: 'Logo' },
+            { type: 'image', name: 'image', label: 'Background image' },
+          ] },
+          { type: 'row', fields: [
+            { type: 'text', name: 'logoAlt', label: 'Logo alt / name' },
+            { type: 'text', name: 'imageAlt', label: 'Background image alt text' },
+          ] },
+          { type: 'textarea', name: 'desc', label: 'Description' },
+          { type: 'row', fields: [
+            { type: 'text', name: 'ctaLabel', label: 'Button label' },
+            { type: 'text', name: 'href', label: 'Link' },
+          ] },
+        ],
+      },
+    ],
+  },
+  {
     type: 'group', name: 'models', label: 'Models',
     fields: [
       { type: 'row', fields: [
@@ -324,36 +366,6 @@ export const aboutSchema: FieldDef[] = [
           ] },
           { type: 'image', name: 'image', label: 'Stage image' },
           { type: 'textarea', name: 'desc', label: 'Description' },
-        ],
-      },
-    ],
-  },
-  {
-    type: 'group', name: 'ecosystem', label: 'Ecosystem',
-    fields: [
-      { type: 'row', fields: [
-        { type: 'text', name: 'actName', label: 'Act label' },
-        { type: 'text', name: 'actIndex', label: 'Act number' },
-      ] },
-      titleField(),
-      { type: 'textarea', name: 'copy', label: 'Copy' },
-      {
-        type: 'array', name: 'tiles', label: 'Ecosystem tiles', itemTitleKey: 'logoAlt',
-        newItem: () => ({ image: '', logo: '', logoAlt: '', text: '', moreLabel: 'Learn More', href: '' }),
-        fields: [
-          { type: 'row', fields: [
-            { type: 'image', name: 'image', label: 'Image' },
-            { type: 'image', name: 'logo', label: 'Logo' },
-          ] },
-          { type: 'row', fields: [
-            { type: 'text', name: 'logoAlt', label: 'Logo alt / name' },
-            { type: 'text', name: 'imageAlt', label: 'Background image alt text' },
-          ] },
-          { type: 'textarea', name: 'text', label: 'Text' },
-          { type: 'row', fields: [
-            { type: 'text', name: 'moreLabel', label: 'Link label' },
-            { type: 'text', name: 'href', label: 'Link' },
-          ] },
         ],
       },
     ],
@@ -410,7 +422,7 @@ export const platformSchema: FieldDef[] = [
       { type: 'text', name: 'heroAlt', label: 'Hero image alt text', hint: 'Leave blank if decorative.' },
       { type: 'image', name: 'video', label: 'Hero video (mp4)' },
       { type: 'textarea', name: 'tagline', label: 'Tagline' },
-      { type: 'textarea', name: 'intro', label: 'Intro' },
+      { type: 'textarea', name: 'overview', label: 'Overview', hint: 'Optional paragraph shown under the tagline.' },
     ],
   },
   {
@@ -433,14 +445,18 @@ export const platformSchema: FieldDef[] = [
           { type: 'text', name: 'label', label: 'Category label' },
           {
             type: 'array', name: 'ventures', label: 'Ventures', itemTitleKey: 'name',
-            newItem: () => ({ name: '', logo: '', photo: '', photoAlt: '', desc: '', metrics: [] }),
+            newItem: () => ({ name: '', logo: '', logoAlt: '', photo: '', photoAlt: '', desc: '', href: '', metrics: [] }),
             fields: [
               { type: 'text', name: 'name', label: 'Name' },
               { type: 'row', fields: [
                 { type: 'image', name: 'logo', label: 'Logo (optional)' },
                 { type: 'image', name: 'photo', label: 'Photo' },
               ] },
-              { type: 'text', name: 'photoAlt', label: 'Photo alt text', hint: 'Defaults to the venture name.' },
+              { type: 'row', fields: [
+                { type: 'text', name: 'logoAlt', label: 'Logo alt text', hint: 'Defaults to the venture name.' },
+                { type: 'text', name: 'photoAlt', label: 'Photo alt text', hint: 'Defaults to the venture name.' },
+              ] },
+              { type: 'text', name: 'href', label: 'Venture link', hint: 'Optional — makes the logo link to the venture’s site.' },
               { type: 'textarea', name: 'desc', label: 'Description' },
               {
                 type: 'array', name: 'metrics', label: 'Metrics', flat: true,
@@ -465,7 +481,8 @@ const memberFields: FieldDef[] = [
   { type: 'image', name: 'photo', label: 'Photo' },
   { type: 'text', name: 'photoAlt', label: 'Photo alt text', hint: 'Describes the photo for screen readers (defaults to the name).' },
   { type: 'text', name: 'linkedin', label: 'LinkedIn URL', hint: 'Full profile link. Shows a LinkedIn icon over the photo on hover.' },
-  { type: 'textarea', name: 'bio', label: 'Bio' },
+  { type: 'textarea', name: 'bio', label: 'Bio', hint: 'Shown on the card and as the first paragraph of the “Read more” dialog.' },
+  { type: 'textarea', name: 'bioFull', label: 'Extended bio', hint: 'Optional second paragraph, shown only in the “Read more” dialog.' },
   { type: 'stringList', name: 'highlights', label: 'Highlights', hint: 'One per line (e.g. “20+ years”).' },
 ]
 
@@ -565,14 +582,11 @@ export const contactSchema: FieldDef[] = [
     fields: [
       {
         type: 'array', name: 'offices', label: 'Offices', itemTitleKey: 'city',
-        newItem: () => ({ city: '', region: '', address: '', lat: 0, lng: 0 }),
+        newItem: () => ({ city: '', region: '', address: '', mapQuery: '' }),
         fields: [
           { type: 'row', fields: [{ type: 'text', name: 'city', label: 'City' }, { type: 'text', name: 'region', label: 'Region' }] },
           { type: 'textarea', name: 'address', label: 'Address' },
-          { type: 'row', fields: [
-            { type: 'number', name: 'lat', label: 'Map latitude', hint: 'Drops a marker on the map. Find it on Google Maps (right-click → coordinates).' },
-            { type: 'number', name: 'lng', label: 'Map longitude' },
-          ] },
+          { type: 'text', name: 'mapQuery', label: 'Map search', hint: 'What the embedded Google Map searches for (a full address or place name). Defaults to the city if blank.' },
         ],
       },
     ],
