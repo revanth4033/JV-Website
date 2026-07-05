@@ -9,9 +9,11 @@
 .section {
   position: relative;
   z-index: 1;
-  width: min(1200px, 92vw);
+  width: min(1180px, 86vw);
   margin-inline: auto;
-  padding-block: clamp(3rem, 8vw, 6rem);
+  /* Extra breathing room below the title before the two-column block. */
+  margin-top: clamp(1.5rem, 3vw, 3rem);
+  padding-block: clamp(1.25rem, 3vw, 2.5rem) clamp(3rem, 8vw, 6rem);
 }
 
 /* Entrance target for GSAP fadeInUp; reduced-motion users see it immediately. */
@@ -23,32 +25,26 @@
 /* ---- Hero — faint ghosted watermark heading overlapping the top of content ---- */
 .hero {
   position: relative;
-  width: min(1200px, 92vw);
+  width: min(1180px, 86vw);
   margin-inline: auto;
-  height: 0;
+  /* Ghosted "CONTACT US" title sits ABOVE the content, with a comfortable gap
+     below the navbar. */
+  padding-top: clamp(5rem, 8vw, 7.5rem);
+  text-align: center;
 }
 
 .heroTitle {
-  position: absolute;
-  top: 140px;
-  left: 0;
-  right: 0;
+  position: static;
   margin: 0;
   text-align: center;
   font-size: clamp(4rem, 9vw, 8rem);
   font-weight: 800;
-  line-height: 1.02;
+  line-height: 0.95;
   letter-spacing: -0.01em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.1);
   pointer-events: none;
   z-index: 0;
-}
-
-@media (max-width: 1024px) {
-  .heroTitle {
-    top: 110px;
-  }
 }
 
 /* ---- Two-column block ---- */
