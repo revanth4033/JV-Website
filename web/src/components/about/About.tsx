@@ -18,17 +18,17 @@ const imgA11y = (alt?: string) => (alt ? { role: 'img' as const, 'aria-label': a
 // The four ecosystem nodes sit at the cardinal points around the JV mark
 // (top, right, bottom, left), matching the old jv-scene positions.
 const ORBIT_POS = [
-  { left: '50%', top: '10%' },
+  { left: '50%', top: '12%' },
   { left: '88%', top: '50%' },
   { left: '50%', top: '88%' },
   { left: '12%', top: '50%' },
 ] as const
-// Gradient dots sit on each spoke between the centre and its node.
+// Gradient dots sit at the END of each spoke (short of the icon, leaving a gap).
 const ORBIT_DOTS = [
-  { left: '50%', top: '16.67%' },
-  { left: '83.33%', top: '50%' },
-  { left: '50%', top: '83.33%' },
-  { left: '16.67%', top: '50%' },
+  { left: '50%', top: '21.5%' },
+  { left: '78.5%', top: '50%' },
+  { left: '50%', top: '78.5%' },
+  { left: '21.5%', top: '50%' },
 ] as const
 
 // Decorative stat-card badges (old design). Keyed by stat index — purely
@@ -125,7 +125,17 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
       const cards = Array.from(container.children) as HTMLElement[]
       if (cards.length > 0) {
         const order = cards.map((_, i) => i) // order[i] = stack position of card i
-        let morphed = false
+        // Reversible state: false = fanned deck, true = 4-up grid.
+        let isGrid = false
+        let cycleId = 0
+
+        // Apply the fanned-deck transform for every card (from `order`).
+        const setFan = () => {
+          cards.forEach((c, i) => {
+            const p = STACK_POS[Math.min(order[i], STACK_POS.length - 1)]
+            gsap.set(c, { x: p.x, y: p.y, rotate: p.rotate, zIndex: p.zIndex, opacity: 1 })
+          })
+        }
 
         // Stage A: a fanned, auto-cycling deck (text sticky left, deck right).
         row.classList.add(styles.platformsRowDeck)
@@ -134,14 +144,11 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
         cards.forEach((c) => {
           c.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.45)'
         })
-        cards.forEach((c, i) => {
-          const p = STACK_POS[Math.min(order[i], STACK_POS.length - 1)]
-          gsap.set(c, { x: p.x, y: p.y, rotate: p.rotate, zIndex: p.zIndex, opacity: 1 })
-        })
+        setFan()
 
         // Front card slides out to the left, then reappears at the back.
         const cycle = () => {
-          if (morphed) return
+          if (isGrid) return
           const card = cards[order.indexOf(0)]
           gsap.to(card, {
             x: -90,
@@ -151,7 +158,7 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
             duration: 1.5,
             ease: 'power2.inOut',
             onComplete: () => {
-              if (morphed) return
+              if (isGrid) return
               for (let i = 0; i < order.length; i++) {
                 order[i] = order[i] === 0 ? STACK_POS.length - 1 : order[i] - 1
               }
@@ -166,14 +173,22 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
             },
           })
         }
-        const intervalId = window.setInterval(cycle, 7000)
-        cleanups.push(() => window.clearInterval(intervalId))
+        const stopCycle = () => {
+          if (cycleId) window.clearInterval(cycleId)
+          cycleId = 0
+        }
+        const startCycle = () => {
+          stopCycle()
+          if (!isGrid) cycleId = window.setInterval(cycle, 7000)
+        }
+        startCycle()
+        cleanups.push(stopCycle)
 
-        // Stage B: on scroll, FLIP the deck into the full-width 4-up grid.
+        // deck -> grid (scrolling down): FLIP the fanned stack into the 4-up grid.
         const morphToGrid = () => {
-          if (morphed) return
-          morphed = true
-          window.clearInterval(intervalId)
+          if (isGrid) return
+          isGrid = true
+          stopCycle()
           gsap.killTweensOf(cards)
           const first = cards.map((c) => c.getBoundingClientRect())
           container.classList.remove(styles.stackActive)
@@ -205,10 +220,59 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
             )
           })
         }
-        // Flip to the grid only once the deck has risen near the top of the
-        // viewport (old site flips when the front card's top hits the top), so
-        // the fanned stack stays on screen while the section is comfortably in view.
-        const st = ScrollTrigger.create({ trigger: row, start: 'top 12%', once: true, onEnter: morphToGrid })
+
+        // grid -> deck (scrolling back up): reverse FLIP back into the fanned
+        // stack, then resume the auto-cycle. Fully repeatable in both directions.
+        const morphToDeck = () => {
+          if (!isGrid) return
+          isGrid = false
+          gsap.killTweensOf(cards)
+          for (let i = 0; i < order.length; i++) order[i] = i // reset to a tidy fan
+          const first = cards.map((c) => c.getBoundingClientRect()) // grid rects
+          container.classList.add(styles.stackActive)
+          row.classList.add(styles.platformsRowDeck)
+          cards.forEach((c) => {
+            c.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.45)'
+          })
+          // realize the deck layout (fan translate, no rotation) to measure targets
+          cards.forEach((c, i) => {
+            const p = STACK_POS[Math.min(order[i], STACK_POS.length - 1)]
+            gsap.set(c, { x: p.x, y: p.y, rotate: 0, scale: 1, zIndex: p.zIndex, opacity: 1, transformOrigin: 'top left' })
+          })
+          const last = cards.map((c) => c.getBoundingClientRect()) // deck rects
+          cards.forEach((c, i) => {
+            const p = STACK_POS[Math.min(order[i], STACK_POS.length - 1)]
+            const dx = first[i].left - last[i].left
+            const dy = first[i].top - last[i].top
+            const sx = last[i].width ? first[i].width / last[i].width : 1
+            const sy = last[i].height ? first[i].height / last[i].height : 1
+            gsap.fromTo(
+              c,
+              { x: p.x + dx, y: p.y + dy, rotate: 0, scaleX: sx, scaleY: sy, opacity: 0.6, transformOrigin: 'top left' },
+              {
+                x: p.x,
+                y: p.y,
+                rotate: p.rotate,
+                scaleX: 1,
+                scaleY: 1,
+                opacity: 1,
+                duration: 0.8,
+                ease: EASE,
+                delay: (cards.length - 1 - i) * 0.08,
+                onComplete: i === order.indexOf(0) ? startCycle : undefined,
+              },
+            )
+          })
+        }
+
+        // The deck flips to the grid when it rises near the top of the viewport,
+        // and rolls back to the deck when scrolled up past that point.
+        const st = ScrollTrigger.create({
+          trigger: row,
+          start: 'top 12%',
+          onEnter: morphToGrid,
+          onLeaveBack: morphToDeck,
+        })
         cleanups.push(() => st.kill())
 
         cleanups.push(() => {
@@ -257,28 +321,8 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
           })
         })
 
-        /* Four Platforms — collapse / re-expand on scroll. The first masked
-           reveal is handled by the generic loops above (proven reliable); here we
-           only fade+slide the WHOLE text block away when the section leaves the
-           viewport and bring it back when it re-enters, in both directions. The
-           block's resting state is fully visible, so the heading can never be left
-           stranded hidden even if a trigger never fires. */
-        const platformsSec = root.querySelectorAll<HTMLElement>('#platforms')[0]
-        const platformsText = platformsSec?.querySelector<HTMLElement>(`.${styles.platformsText}`)
-        if (platformsSec && platformsText) {
-          // visible (progress 0) -> collapsed (progress 1)
-          const collapseTl = gsap.timeline({ paused: true })
-          collapseTl.to(platformsText, { autoAlpha: 0, y: 44, duration: 0.6, ease: EASE })
-          ScrollTrigger.create({
-            trigger: platformsSec,
-            start: 'top 76%',
-            end: 'bottom 24%',
-            onEnter: () => collapseTl.reverse(),
-            onEnterBack: () => collapseTl.reverse(),
-            onLeave: () => collapseTl.play(),
-            onLeaveBack: () => collapseTl.play(),
-          })
-        }
+        /* The "Four Platforms" heading uses the generic masked reveal above and
+           then stays put — no collapse-on-leave (which could strand it hidden). */
 
         /* The orbital diagram (rings, spokes, dots, node entrance) is driven by
            pure CSS animations in the module — no GSAP needed here. */
@@ -338,10 +382,10 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
               <div className={styles.ringArc2} />
               {/* spokes from centre to each node */}
               <svg className={styles.spokesSvg} viewBox="0 0 480 480" aria-hidden="true">
-                <line x1="240" y1="240" x2="240" y2="80" stroke="rgba(95,168,255,0.6)" strokeWidth="1" />
-                <line x1="240" y1="240" x2="400" y2="240" stroke="rgba(95,168,255,0.6)" strokeWidth="1" />
-                <line x1="240" y1="240" x2="240" y2="400" stroke="rgba(95,168,255,0.6)" strokeWidth="1" />
-                <line x1="240" y1="240" x2="80" y2="240" stroke="rgba(95,168,255,0.6)" strokeWidth="1" />
+                <line x1="240" y1="240" x2="240" y2="103" stroke="rgba(95,168,255,0.6)" strokeWidth="1" />
+                <line x1="240" y1="240" x2="377" y2="240" stroke="rgba(95,168,255,0.6)" strokeWidth="1" />
+                <line x1="240" y1="240" x2="240" y2="377" stroke="rgba(95,168,255,0.6)" strokeWidth="1" />
+                <line x1="240" y1="240" x2="103" y2="240" stroke="rgba(95,168,255,0.6)" strokeWidth="1" />
               </svg>
               {/* gradient dots on the spokes */}
               {ORBIT_DOTS.map((d) => (
@@ -390,24 +434,32 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
                     decoding="async"
                   />
                 ) : null}
-                <span
-                  className={styles.statNum}
-                  data-count={item.value}
-                  {...(item.prefix ? { 'data-prefix': item.prefix } : {})}
-                  {...(item.suffix ? { 'data-suffix': item.suffix } : {})}
-                  {...(item.plain ? { 'data-plain': '' } : {})}
-                >
-                  {item.prefix || ''}
-                  {item.value}
-                  {item.suffix || ''}
+                <span className={styles.statValue}>
+                  <span
+                    className={styles.statNum}
+                    data-count={item.value}
+                    {...(item.prefix ? { 'data-prefix': item.prefix } : {})}
+                    {...(item.plain ? { 'data-plain': '' } : {})}
+                  >
+                    {item.prefix || ''}
+                    {item.value}
+                  </span>
+                  {item.suffix ? (
+                    <span className={styles.statSuffix}>{item.suffix.trim()}</span>
+                  ) : null}
                 </span>
-                <span className={styles.statLabel}>{item.label}</span>
+                <span
+                  className={styles.statLabel}
+                  dangerouslySetInnerHTML={{ __html: item.label }}
+                />
                 <span className={styles.statRule} aria-hidden="true" />
               </div>
             ))}
           </div>
           {hero?.ledgerCaption ? (
-            <p className={`${styles.framedCaption} reveal`}>{hero.ledgerCaption}</p>
+            <p className={`${styles.framedCaption} reveal`}>
+              <span className={styles.framedCaptionText}>{hero.ledgerCaption}</span>
+            </p>
           ) : null}
         </section>
 

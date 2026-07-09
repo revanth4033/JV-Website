@@ -11,8 +11,8 @@
   --surface-2: rgba(255, 255, 255, 0.1);
   --surface-3: rgba(255, 255, 255, 0.15);
   --line: rgba(255, 255, 255, 0.16);
-  --maxw: 1200px;
-  --pad: clamp(3.5rem, 8vw, 7rem);
+  --maxw: min(1840px, 94vw);
+  --pad: clamp(2.75rem, 4.5vw, 4.75rem);
   position: relative;
 }
 
@@ -35,9 +35,21 @@
   padding: var(--pad) clamp(1.25rem, 5vw, 3rem);
 }
 
+/* Hero fills the first screen so ONLY the hero shows on load (the next section
+   stays below the fold), clears the fixed navbar with a generous top gap, and
+   vertically centres its content. */
+.hero {
+  min-height: 100svh;
+  padding-top: clamp(7rem, 14vh, 10.5rem);
+  padding-bottom: clamp(3rem, 7vh, 5rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .sectionHead {
   max-width: 60ch;
-  margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  margin-bottom: clamp(1.4rem, 3vw, 2.4rem);
 }
 
 .sectionTitle {
@@ -166,7 +178,7 @@
   animation: orbFade 0.7s ease 1.2s forwards;
 }
 .dottedRing {
-  width: 66.7%;
+  width: 57%;
 }
 .outerRing {
   width: 45.8%;
@@ -174,16 +186,10 @@
   animation-delay: 1.3s;
 }
 
-/* spinning bright arcs — the "line travelling around the circle" */
+/* spinning bright arcs — removed (the "line travelling around the circle") */
 .ringArc,
 .ringArc2 {
-  top: 50%;
-  left: 50%;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border: 1.5px solid transparent;
-  transform: translate(-50%, -50%);
-  opacity: 0;
+  display: none;
 }
 .ringArc {
   width: 30.8%;
@@ -251,7 +257,7 @@
 .core {
   top: 50%;
   left: 50%;
-  width: 37.5%;
+  width: 30%;
   aspect-ratio: 1;
   border-radius: 50%;
   transform: translate(-50%, -50%);
@@ -265,7 +271,7 @@
   animation: orbFade 0.8s ease 0.2s forwards;
 }
 .core img {
-  width: 70%;
+  width: 58%;
   height: auto;
   object-fit: contain;
 }
@@ -297,12 +303,18 @@
   object-fit: contain;
 }
 .nodeLabel {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: clamp(0.55rem, 1.4vw, 0.7rem);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #fff;
   white-space: nowrap;
 }
+/* label floats clear of the icon so the icon's centre stays on the spoke axis */
+.nodeLabel:first-child { bottom: calc(100% + 0.5rem); } /* top node: above the icon */
+.nodeLabel:last-child { top: calc(100% + 0.5rem); } /* others: below the icon */
 
 @keyframes orbFade {
   to {
@@ -359,6 +371,11 @@
 /* ============================================================================
    2 · STATS BAND
    ========================================================================== */
+/* the caption bracket ends this section — trim the space beneath it */
+.stats {
+  padding-bottom: clamp(0.5rem, 1.5vw, 1.5rem);
+}
+
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -366,88 +383,139 @@
 }
 
 .statCard {
-  padding: clamp(1.6rem, 2.5vw, 2.4rem) 1.2rem;
-  text-align: center;
-  border-radius: 16px;
-  /* Old design: top-lit card — bright blue glow along the top fading to navy. */
-  background: linear-gradient(180deg, rgba(45, 95, 185, 0.32) 0%, rgba(7, 20, 48, 0.5) 55%);
+  position: relative;
+  padding: clamp(1.7rem, 2.4vw, 2.6rem);
+  text-align: left;
+  border-radius: 22px;
+  /* Old design: tall saturated-blue card with a bright radial spotlight/beam
+     glowing from the centre and fading to a dark navy at the edges. */
+  background:
+    radial-gradient(110% 75% at 50% 36%, rgba(74, 124, 214, 0.45) 0%, rgba(32, 66, 138, 0.18) 45%, rgba(11, 26, 60, 0) 72%),
+    linear-gradient(170deg, rgba(28, 58, 126, 0.92) 0%, rgba(17, 38, 86, 0.94) 55%, rgba(11, 27, 62, 0.96) 100%);
   border: 1px solid var(--line);
-  border-top: 1px solid rgba(90, 150, 255, 0.45);
-  box-shadow: inset 0 1px 0 rgba(120, 170, 255, 0.4);
+  border-top: 1px solid rgba(90, 150, 255, 0.4);
+  box-shadow: inset 0 1px 0 rgba(120, 170, 255, 0.3);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
+  align-items: flex-start;
+  min-height: clamp(280px, 24vw, 410px);
 }
 
 .statBadge {
-  width: 44px;
-  height: 44px;
+  width: clamp(48px, 3.9vw, 58px);
+  height: clamp(48px, 3.9vw, 58px);
   object-fit: contain;
   display: block;
-  margin-bottom: 0.4rem;
+  filter: drop-shadow(0 0 10px rgba(70, 130, 230, 0.35));
+}
+
+/* value + label + rule cluster is anchored to the foot of the tall card */
+.statValue {
+  margin-top: auto;
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  font-size: clamp(1.9rem, 3.4vw, 3rem);
+  line-height: 1;
 }
 
 .statNum {
-  font-size: clamp(1.8rem, 4vw, 2.9rem);
   font-weight: 700;
-  line-height: 1;
   letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
+/* the unit (Mn+, Yrs, …) reads smaller than the number (old design) */
+.statSuffix {
+  font-size: 0.4em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
 .statLabel {
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
-  color: rgba(255, 255, 255, 0.78);
+  margin-top: 0.7rem;
+  font-size: clamp(1rem, 1.15vw, 1.15rem);
+  letter-spacing: 0.01em;
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* Short red divider rule beneath each stat label (old design). */
 .statRule {
-  width: 28px;
-  height: 2px;
+  width: 46px;
+  height: 3px;
   border-radius: 2px;
   background: var(--accent);
-  margin-top: 0.4rem;
+  margin-top: 1rem;
 }
 
+/* Old design: a wide "staple" bracket rises from the card row down to the
+   caption — two horizontal rules meeting the centred caption, each turning up
+   into a riser at the outer edge. Built from the ::before/::after flex fillers. */
 .framedCaption {
-  position: relative;
-  margin: clamp(2.5rem, 5vw, 4rem) auto 0;
-  max-width: 52ch;
+  display: flex;
+  align-items: center; /* caption sits exactly ON the horizontal rules */
+  justify-content: center;
+  gap: clamp(1.2rem, 3vw, 2.8rem);
+  /* Risers sit near the OUTER ends of the first and last cards — almost at the
+     row edges, but not right at the very edge. */
+  margin: clamp(1.6rem, 3vw, 2.6rem) 4% 0;
   text-align: center;
-  font-size: clamp(1rem, 1.6vw, 1.3rem);
+  font-size: clamp(1rem, 1.5vw, 1.3rem);
   font-weight: 600;
-  line-height: 1.5;
-  padding: clamp(1.4rem, 3vw, 2.2rem) clamp(1.8rem, 4vw, 3rem);
+  line-height: 1.4;
+  color: #fff;
 }
 
-/* Old design: thin white corner brackets (not thick pink). */
+/* Each side draws a horizontal rule at the pseudo's vertical centre (which the
+   flex centring aligns to the caption's middle) plus a riser rising from that
+   rule up toward the cards — so the text lands exactly between the lines. */
 .framedCaption::before,
 .framedCaption::after {
   content: '';
-  position: absolute;
-  width: 26px;
-  height: 26px;
+  flex: 1;
+  height: clamp(60px, 7vw, 100px);
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5)),
+    linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.5));
+  background-repeat: no-repeat;
+  background-size: 100% 1px, 1px 50%; /* horizontal rule; riser = top half */
 }
 
 .framedCaption::before {
-  left: 0;
-  top: 0;
-  border-left: 1px solid rgba(255, 255, 255, 0.65);
-  border-top: 1px solid rgba(255, 255, 255, 0.65);
+  background-position: left center, left top; /* riser on the far left */
 }
 
 .framedCaption::after {
-  right: 0;
-  bottom: 0;
-  border-right: 1px solid rgba(255, 255, 255, 0.65);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+  background-position: left center, right top; /* riser on the far right */
+}
+
+/* wide bracket → the caption sits on one centred line with rules on each side */
+.framedCaptionText {
+  max-width: none;
+}
+
+/* Below the 4-column desktop layout the card centres no longer match the inset,
+   so reset the bracket to a plain centred caption. */
+@media (max-width: 1023px) {
+  .framedCaption {
+    margin-inline: 0;
+  }
+  .framedCaption::before,
+  .framedCaption::after {
+    display: none;
+  }
 }
 
 /* ============================================================================
    3 · BELIEF TRIAD
    ========================================================================== */
+/* the caption bracket already sits close above, so pull the triad up */
+.belief {
+  padding-top: clamp(0.5rem, 1.5vw, 1.5rem);
+}
+
 .beliefKicker {
   text-align: center;
   max-width: 50ch;
@@ -510,9 +578,13 @@
    ========================================================================== */
 /* Old design: the intro lead is a compact bold line — keep it close to a single
    line rather than the larger shared lead size. */
+/* live design: the intro sits on a single wide line, centred */
+.approach .sectionHeadCenter {
+  max-width: min(1040px, 100%);
+}
 .approach .sectionLead {
-  max-width: 52ch;
-  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  max-width: none;
+  font-size: clamp(1rem, 1.4vw, 1.3rem);
 }
 
 /* Old design: one continuous dark panel, 4 columns separated by thin vertical
@@ -584,7 +656,7 @@
 .platformsText {
   text-align: left;
   max-width: 52ch;
-  margin-bottom: clamp(2rem, 4vw, 3rem);
+  margin-bottom: clamp(1.2rem, 2.5vw, 1.8rem);
 }
 
 .platformsRowDeck .platformsText {
@@ -761,7 +833,7 @@
 
 .modelsSplit {
   display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  grid-template-columns: 1.2fr 1fr;
   gap: clamp(2rem, 5vw, 4rem);
   align-items: start;
 }
@@ -1165,6 +1237,10 @@
 @media (max-width: 600px) {
   .statsGrid {
     grid-template-columns: 1fr 1fr;
+  }
+  .statCard {
+    min-height: 220px;
+    border-radius: 16px;
   }
   .gridsCompare {
     grid-template-columns: 1fr;

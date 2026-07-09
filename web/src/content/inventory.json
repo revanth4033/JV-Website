@@ -12,7 +12,7 @@
       { "label": "Home", "href": "index.html" },
       { "label": "About Us", "href": "about.html" },
       {
-        "label": "Platform",
+        "label": "Platforms",
         "href": "platform.html?p=powered",
         "dropdown": [
           { "name": "PowerEd", "sector": "Education", "href": "platform.html?p=powered" },
@@ -112,7 +112,7 @@
           "title": { "lines": ["Ecosystems"], "emphasis": "all" },
           "copy": "White spaces in economic corridors are transformed into <strong>GRIDS</strong> — Growth-Ready Innovation Destinations — cohesive, high-performance ecosystems of real assets and enabling services.",
           "cta": { "label": "Explore GRIDS", "href": "about.html#grids-deep" },
-          "backgroundImage": "assets/eco-grid.jpg",
+          "backgroundImage": "assets/grid-image-e1780310038339.jpg",
           "backgroundImageAlt": "Aerial view of a JV Ventures GRID — Growth-Ready Innovation Destination — with education, hospitality, healthcare, contract research, and labspace zones labelled across the corridor"
         },
         {
@@ -122,10 +122,10 @@
           "copy": "A 10-year legacy, <strong>$550&nbsp;Mn AUM</strong> — four platforms designed to interconnect and amplify impact beyond sectors.",
           "cta": { "label": "Explore Platforms", "href": "platform.html?p=powered" },
           "strips": [
-            { "tab": "Education", "logo": "assets/powered-home-logo.jpg", "logoAlt": "PowerEd", "image": "assets/Untitled-4-01-2.jpg", "statStrong": "19,000+", "statSpan": "Students Empowered", "desc": "An all-encompassing K-12 education platform cultivating vibrant learning environments.", "href": "platform.html?p=powered" },
-            { "tab": "Lifesciences", "logo": "assets/powerx-home-logo.jpg", "logoAlt": "PoweRx", "image": "assets/Untitled-11-01.jpg", "statStrong": "6.5 Mn+ SFT", "statSpan": "of Labspace", "desc": "Purpose-built lab infrastructure and cutting-edge contract research.", "href": "platform.html?p=powerx" },
-            { "tab": "Healthcare", "logo": "assets/powercare-home-logo.jpg", "logoAlt": "PowerCare", "image": "assets/Untitled-3-01-2.jpg", "statStrong": "2.4 Lakh+ SFT", "statSpan": "Healthcare Infrastructure", "desc": "Integrated healthcare infrastructure and strategic investments.", "href": "platform.html?p=powercare" },
-            { "tab": "Managed Living", "logo": "assets/powerpod-home-logo.jpg", "logoAlt": "PowerPod", "image": "assets/Untitled-9-01.jpg", "statStrong": "10.9 Lakh+ SFT", "statSpan": "Planned Development", "desc": "Simplified, flexible, quality living for today’s professionals.", "href": "platform.html?p=powerpod" }
+            { "tab": "Lifesciences", "logo": "assets/powerx-home-logo.jpg", "logoAlt": "PoweRx", "image": "assets/old/powerx-card.jpg", "statStrong": "6.5 Mn+ SFT", "statSpan": "of Labspace", "desc": "Purpose-built lab infrastructure and cutting-edge contract research.", "href": "platform.html?p=powerx" },
+            { "tab": "Healthcare", "logo": "assets/powercare-home-logo.jpg", "logoAlt": "PowerCare", "image": "assets/old/powercare-card-image.jpg", "statStrong": "2.4 Lakh+ SFT", "statSpan": "Healthcare Infrastructure", "desc": "Integrated healthcare infrastructure and strategic investments.", "href": "platform.html?p=powercare" },
+            { "tab": "Managed Living", "logo": "assets/powerpod-home-logo.jpg", "logoAlt": "PowerPod", "image": "assets/old/powerpod-card.jpg", "statStrong": "10.9 Lakh+ SFT", "statSpan": "Planned Development", "desc": "Simplified, flexible, quality living for today’s professionals.", "href": "platform.html?p=powerpod" },
+            { "tab": "Education", "logo": "assets/powered-home-logo.jpg", "logoAlt": "PowerEd", "image": "assets/old/powered-card.jpg", "statStrong": "19,000+", "statSpan": "Students Empowered", "desc": "An all-encompassing K-12 education platform cultivating vibrant learning environments.", "href": "platform.html?p=powered" }
           ]
         }
       ]
@@ -151,10 +151,10 @@
         { "label": "Education", "image": "assets/old/education-icon.png" }
       ],
       "ledger": [
-        { "value": 2015, "label": "Year of Inception", "plain": true },
-        { "value": 550, "prefix": "$", "suffix": " Mn+", "label": "Investments Managed" },
-        { "value": 13, "label": "Intrapreneurs Nurtured" },
-        { "value": 10, "suffix": "+ Yrs", "label": "Building Platforms" }
+        { "value": 2015, "label": "Year of<br>Inception", "plain": true },
+        { "value": 550, "prefix": "$", "suffix": " Mn+", "label": "Investments Managed<br>Currently" },
+        { "value": 13, "label": "Intrapreneurs<br>Nurtured" },
+        { "value": 10, "suffix": "+ Yrs", "label": "Building<br>Platforms" }
       ],
       "ledgerCaption": "Delivering multidimensional value to investors, operators, communities, and society at large"
     },
@@ -184,12 +184,12 @@
       "actName": "Method",
       "actIndex": "02",
       "title": { "lines": ["How we", "work"], "emphasis": "line:1" },
-      "copy": "Our approach to turning strategic white spaces into scalable, ecosystem-led businesses.",
+      "copy": "Our approach to turning strategic white spaces into scalable ecosystem-led businesses.",
       "cards": [
-        { "stage": "01", "icon": "assets/Frame-1244835893.png", "title": "Identify<br>White Spaces", "desc": "Targeting high-value gaps and building ventures around them with speed, discipline, and durable advantage." },
+        { "stage": "01", "icon": "assets/Frame-1244835893-3.png", "title": "Identify<br>White Spaces", "desc": "Targeting high-value gaps and building ventures around them with speed, discipline, and durable advantage." },
         { "stage": "02", "icon": "assets/Frame-1244835893-2.png", "title": "Back<br>Intrapreneurs", "desc": "Empowering agile, frugal builders to translate ideas into lasting value." },
         { "stage": "03", "icon": "assets/Frame-1244835893-1.png", "title": "Forge<br>Partnerships", "desc": "Aligning intent, capital, and capability to create enduring outcomes for investors." },
-        { "stage": "04", "icon": "assets/Frame-1244835893-3.png", "title": "A Force<br>for Impact", "desc": "Ventures are built with a clear mandate: to address real gaps and scale with purpose." }
+        { "stage": "04", "icon": "assets/Frame-1244835893.png", "title": "A Force<br>for Impact", "desc": "Ventures are built with a clear mandate: to address real gaps and scale with purpose." }
       ]
     },
     "models": {

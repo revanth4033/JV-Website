@@ -75,7 +75,7 @@ export function Header({ settings }: { settings: SiteSettings }) {
           if (item.dropdown) {
             return (
               <div
-                className="nav-has-drop"
+                className={`nav-has-drop${openDrop === item.label ? ' is-open' : ''}`}
                 key={item.label}
                 onMouseEnter={() => setOpenDrop(item.label)}
                 onMouseLeave={() => setOpenDrop((cur) => (cur === item.label ? null : cur))}
@@ -98,7 +98,16 @@ export function Header({ settings }: { settings: SiteSettings }) {
                 </Link>
                 <div className="nav-drop">
                   {item.dropdown.map((d) => (
-                    <Link href={route(d.href)} key={d.name} onClick={() => setOpen(false)}>
+                    <Link
+                      href={route(d.href)}
+                      key={d.name}
+                      onClick={(e) => {
+                        setOpen(false)
+                        setOpenDrop(null)
+                        // drop focus so the trigger/caret don't stay in the open state
+                        ;(e.currentTarget as HTMLElement).blur()
+                      }}
+                    >
                       <span className="nd-name">{d.name}</span>
                       <span className="nd-sector">{d.sector}</span>
                     </Link>

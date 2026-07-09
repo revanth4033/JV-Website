@@ -128,19 +128,26 @@ function Slide({ slide, arrow }: { slide: DeckSlide; arrow: string }) {
               )}
             </div>
           </div>
-          <div className="slide-visual plat-strips">
-            {slide.strips?.map((st, i) => (
-              <Link className={`strip${i === 0 ? ' open' : ''}`} href={route(st.href)} key={st.tab}>
-                <div className="strip-img" {...imgA11y(st.imageAlt)} style={{ backgroundImage: `url(${asset(st.image)})` }} />
-                <span className="strip-tab">{st.tab}</span>
-                <img className="strip-logo" src={asset(st.logo)} alt={st.logoAlt} />
-                <div className="strip-stat">
-                  <strong>{st.statStrong}</strong>
-                  <span>{st.statSpan}</span>
-                  <p className="strip-desc">{st.desc}</p>
-                </div>
-              </Link>
-            ))}
+          <div className="slide-visual plat-cards">
+            {slide.strips?.map((st) => {
+              const ss = st.statStrong || ''
+              const sp = ss.indexOf(' ')
+              const statNum = sp === -1 ? ss : ss.slice(0, sp)
+              const statUnit = sp === -1 ? '' : ss.slice(sp + 1)
+              return (
+                <Link className="plat-card" href={route(st.href)} key={st.tab}>
+                  <div className="plat-card-img" {...imgA11y(st.imageAlt)} style={{ backgroundImage: `url(${asset(st.image)})` }} />
+                  <div className="plat-card-plate">
+                    <img className="plat-card-logo" src={asset(st.logo)} alt={st.logoAlt} />
+                    <span className="plat-card-sector">{st.tab}</span>
+                  </div>
+                  <div className="plat-card-stat">
+                    <strong>{statNum}{statUnit && <em>{statUnit}</em>}</strong>
+                    {st.statSpan && <span>{st.statSpan}</span>}
+                  </div>
+                </Link>
+              )
+            })}
           </div>
         </article>
       )
@@ -179,21 +186,6 @@ export function Home({ home, settings }: { home: HomePage; settings: SiteSetting
       const counted = new Set<Element>()
       let current = -1
 
-      const stripEls = gsap.utils.toArray<HTMLElement>('.strip')
-      const stripWrap = root.querySelector<HTMLElement>('.plat-strips')
-      const wideScreen = window.matchMedia('(min-width: 1024px)')
-      let stripIdx = -1
-      const openStrip = (i: number) => {
-        if (i === stripIdx || !stripEls.length) return
-        stripIdx = i
-        stripEls.forEach((st, j) => st.classList.toggle('open', j === i))
-        if (wideScreen.matches && stripWrap)
-          stripWrap.style.gridTemplateColumns = stripEls
-            .map((_, j) => (j === i ? '3.4fr' : '0.55fr'))
-            .join(' ')
-      }
-      openStrip(0)
-
       const countStats = () => {
         root.querySelectorAll<HTMLElement>('.stat-card').forEach((card) => {
           if (counted.has(card)) return
@@ -224,7 +216,6 @@ export function Home({ home, settings }: { home: HomePage; settings: SiteSetting
 
       if (reduced || MOBILE) {
         slideEls.forEach((s) => s.classList.add('active'))
-        stripEls.forEach((st) => st.classList.add('open'))
         if (reduced) {
           root.querySelectorAll<HTMLElement>('.stat-card').forEach((card) => {
             card.querySelector<HTMLElement>('.stat-num')!.textContent =
@@ -420,10 +411,6 @@ export function Home({ home, settings }: { home: HomePage; settings: SiteSetting
       const onChapterClick = (e: Event) => easeToSection(+(e.currentTarget as HTMLElement).dataset.i!)
       chapters.forEach((c) => c.addEventListener('click', onChapterClick))
 
-      // hover a platform strip (slide 04) to fully expand it
-      const onStripEnter = (e: Event) => openStrip(stripEls.indexOf(e.currentTarget as HTMLElement))
-      stripEls.forEach((s) => s.addEventListener('mouseenter', onStripEnter))
-
       // Keyboard: arrow / page keys ease to the adjacent section when the deck is on
       // screen and the user isn't typing in a control. Keys are discrete, so the
       // preventDefault here can never interfere with continuous wheel scrolling.
@@ -456,7 +443,6 @@ export function Home({ home, settings }: { home: HomePage; settings: SiteSetting
       return () => {
         window.removeEventListener('keydown', onKey)
         chapters.forEach((c) => c.removeEventListener('click', onChapterClick))
-        stripEls.forEach((s) => s.removeEventListener('mouseenter', onStripEnter))
         window.removeEventListener('jv:goto-slide', onGotoSlide as EventListener)
         window.removeEventListener('wheel', onWheelSnap)
         clearTimeout(snapTimer)

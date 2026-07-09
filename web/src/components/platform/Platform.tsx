@@ -134,23 +134,30 @@ export function Platform({
       const grid = gridRef.current
       const heroText = heroTextRef.current
       if (hero && grid && heroText && platform?.video && window.matchMedia('(min-width: 768px)').matches) {
+        const video = grid.querySelector<HTMLElement>('.' + styles.heroVideo)
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: hero,
             start: 'top top',
-            end: '+=70%',
+            end: '+=100%',
             scrub: 0.3,
             pin: true,
             anticipatePin: 1,
             invalidateOnRefresh: true,
           },
         })
-        tl.fromTo(
-          grid,
-          { gridTemplateColumns: '38% 62%' },
-          { gridTemplateColumns: '0% 100%', ease: 'none' },
-          0,
-        ).to(heroText, { yPercent: -40, opacity: 0, ease: 'none' }, 0)
+        // Sequenced: FIRST the text slides up and fades, THEN the video grows
+        // leftward on top of it (same expand) to full width. The grid stays
+        // 38% / 62% throughout, so the text never reflows.
+        // 100% / 0.62 ≈ 161.29% wide, shifted left by 0.38/0.62 ≈ 61.29%.
+        tl.to(heroText, { yPercent: -55, opacity: 0, ease: 'none', duration: 0.45 })
+        if (video) {
+          tl.fromTo(
+            video,
+            { width: '100%', marginLeft: '0%' },
+            { width: '161.29%', marginLeft: '-61.29%', ease: 'none', duration: 0.55 },
+          )
+        }
       }
     },
     { scope, dependencies: [reduced, platform?.slug] },
