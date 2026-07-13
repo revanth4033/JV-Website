@@ -7,8 +7,9 @@ if (!process.env.DATABASE_URI) {
 
 const ENV = { ...process.env, PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK: '1' }
 
-function prismaExec(cmd) {
-  execSync(`node_modules/.bin/prisma ${cmd}`, { stdio: 'inherit', env: ENV })
+function prismaExec(cmd, captureStderr = false) {
+  const stderrMode = captureStderr ? 'pipe' : 'inherit'
+  execSync(`node_modules/.bin/prisma ${cmd}`, { stdio: ['inherit', 'inherit', stderrMode], env: ENV })
 }
 
 // Run a SQL file directly. Uses the unpooled URL when available to avoid
@@ -22,7 +23,7 @@ function runSQLFile(filePath) {
 }
 
 try {
-  prismaExec('migrate deploy')
+  prismaExec('migrate deploy', true)
 } catch (e) {
   const stderr = e?.stderr ? e.stderr.toString() : ''
   if (stderr) process.stderr.write(stderr)
