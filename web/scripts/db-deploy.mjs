@@ -35,14 +35,14 @@ const ENV = { ...process.env, PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK: '1' }
 
 try {
   // Stream stdout for live logs; capture stderr so we can detect P3005.
-  execSync('npx prisma migrate deploy', { stdio: ['inherit', 'inherit', 'pipe'], env: ENV })
+  execSync('node_modules/.bin/prisma migrate deploy', { stdio: ['inherit', 'inherit', 'pipe'], env: ENV })
 } catch (e) {
   const stderr = e?.stderr ? e.stderr.toString() : ''
   if (stderr) process.stderr.write(stderr)
   if (stderr.includes('P3005')) {
     console.log('[db-deploy] Existing schema without migration history — baselining 0_init, then re-applying.')
-    execSync('npx prisma migrate resolve --applied 0_init', { stdio: 'inherit', env: ENV })
-    execSync('npx prisma migrate deploy', { stdio: 'inherit', env: ENV })
+    execSync('node_modules/.bin/prisma migrate resolve --applied 0_init', { stdio: 'inherit', env: ENV })
+    execSync('node_modules/.bin/prisma migrate deploy', { stdio: 'inherit', env: ENV })
   } else {
     throw e
   }
