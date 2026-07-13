@@ -45,12 +45,15 @@ try {
     execSync('node_modules/.bin/prisma migrate deploy', { stdio: 'inherit', env: ENV })
   } else if (stderr.includes('P3009')) {
     // A previous interrupted deploy left a migration in "failed" state.
-    // Roll it back so migrate deploy can re-apply it cleanly.
+    // Roll it back AND also un-baseline 0_init (in case it was baselined on a
+    // fresh DB where tables were never actually created), then re-deploy everything.
     const match = stderr.match(/The `([^`]+)` migration started at .+ failed/)
     if (!match) throw e
     const migration = match[1]
     console.log(`[db-deploy] Rolling back failed migration: ${migration}`)
     execSync(`node_modules/.bin/prisma migrate resolve --rolled-back "${migration}"`, { stdio: 'inherit', env: ENV })
+    console.log('[db-deploy] Un-baselining 0_init so tables are created from scratch.')
+    execSync('node_modules/.bin/prisma migrate resolve --rolled-back 0_init', { stdio: 'inherit', env: ENV })
     execSync('node_modules/.bin/prisma migrate deploy', { stdio: 'inherit', env: ENV })
   } else {
     throw e
