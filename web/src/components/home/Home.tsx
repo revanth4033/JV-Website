@@ -139,7 +139,6 @@ function Slide({ slide, arrow }: { slide: DeckSlide; arrow: string }) {
                   <div className="plat-card-img" {...imgA11y(st.imageAlt)} style={{ backgroundImage: `url(${asset(st.image)})` }} />
                   <div className="plat-card-plate">
                     <img className="plat-card-logo" src={asset(st.logo)} alt={st.logoAlt} />
-                    <span className="plat-card-sector">{st.tab}</span>
                   </div>
                   <div className="plat-card-stat">
                     <strong>{statNum}{statUnit && <em>{statUnit}</em>}</strong>
