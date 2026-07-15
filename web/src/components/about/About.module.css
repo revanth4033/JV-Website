@@ -1239,13 +1239,55 @@
     grid-template-columns: 1fr 1fr;
   }
   .statCard {
-    min-height: 220px;
+    min-height: 200px;
     border-radius: 16px;
+    padding: clamp(0.9rem, 3.5vw, 1.4rem);
+    overflow: hidden;
+  }
+  .statBadge {
+    width: clamp(36px, 9vw, 48px);
+    height: clamp(36px, 9vw, 48px);
+  }
+  .statValue {
+    font-size: clamp(1.4rem, 6vw, 1.9rem);
+    gap: 0.2rem;
+  }
+  /* The number cluster is anchored to the card foot, so a taller label (e.g. the
+     3-line "Investments Managed Currently") rides its number higher than a 2-line
+     card beside it. Reserve up to 3 lines of label height so both numbers in a row
+     sit on the same line. */
+  .statLabel {
+    min-height: 3.9em;
   }
   .gridsCompare {
     grid-template-columns: 1fr;
   }
   .layersGrid {
     grid-template-columns: 1fr 1fr;
+    gap: clamp(0.4rem, 1.5vw, 0.9rem);
+  }
+  /* Long single-word titles (CONNECTIVITY, LIVEABILITY) can't wrap — scale them
+     to the 2-column width and tighten the tile padding so they don't run into
+     the panel edge. */
+  .layer {
+    padding-left: 0.2rem;
+    padding-right: 0.2rem;
+  }
+  .layerTitle {
+    font-size: clamp(0.72rem, 3.4vw, 0.92rem);
+    letter-spacing: 0.01em;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Accordion icon is clamped to a 84px minimum, which is too large on narrow
+     phones (320–480px) and leaves barely 100px for the title. Scale it down. */
+  .accIcon {
+    width: clamp(52px, 14vw, 72px);
+    height: clamp(52px, 14vw, 72px);
+  }
+  /* Give the title the remaining flex space and let it wrap naturally. */
+  .accTitle {
+    max-width: none;
   }
 }

@@ -101,7 +101,7 @@
           ],
           "stats": [
             { "value": 19000, "suffix": "+", "label": "Students Empowered Annually" },
-            { "value": 13, "suffix": "", "label": "Intrapreneurs Nurtured" },
+            { "value": 14, "suffix": "", "label": "Intrapreneurs Nurtured" },
             { "value": 500, "suffix": "+", "label": "Drugs Accelerated" },
             { "value": 19, "suffix": "+", "label": "Institutions Seeded" }
           ]
@@ -110,22 +110,22 @@
           "id": "ecosystems",
           "kicker": "Reimagining",
           "title": { "lines": ["Ecosystems"], "emphasis": "all" },
-          "copy": "White spaces in economic corridors are transformed into <strong>GRIDS</strong> — Growth-Ready Innovation Destinations — cohesive, high-performance ecosystems of real assets and enabling services.",
+          "copy": "Economic corridors hold untapped potential often constrained by gaps in social infrastructure. These white spaces are identified and transformed into <strong>GRIDS</strong> (Growth-Ready Innovation Destinations) integrating platforms that combine high-quality real assets with enabling services to create cohesive, high-performance ecosystems.",
           "cta": { "label": "Explore GRIDS", "href": "about.html#grids-deep" },
           "backgroundImage": "assets/grid-image-e1780310038339.jpg",
-          "backgroundImageAlt": "Aerial view of a JV Ventures GRID — Growth-Ready Innovation Destination — with education, hospitality, healthcare, contract research, and labspace zones labelled across the corridor"
+          "backgroundImageAlt": "Aerial view of a JV Ventures GRID, Growth-Ready Innovation Destination, with education, hospitality, healthcare, contract research, and labspace zones labelled across the corridor"
         },
         {
           "id": "platforms",
           "kicker": "Reimagining",
           "title": { "lines": ["Platforms"], "emphasis": "all" },
-          "copy": "A 10-year legacy, <strong>$550&nbsp;Mn AUM</strong> — four platforms designed to interconnect and amplify impact beyond sectors.",
+          "copy": "A 10 year legacy, <strong>$550&nbsp;Mn AUM</strong> across lifesciences, education, healthcare, and managed living built on the belief that assets are catalysts for societal transformation, not standalone plays. Unified into four platforms PowerEd, PoweRx, PowerCare and PowerPod these systems are designed to interconnect, unlock synergies, and amplify impact beyond sectors.",
           "cta": { "label": "Explore Platforms", "href": "platform.html?p=powered" },
           "strips": [
+            { "tab": "Education", "logo": "assets/powered-home-logo.jpg", "logoAlt": "PowerEd", "image": "assets/old/powered-card.jpg", "statStrong": "19,000+", "statSpan": "Students Empowered", "desc": "An all-encompassing K-12 education platform cultivating vibrant learning environments.", "href": "platform.html?p=powered" },
             { "tab": "Lifesciences", "logo": "assets/powerx-home-logo.jpg", "logoAlt": "PoweRx", "image": "assets/old/powerx-card.jpg", "statStrong": "6.5 Mn+ SFT", "statSpan": "of Labspace", "desc": "Purpose-built lab infrastructure and cutting-edge contract research.", "href": "platform.html?p=powerx" },
             { "tab": "Healthcare", "logo": "assets/powercare-home-logo.jpg", "logoAlt": "PowerCare", "image": "assets/old/powercare-card-image.jpg", "statStrong": "2.4 Lakh+ SFT", "statSpan": "Healthcare Infrastructure", "desc": "Integrated healthcare infrastructure and strategic investments.", "href": "platform.html?p=powercare" },
-            { "tab": "Managed Living", "logo": "assets/powerpod-home-logo.jpg", "logoAlt": "PowerPod", "image": "assets/old/powerpod-card.jpg", "statStrong": "10.9 Lakh+ SFT", "statSpan": "Planned Development", "desc": "Simplified, flexible, quality living for today’s professionals.", "href": "platform.html?p=powerpod" },
-            { "tab": "Education", "logo": "assets/powered-home-logo.jpg", "logoAlt": "PowerEd", "image": "assets/old/powered-card.jpg", "statStrong": "19,000+", "statSpan": "Students Empowered", "desc": "An all-encompassing K-12 education platform cultivating vibrant learning environments.", "href": "platform.html?p=powered" }
+            { "tab": "Managed Living", "logo": "assets/powerpod-home-logo.jpg", "logoAlt": "PowerPod", "image": "assets/old/powerpod-card.jpg", "statStrong": "10.9 Lakh+ SFT", "statSpan": "Planned Development", "desc": "Simplified, flexible, quality living for today’s professionals.", "href": "platform.html?p=powerpod" }
           ]
         }
       ]
@@ -139,7 +139,7 @@
       "actIndex": "00",
       "title": { "lines": ["Not just a venture"] },
       "subtitle": "A builder of opportunities and businesses",
-      "intro": "Founded in 2015, JV Ventures has evolved into a value-creation partner with a $550 million investment portfolio. Built on a 10+ year legacy of pioneering innovative models in lifesciences and education infrastructure — rooted in identifying structural gaps and building around them with clarity and conviction.",
+      "intro": "Founded in 2015, JV Ventures has evolved into a value-creation partner with a $550 million investment portfolio. Built on a 10+ year legacy of pioneering innovative models in lifesciences and education infrastructure, rooted in identifying structural gaps and building around them with clarity and conviction.",
       "intro2": "The focus remains on innovation and strategic investment in socially relevant infrastructure while continuously introducing new models that challenge conventional approaches and unlock scalable value.",
       "sectorChips": ["Lifesciences", "Education", "Healthcare", "Managed Living"],
       "heroImage": "assets/jv-image.png",
@@ -153,7 +153,7 @@
       "ledger": [
         { "value": 2015, "label": "Year of<br>Inception", "plain": true },
         { "value": 550, "prefix": "$", "suffix": " Mn+", "label": "Investments Managed<br>Currently" },
-        { "value": 13, "label": "Intrapreneurs<br>Nurtured" },
+        { "value": 14, "label": "Intrapreneurs<br>Nurtured" },
         { "value": 10, "suffix": "+ Yrs", "label": "Building<br>Platforms" }
       ],
       "ledgerCaption": "Delivering multidimensional value to investors, operators, communities, and society at large"
@@ -208,7 +208,7 @@
       "actName": "Ecosystem",
       "actIndex": "04",
       "title": { "lines": ["Four platforms.", "One ecosystem."], "emphasis": "line:1" },
-      "copy": "Purpose-built ventures shaping education, lifesciences, healthcare, and managed living — designed to interconnect, unlock synergies, and amplify impact beyond sectors.",
+      "copy": "Purpose-built ventures shaping education, lifesciences, healthcare, and managed living, designed to interconnect, unlock synergies, and amplify impact beyond sectors.",
       "tiles": [
         { "image": "assets/Untitled-4-01-2.jpg", "logo": "assets/powered-home-logo.jpg", "logoAlt": "PowerEd", "text": "An all-encompassing education solution that cultivates vibrant learning environments and enriched student experiences.", "moreLabel": "Learn More", "href": "platform.html?p=powered" },
         { "image": "assets/Untitled-11-01.jpg", "logo": "assets/powerx-home-logo.jpg", "logoAlt": "PoweRx", "text": "A lifesciences ecosystem driving innovation with purpose-built infrastructure & cutting-edge research.", "moreLabel": "Learn More", "href": "platform.html?p=powerx" },
@@ -260,7 +260,7 @@
         { "name": "Anuraag Jhunjhunwala", "role": "CEO | Cappella", "photo": "assets/old/1-1.png", "linkedin": "https://www.linkedin.com/in/anuraag-jhunjhunwala-4727145/" },
         { "name": "Sai Krishna Narla", "role": "CBO | Cappella", "photo": "assets/old/2-2.png", "linkedin": "https://www.linkedin.com/in/sai-krishna-narla-39b81881/" },
         { "name": "Kirti Sharma", "role": "Co-CEO | Crimson", "photo": "assets/old/3-2.png", "linkedin": "https://www.linkedin.com/in/kirti-sharma-crimson/" },
-        { "name": "Husien Dohadwala", "role": "Co-CEO | Crimson", "photo": "assets/old/6-1.png", "linkedin": "https://www.linkedin.com/in/husien-dohadwalla/" },
+        { "name": "Husien Dohadwala", "role": "Co-Founder & Co-CEO | Crimson", "photo": "assets/old/6-1.png", "linkedin": "https://www.linkedin.com/in/husien-dohadwalla/" },
         { "name": "Santosh Chaubey", "role": "Head | Abeona", "photo": "assets/old/7-1.png", "linkedin": "https://www.linkedin.com/in/santosh-kumar-chaubey/" },
         { "name": "Bheem Reddy", "role": "Business Head | Inventre", "photo": "assets/old/14-1.png", "linkedin": "https://www.linkedin.com/in/bheem-reddy/" },
         { "name": "Milind Ravi", "role": "Co-Founder & CEO | NXT QST FWD", "photo": "assets/old/4-2.png", "linkedin": "https://www.linkedin.com/in/milind-ravi-07141921/" },
@@ -312,7 +312,7 @@
       "submit": "SUBMIT",
       "submitting": "Sending…",
       "successTitle": "Thank you",
-      "successBody": "Your message is on its way. Someone from the team will be in touch shortly — usually within two business days.",
+      "successBody": "Your message is on its way. Someone from the team will be in touch shortly, usually within two business days.",
       "resetLabel": "Send another message",
       "errorName": "Please enter your first name.",
       "errorEmail": "Please enter a valid email address.",
@@ -330,28 +330,28 @@
       "hero": "assets/old/powerEd-platform.jpg",
       "video": "assets/old/PowerEd.mp4",
       "tagline": "An all-encompassing K-12 education platform cultivating vibrant learning environments across the full lifecycle of the education experience.",
-      "intro": "PowerEd builds the institutions, the operating models, and the everyday services that let schools focus on learning — from the buildings themselves to the buses that reach them.",
+      "intro": "PowerEd builds the institutions, the operating models, and the everyday services that let schools focus on learning, from the buildings themselves to the buses that reach them.",
       "totals": [
         { "value": "19,000+", "label": "Students empowered" }
       ],
       "categories": [
         { "label": "Infrastructure", "ventures": [
           { "name": "Cappella", "logo": "assets/old/cappella-01-e1779887851616.png", "logoAlt": "Cappella", "photo": "assets/old/powered-ionfra.jpg", "href": "https://cappella.in/",
-            "desc": "Pan-Asian edu-infra solutions — sale/leaseback, development, and acquisitions across the spectrum, spanning India and Dubai.",
+            "desc": "Pan-Asian edu-infra solutions, sale/leaseback, development, and acquisitions across the spectrum, spanning India and Dubai.",
             "metrics": [{ "value": "16", "label": "Assets" }, { "value": "$500M+", "label": "AUM" }] }
         ]},
         { "label": "Operations", "ventures": [
           { "name": "Crimson", "logo": "assets/old/crimson-01.png", "logoAlt": "Crimson", "photo": "assets/old/crimson.jpg", "href": "https://crimsonschools.network/",
             "desc": "Enhancing the mid-market K-12 school experience with a growing South-West India presence.",
-            "metrics": [{ "value": "19K+", "label": "Students" }, { "value": "16", "label": "Schools" }] }
+            "metrics": [{ "value": "19K+", "label": "Students" }, { "value": "14", "label": "Schools" }] }
         ]},
         { "label": "Services", "ventures": [
           { "name": "Inventre", "logo": "assets/old/inventer-logo.png", "logoAlt": "Inventre", "photo": "assets/old/inventre.jpg", "href": "https://inventre.in/",
             "desc": "Seamless service for design and management of school supplies, integrated with technology across schools.",
-            "metrics": [{ "value": "17", "label": "Schools" }, { "value": "18K+", "label": "Students" }, { "value": "5K+", "label": "Products" }, { "value": "$2.4M+", "label": "Order book" }] },
+            "metrics": [{ "value": "17", "label": "Schools" }, { "value": "22K+", "label": "Students" }, { "value": "5K+", "label": "Products" }, { "value": "$2.4mn+", "label": "Order book" }] },
           { "name": "Abeona", "logo": "assets/old/qbeona-logo.png", "logoAlt": "Abeona", "photo": "assets/old/abeona.jpg", "href": "https://abeonawheels.in/",
             "desc": "Tech-driven school transportation ensuring safe, reliable, and convenient journeys with a growing commitment to sustainability.",
-            "metrics": [{ "value": "10", "label": "Schools" }, { "value": "4.6K+", "label": "Students" }, { "value": "180", "label": "Fleet" }, { "value": "$1.9M+", "label": "Revenue" }] }
+            "metrics": [{ "value": "10", "label": "Schools" }, { "value": "4.6K+", "label": "Students" }, { "value": "200", "label": "Fleet" }, { "value": "$1.9mn+", "label": "Revenue" }] }
         ]}
       ]
     },
@@ -362,21 +362,21 @@
       "hero": "assets/old/nxt-qst-powerx.jpg",
       "video": "assets/old/PoweRx_3.mp4",
       "tagline": "A lifesciences ecosystem driving innovation through purpose-built infrastructure, advanced research environments, and integrated support services.",
-      "overview": "PoweRx creates enabling ecosystems that combine world-class laboratories, specialized operational services, and collaborative environments; allowing scientists, researchers, and businesses to focus on discovery, development, and growth.",
-      "intro": "PoweRx creates enabling ecosystems that combine world-class laboratories, specialised operational services, and collaborative environments — letting scientists, researchers, and businesses focus on discovery, development, and growth.",
+      "overview": "",
+      "intro": "PoweRx creates enabling ecosystems that combine world-class laboratories, specialised operational services, and collaborative environments, letting scientists, researchers, and businesses focus on discovery, development, and growth.",
       "totals": [
         { "value": "6.5 Mn+", "label": "SFT of labspace" }
       ],
       "categories": [
         { "label": "Infrastructure", "ventures": [
           { "name": "NXT", "logo": "assets/old/nxt-01.png", "logoAlt": "NXT", "photo": "assets/old/nxt-qst-powerx.jpg", "href": "https://nqfhubs.com/",
-            "desc": "Tailored infrastructure solutions for dynamic lifesciences clusters — modular & customized environments, build-outs, campus management, and flexible ownership models.",
-            "metrics": [{ "value": "1 Mn+ SFT", "label": "Operational" }, { "value": "3 Mn+ SFT", "label": "Planning & Design" }, { "value": "2.5 Mn+ SFT", "label": "Under Development" }, { "value": "2.5 Mn+ SFT", "label": "Exited" }, { "value": "4 Lakh SFT", "label": "AALV" }, { "value": "03", "label": "Clusters" }] }
+            "desc": "Tailored infrastructure solutions for dynamic lifesciences clusters, modular & customized environments, build-outs, campus management, and flexible ownership models.",
+            "metrics": [{ "value": "1 Mn SFT", "label": "Operational" }, { "value": "0.5 Mn SFT", "label": "Nearing Completion" }, { "value": "3 Mn SFT", "label": "Planning & Design" }, { "value": "2 Mn SFT", "label": "Pre-Acquisition Phase" }, { "value": "3", "label": "Clusters" }, { "value": "3 Lakh SFT", "label": "AALV" }] }
         ]},
         { "label": "CRAMS (Contract Research and Manufacturing Services)", "ventures": [
           { "name": "GVRP", "logo": "assets/old/gv-logo.png", "logoAlt": "Genome Valley Research Park", "photo": "assets/old/powerx-cramps.jpg", "href": "https://gvrp.in/",
-            "desc": "Contract Research and Manufacturing Services — an integrated research platform offering drug discovery and preclinical solutions for pharma and biotech companies.",
-            "metrics": [{ "value": "35K+ SFT", "label": "Active" }, { "value": "35K+ SFT", "label": "Pipeline" }, { "value": "85+", "label": "Clients" }] }
+            "desc": "An integrated research platform offering drug discovery and preclinical solutions for pharma and biotech companies.",
+            "metrics": [{ "value": "35K+ SFT", "label": "Active" }, { "value": "50 SFT", "label": "Pipeline" }, { "value": "100+", "label": "Clients" }] }
         ]}
       ]
     },
@@ -386,7 +386,7 @@
       "wordmark": "assets/old/powercare-01-scaled.png",
       "hero": "assets/old/powerx-edgeclinic.jpg",
       "video": "assets/old/PowerCare.mp4",
-      "tagline": "A healthcare solutions network designed around patient and practitioner needs — creating seamless care experiences through thoughtfully planned environments and high-quality infrastructure.",
+      "tagline": "A healthcare solutions network designed around patient and practitioner needs, creating seamless care experiences through thoughtfully planned environments and high-quality infrastructure.",
       "intro": "PowerCare reimagines where care happens: experiential medical environments and flexible clinical spaces built around the people who deliver and receive care.",
       "totals": [
         { "value": "2.4 Lakh+", "label": "SFT in pipeline" }
@@ -397,7 +397,7 @@
             "desc": "Experiential environments for healthcare professionals and operators. First centre launched in Hitech City, with a 5-year target of 35–40 centres.",
             "metrics": [{ "value": "1st Centre", "label": "Launched" }, { "value": "35 K+ SFT", "label": "Active" }, { "value": "2 Lakh+ SFT", "label": "Pipeline" }] },
           { "name": "Edge Clinic", "logo": "assets/old/edge-01-e1779888036414.png", "logoAlt": "Edge Clinic", "photo": "assets/old/MJC04458-HDR-01.jpg", "href": "https://edge.clinic/",
-            "desc": "Multidisciplinary co-working spaces for doctors with flexible terms — enabling healthcare professionals to practice independently.",
+            "desc": "Multidisciplinary co-working spaces for doctors with flexible terms, enabling healthcare professionals to practice independently.",
             "metrics": [{ "value": "1st Centre", "label": "Launched" }, { "value": "2", "label": "Centres pipeline" }] }
         ]}
       ]
@@ -408,7 +408,7 @@
       "wordmark": "assets/old/powerrpod-01-scaled.png",
       "hero": "assets/old/Untitled-8-01.jpg",
       "video": "assets/old/PowerPod_1.mp4",
-      "tagline": "An infrastructure platform reimagining how professionals live — from purpose-built living spaces to integrated hospitality experiences.",
+      "tagline": "An infrastructure platform reimagining how professionals live, from purpose-built living spaces to integrated hospitality experiences.",
       "intro": "PowerPod brings institutional discipline to hospitality and living, delivering curated dining, lifestyle, and service experiences for professionals across cities.",
       "totals": [
         { "value": "10.9 Lakh+", "label": "SFT planned development" }
@@ -416,8 +416,8 @@
       "categories": [
         { "label": "Infrastructure", "ventures": [
           { "name": "Madison", "logo": "assets/old/madi-e1779785323160.png", "logoAlt": "Madison Hospitality", "photo": "assets/old/Untitled-8-01.jpg", "href": "https://madisonhospitality.in/",
-            "desc": "A unified platform for diverse hospitality offerings, enriched by institutional partnerships — delivering curated dining, lifestyle, and service experiences for professionals.",
-            "metrics": [{ "value": "07", "label": "Assets" }, { "value": "05", "label": "Cities" }, { "value": "2.53 Lakh+ SFT", "label": "Pipeline" }, { "value": "10.85 Lakh+ SFT", "label": "Planned" }, { "value": "373", "label": "Keys · Luxury" }, { "value": "276", "label": "Keys · Upper Upscale" }, { "value": "375", "label": "Keys · Midscale" }] }
+            "desc": "A unified platform for diverse hospitality offerings, enriched by institutional partnerships, delivering curated dining, lifestyle, and service experiences for professionals.",
+            "metrics": [{ "value": "6", "label": "Assets" }, { "value": "5", "label": "Cities" }, { "value": "2.5 Lakh+ SFT", "label": "Pipeline" }, { "value": "9.9 Lakh+ SFT", "label": "Planned" }, { "value": "353", "label": "Keys · Luxury" }, { "value": "176", "label": "Keys · Upper Upscale" }, { "value": "375", "label": "Keys · Midscale" }] }
         ]}
       ]
     }

@@ -468,6 +468,23 @@
       rgba(23, 64, 130, 0) 100%
     );
   }
+
+  /* The LinkedIn glyph is pinned bottom-right (absolute) over the bottom (role)
+     line, so reserve horizontal room on the role — otherwise long roles run
+     underneath it. The name sits above the glyph, so it keeps full width and
+     wraps at word boundaries (anywhere only as a safety for long surnames). */
+  .cardRole {
+    padding-right: 2.6rem;
+  }
+  .cardName {
+    max-width: none;
+    overflow-wrap: anywhere;
+  }
+  /* Sit the glyph clear of the very bottom text line. */
+  .cardOverlay .liLink {
+    right: 1rem;
+    bottom: 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

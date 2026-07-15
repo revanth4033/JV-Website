@@ -69,8 +69,6 @@ export function Header({ settings }: { settings: SiteSettings }) {
         <Image src={asset(logo.src)} alt={logo.alt} width={240} height={30} priority unoptimized />
       </Link>
 
-      {open && <div className="nav-backdrop" onClick={() => setOpen(false)} />}
-
       <nav className="site-nav" data-cms-section="navigation">
         {filteredNav.map((item, idx) => {
           const num = String(idx + 1).padStart(2, '0')

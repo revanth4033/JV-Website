@@ -94,7 +94,7 @@
 .wordmark {
   display: block;
   width: auto;
-  max-width: 300px;
+  max-width: min(300px, 100%);
   height: auto;
   max-height: 104px;
   object-fit: contain;
