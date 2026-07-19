@@ -620,6 +620,7 @@ export function About({ about }: { about: AboutPage; settings: SiteSettings }) {
                   <div
                     className={`${styles.accItem}${open ? ' ' + styles.accOpen : ''}`}
                     key={r.num}
+                    onMouseEnter={() => setOpenModel(i)}
                   >
                     <button
                       type="button"
