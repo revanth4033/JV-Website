@@ -133,7 +133,7 @@ export function Platform({
       const hero = heroRef.current
       const grid = gridRef.current
       const heroText = heroTextRef.current
-      if (hero && grid && heroText && platform?.video && window.matchMedia('(min-width: 768px)').matches) {
+      if (hero && grid && heroText && platform?.video && window.matchMedia('(min-width: 901px)').matches) {
         const video = grid.querySelector<HTMLElement>('.' + styles.heroVideo)
         const tl = gsap.timeline({
           scrollTrigger: {

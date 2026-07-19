@@ -55,9 +55,21 @@
   align-items: start;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
+  /* Stack below tablet-landscape; a 1024-wide landscape tablet keeps 2 columns. */
   .layout {
     grid-template-columns: 1fr;
+  }
+  /* Keep both stacked blocks at the same comfortable width and centered, so the
+     form doesn't over-stretch and the offices/map don't leave a lopsided gap. */
+  .leftCol,
+  .rightCol {
+    max-width: 620px;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .mapFrame {
+    max-width: none;
   }
 }
 
@@ -147,12 +159,6 @@
 .rightCol {
   width: 100%;
   max-width: 480px;
-}
-
-@media (max-width: 1024px) {
-  .rightCol {
-    max-width: none;
-  }
 }
 
 /* On very narrow phones the 4rem-min faint hero title "CONTACT US" overruns the

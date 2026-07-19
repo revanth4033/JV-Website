@@ -659,6 +659,12 @@ em { font-family: inherit; font-weight: inherit; }
 .foot-left a:hover { color: var(--red-soft); }
 .foot-right { display: flex; align-items: center; }
 
+/* Below ~860px the two footer lines ("India · Dubai · Singapore" and the
+   copyright) collide on one row — stack them with a clear gap. */
+@media (max-width: 860px) {
+  .site-footer { flex-direction: column; align-items: flex-start; gap: 1rem; }
+}
+
 /* ---------- responsive ---------- */
 @media (max-width: 820px) {
   /* mobile: switch nav back to fullscreen overlay */
@@ -1503,12 +1509,39 @@ html, body { overflow-x: clip; }
   font-size: 0.62rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--text-dim);
 }
 
-/* reduced motion: vertical static presentation */
+/* reduced motion: vertical static presentation. Must fully stack the deck at ANY
+   width — the JS pin is skipped under reduced motion, so without the single-column
+   + auto-height + reveal rules below, a reduced-motion deck ≥1024px kept the 2-col
+   desktop grid and rendered every slide as empty navy. */
 @media (prefers-reduced-motion: reduce) {
   .deck-viewport { height: auto; overflow: visible; }
-  .deck-track { display: block; }
-  .slide { min-height: 100svh; }
+  .deck-track { display: block; width: 100%; transform: none !important; }
+  .slide {
+    width: 100%; flex: none; height: auto; min-height: auto;
+    grid-template-columns: 1fr; align-content: center;
+    gap: clamp(1.5rem, 3vh, 2.5rem);
+    transform: none !important;
+    padding: clamp(4rem, 9vh, 6rem) var(--gutter) clamp(3rem, 6vh, 4.5rem);
+  }
+  .slide .soi-visual { display: none; }
+  .slide-visual:not(.fullbleed) { max-width: 560px; }
+  .slide .slide-content, .slide .slide-visual { transform: none !important; opacity: 1 !important; }
+  .slide .line-inner { transform: none !important; }
   .deck-rail, .deck-cue { display: none; }
+
+  /* per-slide stacked geometry so the full-bleed visuals lay out instead of
+     sitting in a broken 2-col grid */
+  .slide--impact { display: flex; flex-direction: column; }
+  .slide--impact .slide-content { position: relative; height: auto; }
+  .fb-quad { flex-wrap: wrap; }
+  .fb-slice { flex: 0 0 50%; height: 50%; }
+  .num-row { margin-top: clamp(2rem, 5vh, 3rem); }
+  .slide--eco { display: flex; flex-direction: column; align-items: stretch; }
+  .slide--eco .fullbleed { position: relative; inset: auto; height: 44vh; margin-bottom: 1.8rem; }
+  .slide--eco .slide-content { max-width: 100%; }
+  .eco-veil { background: none; }
+  .slide--plat { display: flex; flex-direction: column; }
+  .plat-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem; flex: none; }
 }
 
 /* responsive deck */
@@ -1523,7 +1556,10 @@ html, body { overflow-x: clip; }
     min-height: 100svh;
   }
   .slide .soi-visual { display: none; }
-  .slide-visual { max-width: 560px; }
+  /* Cap only the normal (SOI/side) visuals — NOT the full-bleed impact quad and
+     eco image, which are position:absolute inset:0 and must span edge-to-edge.
+     Capping them left a blank right strip and pushed the stat wall out of line. */
+  .slide-visual:not(.fullbleed) { max-width: 560px; }
   .slide-content, .slide-visual { transform: none !important; }
   .rail-ch { font-size: 0.6rem; letter-spacing: 0.14em; }
   .deck-rail, .deck-cue { display: none; }
@@ -1833,7 +1869,7 @@ html, body { overflow-x: clip; }
   .slide {
     flex: none; width: 100%; height: auto; min-height: auto;
     transform: none !important;
-    padding: clamp(5.5rem, 14vh, 7rem) var(--gutter) clamp(3.5rem, 8vh, 5rem);
+    padding: clamp(4rem, 9vh, 6rem) var(--gutter) clamp(3rem, 6vh, 4.5rem);
   }
   .slide .slide-content, .slide .slide-visual { transform: none !important; opacity: 1 !important; }
   .slide .line-inner { transform: none !important; }

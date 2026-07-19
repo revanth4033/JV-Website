@@ -1233,21 +1233,25 @@
   .dots {
     display: flex;
   }
+}
 
-  /* Phones/small tablets: the corridor image is too short to hold the labels as an
-     absolute overlay (they overflowed and overlapped the image). Take them out of
-     the overlay and stack them in normal flow BELOW the image instead. */
+/* GRIDS section across the WHOLE tablet band + phones (≤1023, so 768px doesn't
+   fall back to the desktop overlay): the corridor image is too short to hold the
+   compare labels as an absolute overlay (they overflow/overlap it). Take them out
+   of the overlay and place them in normal flow BELOW the image. Two-up on tablet,
+   single column on phones (see the ≤600 rule below). */
+@media (max-width: 1023px) {
   .gridsCompare {
     position: static;
     inset: auto;
-    grid-template-columns: 1fr;
-    gap: 1.25rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem 2rem;
     padding: 1.5rem clamp(1rem, 4vw, 1.5rem) 0.25rem;
   }
   .compareCol {
     text-shadow: none;
   }
-  /* Don't pull the layers panel up over the image on mobile — it would cover the
+  /* Don't pull the grey layers panel up over the image — it would cover the
      labels now sitting below the image. Give it a clear gap instead. */
   .layersBlock {
     margin-top: 1.5rem;

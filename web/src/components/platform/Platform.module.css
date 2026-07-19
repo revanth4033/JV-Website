@@ -436,9 +436,10 @@
   }
 }
 
-/* Venture card keeps its 2-column (text + photo) layout on tablet like the old
-   site; only phones stack it (photo on top). */
-@media (max-width: 767px) {
+/* Below 900px the hero is single-column (see above); stack the venture cards to
+   match so portrait tablets get a full-width photo-on-top card instead of a
+   cramped 2-column split. Wide/landscape tablets (>=901px) keep the 2-col look. */
+@media (max-width: 900px) {
   .card {
     grid-template-columns: 1fr;
   }

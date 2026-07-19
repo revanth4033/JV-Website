@@ -440,19 +440,21 @@
   .grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-@media (max-width: 768px) {
-  /* Founders stack into a single column on small screens */
+@media (max-width: 900px) {
+  /* Founders stack into a single column on tablet portrait & phones (real tablets
+     at 769–900px otherwise kept a too-narrow 2-column layout where the portrait
+     overlapped the bio). */
   .founders {
     grid-template-columns: 1fr;
   }
 
   .founder {
-    padding-right: clamp(7.5rem, 40%, 11rem);
-    min-height: clamp(340px, 90vw, 460px);
+    padding-right: clamp(9rem, 42%, 15rem);
+    min-height: clamp(280px, 52vw, 380px);
   }
 
   .founderMedia {
-    width: clamp(6rem, 32%, 9rem);
+    width: clamp(9rem, 40%, 14rem);
   }
 
   /* overlay always visible on touch / small screens — pinned as a bottom strip
