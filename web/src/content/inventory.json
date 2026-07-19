@@ -348,10 +348,10 @@
         { "label": "Services", "ventures": [
           { "name": "Inventre", "logo": "assets/old/inventer-logo.png", "logoAlt": "Inventre", "photo": "assets/old/inventre.jpg", "href": "https://inventre.in/",
             "desc": "Seamless service for design and management of school supplies, integrated with technology across schools.",
-            "metrics": [{ "value": "17", "label": "Schools" }, { "value": "22K+", "label": "Students" }, { "value": "5K+", "label": "Products" }, { "value": "$2.4mn+", "label": "Order book" }] },
+            "metrics": [{ "value": "17", "label": "Schools" }, { "value": "22K+", "label": "Students" }, { "value": "5K+", "label": "Products" }, { "value": "$2.4Mn+", "label": "Order book" }] },
           { "name": "Abeona", "logo": "assets/old/qbeona-logo.png", "logoAlt": "Abeona", "photo": "assets/old/abeona.jpg", "href": "https://abeonawheels.in/",
             "desc": "Tech-driven school transportation ensuring safe, reliable, and convenient journeys with a growing commitment to sustainability.",
-            "metrics": [{ "value": "10", "label": "Schools" }, { "value": "4.6K+", "label": "Students" }, { "value": "200", "label": "Fleet" }, { "value": "$1.9mn+", "label": "Revenue" }] }
+            "metrics": [{ "value": "10", "label": "Schools" }, { "value": "4.6K+", "label": "Students" }, { "value": "200", "label": "Fleet" }, { "value": "$1.9Mn+", "label": "Revenue" }] }
         ]}
       ]
     },

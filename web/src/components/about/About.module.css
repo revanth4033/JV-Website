@@ -972,6 +972,7 @@
   font-size: clamp(1rem, 1.4vw, 1.18rem);
   font-weight: 400;
   max-width: none;
+  margin-top: 1.5rem;
 }
 
 /* Old design: full-bleed corridor image (edge to edge, no rounding/border). */
@@ -1231,6 +1232,25 @@
 
   .dots {
     display: flex;
+  }
+
+  /* Phones/small tablets: the corridor image is too short to hold the labels as an
+     absolute overlay (they overflowed and overlapped the image). Take them out of
+     the overlay and stack them in normal flow BELOW the image instead. */
+  .gridsCompare {
+    position: static;
+    inset: auto;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem clamp(1rem, 4vw, 1.5rem) 0.25rem;
+  }
+  .compareCol {
+    text-shadow: none;
+  }
+  /* Don't pull the layers panel up over the image on mobile — it would cover the
+     labels now sitting below the image. Give it a clear gap instead. */
+  .layersBlock {
+    margin-top: 1.5rem;
   }
 }
 

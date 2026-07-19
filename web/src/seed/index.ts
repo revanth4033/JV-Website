@@ -48,13 +48,10 @@ async function run() {
   const inv = normalize(inventory)
 
   // ---- singletons ----
-  const ss = inv.siteSettings
-  const siteSettings = {
-    logo: ss.logo, nav: ss.nav, closingQuote: ss.closingQuote,
-    bridgeImage: ss.bridgeImage, footer: ss.footer,
-  }
+  // Store the full siteSettings (incl. ui / seo / platformLabels / brandName) so a
+  // re-seed restores the complete record rather than a subset.
   for (const [key, data] of Object.entries({
-    siteSettings,
+    siteSettings: inv.siteSettings,
     homePage: inv.homePage,
     aboutPage: inv.aboutPage,
     teamPage: inv.teamPage,
