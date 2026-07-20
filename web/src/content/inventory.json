@@ -37,6 +37,7 @@
       "links": [
         { "label": "About Us", "href": "about.html" },
         { "label": "Platforms", "href": "platform.html?p=powered" },
+        { "label": "GRIDS", "href": "about.html#grids" },
         { "label": "Team", "href": "/team" },
         { "label": "connect@jv.ventures", "href": "mailto:connect@jv.ventures" },
         { "label": "LinkedIn", "href": "https://www.linkedin.com/company/jvventures/", "external": true }

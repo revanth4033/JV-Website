@@ -13,7 +13,6 @@ export function Header({ settings }: { settings: SiteSettings }) {
   const headerRef = useRef<HTMLElement>(null)
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [atTopEdge, setAtTopEdge] = useState(false)
   const [autoHide, setAutoHide] = useState(false)
   const { lenis } = useSmoothScroll()
 
@@ -33,16 +32,12 @@ export function Header({ settings }: { settings: SiteSettings }) {
       cleanupScroll = () => window.removeEventListener('scroll', native)
     }
 
-    const onMove = (e: MouseEvent) => setAtTopEdge(e.clientY <= 70)
-    window.addEventListener('mousemove', onMove, { passive: true })
-
     return () => {
       cleanupScroll()
-      window.removeEventListener('mousemove', onMove)
     }
   }, [lenis])
 
-  const hidden = autoHide && scrolled && !atTopEdge && !open
+  const hidden = autoHide && scrolled && !open
 
   useEffect(() => {
     if (lenis) (open ? lenis.stop() : lenis.start())
